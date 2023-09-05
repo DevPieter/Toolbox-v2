@@ -22,6 +22,14 @@ public class ColorManager {
     public void load() {
         // TODO - Load from "assets/toolbox/colors/*.json"
 
+        try {
+            getClass().getClassLoader().getResources("assets/toolbox/colors").asIterator().forEachRemaining(url -> {
+                System.out.println(url.getPath());
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         /* Text */
         colors.put("text.default", new Color(0xFFFFFF));
         colors.put("text.info", new Color(0x55FFFF));
