@@ -13,6 +13,7 @@ import nl.devpieter.toolbox.Test.Modules.ClickableModule;
 import nl.devpieter.toolbox.Test.Modules.StatefulModule;
 import nl.devpieter.toolbox.Test.Modules.TestModule;
 import nl.devpieter.toolbox.Test.Modules.ToggleableModule;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

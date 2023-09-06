@@ -1,3 +1,7 @@
 {
-    "todo": "0xFFFFFF"
+    "default": "#FFFFFF",
+    "info": "#55FFFF",
+    "success": "#55FF55",
+    "warning": "#FFFF55",
+    "error": "#FF5555"
 }

@@ -1,8 +1,15 @@
 package nl.devpieter.toolbox.Theme;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import nl.devpieter.toolbox.Toolbox;
+import nl.devpieter.toolbox.Utils.ResourceUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 public class ColorManager {
@@ -17,54 +24,63 @@ public class ColorManager {
         this.load();
     }
 
-    private final HashMap<String, Color> colors = new HashMap<>();
+    private final Gson gson = new Gson();
+    private final HashMap<String, Color> loadedColors = new HashMap<>();
 
     public void load() {
-        // TODO - Load from "assets/toolbox/colors/*.json"
-
-        try {
-            getClass().getClassLoader().getResources("assets/toolbox/colors").asIterator().forEachRemaining(url -> {
-                System.out.println(url.getPath());
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+        File colorsFolder = ResourceUtils.getResourceFolder("colors");
+        if (colorsFolder == null) {
+            Toolbox.LOGGER.error("Failed to load colors! (Colors folder not found)");
+            return;
         }
 
-        /* Text */
-        colors.put("text.default", new Color(0xFFFFFF));
-        colors.put("text.info", new Color(0x55FFFF));
-        colors.put("text.success", new Color(0x55FF55));
-        colors.put("text.warning", new Color(0xFFFF55));
-        colors.put("text.error", new Color(0xFF5555));
+        File[] files = colorsFolder.listFiles();
+        if (files == null) {
+            Toolbox.LOGGER.error("Failed to load colors! (Colors folder is empty)");
+            return;
+        }
 
-        /* Widget */
-        colors.put("widget.background", new Color(0x1A1A1A));
-        colors.put("widget.background.hover", new Color(0x121212));
-        colors.put("widget.background.disabled", new Color(0x222222));
+        for (File file : files) {
+            try {
+                Type type = new TypeToken<HashMap<String, String>>() {
+                }.getType();
+                HashMap<String, String> colorMap = gson.fromJson(new FileReader(file), type);
 
-        colors.put("widget.shadow", new Color(0x991A1A1A, true));
-        colors.put("widget.shadow.hover", new Color(0xBF121212, true));
-        colors.put("widget.shadow.disabled", new Color(0x66222222, true));
+                for (String key : colorMap.keySet()) {
+                    String finalKey = file.getName().replace(".json", "") + "." + key;
+                    loadedColors.put(finalKey, this.translateColor(colorMap.get(key)));
+                }
+            } catch (Exception e) {
+                Toolbox.LOGGER.warn("Failed to load colors from file {}", file.getName(), e);
+            }
+        }
+    }
 
-        /* Module Card */
-        colors.put("module.name", new Color(0xCBCBCB));
-        colors.put("module.description", new Color(0x7A7979));
+    public Color translateColor(String colorString) {
+        colorString = colorString.replace("#", "").replace("0x", "");
+        if (colorString.length() != 6 && colorString.length() != 8) return Color.WHITE;
 
-        colors.put("module.enabled.name", new Color(0x47FF91));
-        colors.put("module.enabled.shadow", new Color(0x8047FF91, true));
+        try {
+            boolean hasAlpha = colorString.length() == 8;
 
-        colors.put("module.disabled.name", new Color(0xCBCBCB));
+            int a = hasAlpha ? Integer.parseInt(colorString.substring(0, 2), 16) : 255;
+            int r = Integer.parseInt(colorString.substring(hasAlpha ? 2 : 0, hasAlpha ? 4 : 2), 16);
+            int g = Integer.parseInt(colorString.substring(hasAlpha ? 4 : 2, hasAlpha ? 6 : 4), 16);
+            int b = Integer.parseInt(colorString.substring(hasAlpha ? 6 : 4, hasAlpha ? 8 : 6), 16);
 
-        colors.put("module.conflicting.name", new Color(0xFF5555));
-        colors.put("module.conflicting.shadow", new Color(0x80FF5555, true));
+            return new Color(r, g, b, a);
+        } catch (Exception e) {
+            Toolbox.LOGGER.warn("Failed to decode color {}, use #RRGGBB or #AARRGGBB", colorString, e);
+            return Color.WHITE;
+        }
     }
 
     public @Nullable Color get(String key) {
-        return colors.get(key);
+        return loadedColors.get(key);
     }
 
     public Color get(String key, Color fallback) {
-        return colors.getOrDefault(key, fallback);
+        return loadedColors.getOrDefault(key, fallback);
     }
 
     public int getRGB(String key) {
@@ -72,7 +88,7 @@ public class ColorManager {
     }
 
     public int getRGB(String key, int fallback) {
-        Color color = colors.get(key);
+        Color color = loadedColors.get(key);
         if (color == null) return fallback;
 
         return color.getRGB();
@@ -83,7 +99,7 @@ public class ColorManager {
     }
 
     public float[] getFloats(String key, float[] fallback) {
-        Color color = colors.get(key);
+        Color color = loadedColors.get(key);
         if (color == null) return fallback;
 
         return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
