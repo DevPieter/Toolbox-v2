@@ -31,7 +31,6 @@ public class ModuleCardWidget extends Widget {
     private final Identifier backgroundShadow = new Identifier("toolbox", "textures/gui/module_card/background_shadow.png");
 
     private final ModuleManager moduleManager = ModuleManager.getInstance();
-    private final ColorManager colorManager = ColorManager.getInstance();
 
     private final Class<? extends IModule> moduleClass;
     private final boolean isInteractable;

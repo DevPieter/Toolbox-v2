@@ -7,6 +7,7 @@ import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Widgets.ModuleCardPageCarouselWidget;
 import nl.devpieter.toolbox.Widgets.ModuleCardPageWidget;
 import nl.devpieter.toolbox.Widgets.ModuleCardWidget;
+import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import org.lwjgl.glfw.GLFW;
 
 public class TestScreen extends Screen {
@@ -45,36 +46,13 @@ public class TestScreen extends Screen {
         this.carousel.init();
 
         this.addDrawableChild(this.carousel);
+
+        this.addDrawableChild(new PaginationWidget(this.carousel, 20, 20));
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_LEFT && this.carousel.hasPreviousPage()) {
-            this.carousel.navigateToPrevious();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_RIGHT && this.carousel.hasNextPage()) {
-            this.carousel.navigateToNext();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_HOME && this.carousel.hasPage(0)) {
-            this.carousel.navigateToFirst();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_END && this.carousel.hasPage(this.carousel.getPageCount() - 1)) {
-            this.carousel.navigateToLast();
-            return true;
-        }
-
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

@@ -7,11 +7,14 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.util.math.MatrixStack;
+import nl.devpieter.toolbox.Theme.ColorManager;
 
 public abstract class Widget extends DrawableHelper implements Drawable, Element, Selectable {
 
     protected final MinecraftClient client = MinecraftClient.getInstance();
+    protected final ColorManager colorManager = ColorManager.getInstance();
     protected final TextRenderer textRenderer = client.textRenderer;
+
 
     protected float x, y, width, height, scale = 1;
     protected boolean visible = true, focused = false;
@@ -46,6 +49,8 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         matrices.pop();
     }
 
+    protected abstract void renderWidget(MatrixStack matrices, double mouseX, double mouseY, float delta);
+
     @Override
     public void setFocused(boolean focused) {
         this.focused = focused;
@@ -73,8 +78,6 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     public boolean isMouseOver(double mouseX, double mouseY, float x, float y, float width, float height) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
-
-    protected abstract void renderWidget(MatrixStack matrices, double mouseX, double mouseY, float delta);
 
     public float getX() {
         return this.x;
