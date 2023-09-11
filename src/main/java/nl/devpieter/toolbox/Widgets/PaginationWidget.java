@@ -11,6 +11,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class PaginationWidget extends Widget {
 
+    // TODO - Fix overflow (widget is the correct size (enable 'debug mode'), but the texture is is overflowing for some reason)
+
     public static final float SCALE_DOWN_FACTOR = ModuleCardWidget.SCALE_DOWN_FACTOR;
     public static final float WIDTH = ModuleCardWidget.WIDTH, HEIGHT = 45 / SCALE_DOWN_FACTOR;
     public static final int SECTION_WIDTH = 136, SECTION_HEIGHT = 45, SECTION_TEXTURE_WIDTH = 136, SECTION_TEXTURE_HEIGHT = 137;

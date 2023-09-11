@@ -8,6 +8,10 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.util.math.MatrixStack;
 import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Toolbox;
+
+import java.awt.*;
+import java.util.Random;
 
 public abstract class Widget extends DrawableHelper implements Drawable, Element, Selectable {
 
@@ -15,6 +19,10 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     protected final ColorManager colorManager = ColorManager.getInstance();
     protected final TextRenderer textRenderer = client.textRenderer;
 
+    /* ========================= Debug =========================*/
+    private final Random debugRandom = new Random(this.getClass().getSimpleName().hashCode());
+    private final Color debugColor = new Color(debugRandom.nextInt(255), debugRandom.nextInt(255), debugRandom.nextInt(255));
+    /* =========================================================*/
 
     protected float x, y, width, height, scale = 1;
     protected boolean visible = true, focused = false;
@@ -40,12 +48,7 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
         this.renderWidget(matrices, (mouseX - this.x) / this.scale, (mouseY - this.y) / this.scale, delta);
 
-        /* ========================= Debug =========================*/
-//        Random random = new Random(this.getClass().getSimpleName().hashCode());
-//        Color color = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
-//        drawBorder(matrices, 0, 0, (int) this.width, (int) this.height, color.getRGB());
-        /* =========================================================*/
-
+        if (Toolbox.DEBUG) drawBorder(matrices, 0, 0, (int) this.width, (int) this.height, debugColor.getRGB());
         matrices.pop();
     }
 

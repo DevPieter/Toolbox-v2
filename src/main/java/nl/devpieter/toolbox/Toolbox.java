@@ -21,9 +21,12 @@ import org.slf4j.LoggerFactory;
 public class Toolbox implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Toolbox");
+    public static boolean DEBUG = false;
 
     private final KeyBinding keyBinding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toggle.test", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "testing"));
     private final KeyBinding keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("open.screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "testing"));
+
+    private final KeyBinding toggleDebug = KeyBindingHelper.registerKeyBinding(new KeyBinding("toggle.debug", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "testing"));
 
     @Override
     public void onInitialize() {
@@ -57,6 +60,11 @@ public class Toolbox implements ModInitializer {
             }
             if (keyBinding2.wasPressed()) {
                 client.setScreen(new ModuleScreen());
+            }
+
+            if (toggleDebug.wasPressed()) {
+                Toolbox.DEBUG = !Toolbox.DEBUG;
+                Toolbox.LOGGER.info("Debug mode: " + Toolbox.DEBUG);
             }
         });
     }
