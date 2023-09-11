@@ -106,4 +106,22 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
         this.currentPageIndex = index;
         this.moduleCardPages.get(this.currentPageIndex).setVisible(true);
     }
+
+    public float getXOfModuleCard(int index) {
+        ModuleCardPageWidget currentPage = this.moduleCardPages.get(this.currentPageIndex);
+        return ((this.x + this.paddingLeft) + (currentPage.getXOfModuleCard(index) * this.scale));
+    }
+
+    public float getYOfModuleCard(int index) {
+        ModuleCardPageWidget currentPage = this.moduleCardPages.get(this.currentPageIndex);
+        return ((this.y + this.paddingTop) + (currentPage.getYOfModuleCard(index) * this.scale));
+    }
+
+    public float getXOfLastModuleCardInRow() {
+        return this.getXOfModuleCard(this.moduleCardPages.get(this.currentPageIndex).getMaxCardsPerRow() - 1);
+    }
+
+    public float getYOfLastModuleCardInRow() {
+        return this.getYOfModuleCard(this.moduleCardPages.get(this.currentPageIndex).getMaxCardsPerRow() - 1);
+    }
 }

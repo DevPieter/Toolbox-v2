@@ -43,16 +43,19 @@ public class TestScreen extends Screen {
 
         this.carousel = new ModuleCardPageCarouselWidget(x, y, width, height, moduleCardSpacing, false);
         this.carousel.setPadding(8, 0, 8, 8);
+//        this.carousel.setPadding(16, 16, 16, 16);
         this.carousel.init();
 
         this.addDrawableChild(this.carousel);
 
-        this.addDrawableChild(new PaginationWidget(this.carousel, 20, 20));
+        this.addDrawableChild(new PaginationWidget(this.carousel, this.carousel.getXOfLastModuleCardInRow(), this.carousel.getYOfLastModuleCardInRow() - PaginationWidget.HEIGHT - moduleCardSpacing));
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
+
         super.render(matrices, mouseX, mouseY, delta);
+//        drawBorder(matrices, (int) this.carousel.getXOfModuleCard(1), (int) this.carousel.getYOfModuleCard(1), 2, 2, 0xFFFFFFFF);
     }
 }

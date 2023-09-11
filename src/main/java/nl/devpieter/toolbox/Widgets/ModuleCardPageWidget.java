@@ -64,12 +64,22 @@ public class ModuleCardPageWidget extends ParentWidget {
         return this.moduleCards;
     }
 
-    private int getMaxCardsPerRow() {
+    public int getMaxCardsPerRow() {
         return (int) Math.floor((this.width + this.moduleCardSpacing) / (ModuleCardWidget.WIDTH + this.moduleCardSpacing));
     }
 
-    private int getMaxCardsPerColumn() {
+    public int getMaxCardsPerColumn() {
         return (int) Math.floor((this.height + this.moduleCardSpacing) / (ModuleCardWidget.HEIGHT + this.moduleCardSpacing));
+    }
+
+    public float getXOfModuleCard(int index) {
+        if (index >= this.moduleCards.size()) return 0;
+        return this.moduleCards.get(index).getX() * this.scale;
+    }
+
+    public float getYOfModuleCard(int index) {
+        if (index >= this.moduleCards.size()) return 0;
+        return this.moduleCards.get(index).getY() * this.scale;
     }
 
     public static int calculateFittingCards(float width, float height, float moduleCardSpacing) {
