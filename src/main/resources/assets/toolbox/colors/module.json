@@ -1,0 +1,9 @@
+{
+    "name": "#CBCBCB",
+    "description": "#7A7979",
+    "enabled.name": "#47FF91",
+    "enabled.shadow": "#8047FF91",
+    "disabled.name": "#CBCBCB",
+    "conflicting.name": "#FF5555",
+    "conflicting.shadow": "#80FF5555"
+}

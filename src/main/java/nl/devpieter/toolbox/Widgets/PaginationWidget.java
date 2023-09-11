@@ -13,10 +13,11 @@ public class PaginationWidget extends Widget {
 
     public static final float SCALE_DOWN_FACTOR = ModuleCardWidget.SCALE_DOWN_FACTOR;
     public static final float WIDTH = ModuleCardWidget.WIDTH, HEIGHT = 45 / SCALE_DOWN_FACTOR;
-    public static final int SECTION_WIDTH = 136, SECTION_HEIGHT = 45;
+    public static final int SECTION_WIDTH = 136, SECTION_HEIGHT = 45, SECTION_TEXTURE_WIDTH = 136, SECTION_TEXTURE_HEIGHT = 137;
+    public static final int SHADOW_WIDTH = 200, SHADOW_HEIGHT = 86, SHADOW_TEXTURE_WIDTH = 200, SHADOW_TEXTURE_HEIGHT = 260;
 
     private final Identifier background = new Identifier("toolbox", "textures/gui/pagination/background.png");
-    private final Identifier backgroundShadow = new Identifier("toolbox", "textures/gui/pagination/background_shadow_todo-new.png"); // TODO - New background shadow
+    private final Identifier backgroundShadow = new Identifier("toolbox", "textures/gui/pagination/background_shadow.png");
 
     private final PaginatableWidget paginatableWidget;
 
@@ -84,15 +85,22 @@ public class PaginationWidget extends Widget {
     private void renderPreviousButton(MatrixStack matrices, double mouseX, double mouseY) {
         this.initRender(matrices);
 
+        boolean hovered = this.isMouseOverPreviousButton(mouseX, mouseY);
+        boolean disabled = !this.paginatableWidget.hasPreviousPage();
+
         /* Shadow */
-        // TODO - Shadow
+        float[] shadowColor = this.getShadowColor(hovered, disabled);
+        RenderSystem.setShaderColor(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
+
+        RenderSystem.setShaderTexture(0, this.backgroundShadow);
+        drawTexture(matrices, -20, -10, 0, 0, SHADOW_WIDTH, SHADOW_HEIGHT, SHADOW_TEXTURE_WIDTH, SHADOW_TEXTURE_HEIGHT);
 
         /* Background */
-        float[] bgColor = this.getBackgroundColor(this.isMouseOverPreviousButton(mouseX, mouseY), !this.paginatableWidget.hasPreviousPage());
+        float[] bgColor = this.getBackgroundColor(hovered, disabled);
         RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
 
         RenderSystem.setShaderTexture(0, this.background);
-        drawTexture(matrices, 0, 0, 0, 0, SECTION_WIDTH, SECTION_HEIGHT, 136, 137);
+        drawTexture(matrices, 0, 0, 0, 0, SECTION_WIDTH, SECTION_HEIGHT, SECTION_TEXTURE_WIDTH, SECTION_TEXTURE_HEIGHT);
 
         /* Re-init */
         this.resetRender(matrices);
@@ -116,14 +124,18 @@ public class PaginationWidget extends Widget {
         this.initRender(matrices);
 
         /* Shadow */
-        // TODO - Shadow
+        float[] shadowColor = this.colorManager.getFloats("widget.shadow");
+        RenderSystem.setShaderColor(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
+
+        RenderSystem.setShaderTexture(0, this.backgroundShadow);
+        drawTexture(matrices, SECTION_WIDTH - 20, -10, 0, 87, SHADOW_WIDTH, SHADOW_HEIGHT, SHADOW_TEXTURE_WIDTH, SHADOW_TEXTURE_HEIGHT);
 
         /* Background */
         float[] bgColor = this.colorManager.getFloats("widget.background");
         RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
 
         RenderSystem.setShaderTexture(0, this.background);
-        drawTexture(matrices, SECTION_WIDTH, 0, 0, SECTION_HEIGHT + 1, SECTION_WIDTH, SECTION_HEIGHT, 136, 137);
+        drawTexture(matrices, SECTION_WIDTH, 0, 0, 46, SECTION_WIDTH, SECTION_HEIGHT, SECTION_TEXTURE_WIDTH, SECTION_TEXTURE_HEIGHT);
 
         /* Re-init */
         this.resetRender(matrices);
@@ -146,15 +158,22 @@ public class PaginationWidget extends Widget {
     private void renderNextButton(MatrixStack matrices, double mouseX, double mouseY) {
         this.initRender(matrices);
 
+        boolean hovered = this.isMouseOverNextButton(mouseX, mouseY);
+        boolean disabled = !this.paginatableWidget.hasNextPage();
+
         /* Shadow */
-        // TODO - Shadow
+        float[] shadowColor = this.getShadowColor(hovered, disabled);
+        RenderSystem.setShaderColor(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
+
+        RenderSystem.setShaderTexture(0, this.backgroundShadow);
+        drawTexture(matrices, SECTION_WIDTH * 2 - 20, -10, 0, 174, SHADOW_WIDTH, SHADOW_HEIGHT, SHADOW_TEXTURE_WIDTH, SHADOW_TEXTURE_HEIGHT);
 
         /* Background */
-        float[] bgColor = this.getBackgroundColor(this.isMouseOverNextButton(mouseX, mouseY), !this.paginatableWidget.hasNextPage());
+        float[] bgColor = this.getBackgroundColor(hovered, disabled);
         RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
 
         RenderSystem.setShaderTexture(0, this.background);
-        drawTexture(matrices, SECTION_WIDTH * 2, 0, 0, SECTION_HEIGHT * 2 + 2, SECTION_WIDTH, SECTION_HEIGHT, 136, 137);
+        drawTexture(matrices, SECTION_WIDTH * 2, 0, 0, 92, SECTION_WIDTH, SECTION_HEIGHT, SECTION_TEXTURE_WIDTH, SECTION_TEXTURE_HEIGHT);
 
         /* Re-init */
         this.resetRender(matrices);
@@ -214,5 +233,17 @@ public class PaginationWidget extends Widget {
         }
 
         return this.colorManager.getFloats("widget.background");
+    }
+
+    private float[] getShadowColor(boolean isMouseOver, boolean isDisabled) {
+        if (isDisabled) {
+            return this.colorManager.getFloats("widget.shadow.disabled");
+        }
+
+        if (isMouseOver) {
+            return this.colorManager.getFloats("widget.shadow.hover");
+        }
+
+        return this.colorManager.getFloats("widget.shadow");
     }
 }
