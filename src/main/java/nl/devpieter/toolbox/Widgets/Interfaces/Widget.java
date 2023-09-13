@@ -43,12 +43,12 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         if (!this.isVisible()) return;
 
         matrices.push();
-        matrices.scale(this.scale, this.scale, 1);
-        matrices.translate(this.x / this.scale, this.y / this.scale, 0);
+        matrices.scale(this.getScale(), this.getScale(), 1);
+        matrices.translate(this.getX() / this.getScale(), this.getY() / this.getScale(), 0);
 
-        this.renderWidget(matrices, (mouseX - this.x) / this.scale, (mouseY - this.y) / this.scale, delta);
+        this.renderWidget(matrices, (mouseX - this.getX()) / this.getScale(), (mouseY - this.getY()) / this.getScale(), delta);
 
-        if (Toolbox.DEBUG) drawBorder(matrices, 0, 0, (int) this.width, (int) this.height, debugColor.getRGB());
+        if (Toolbox.DEBUG) drawBorder(matrices, 0, 0, (int) this.getWidth(), (int) this.getHeight(), this.debugColor.getRGB());
         matrices.pop();
     }
 
@@ -71,11 +71,11 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= this.x && mouseX <= this.x + this.getScaledWidth() && mouseY >= this.y && mouseY <= this.y + this.getScaledHeight();
+        return mouseX >= this.getX() && mouseX <= this.getX() + this.getScaledWidth() && mouseY >= this.getY() && mouseY <= this.getY() + this.getScaledHeight();
     }
 
     public boolean isMouseOverRelative(double mouseX, double mouseY) {
-        return this.isMouseOver(mouseX, mouseY, 0, 0, this.width, this.height);
+        return this.isMouseOver(mouseX, mouseY, 0, 0, this.getWidth(), this.getHeight());
     }
 
     public boolean isMouseOver(double mouseX, double mouseY, float x, float y, float width, float height) {
@@ -90,12 +90,20 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         return this.y;
     }
 
+    public float getWidth() {
+        return this.width;
+    }
+
+    public float getHeight() {
+        return this.height;
+    }
+
     public float getScaledWidth() {
-        return this.width * this.scale;
+        return this.getWidth() * this.getScale();
     }
 
     public float getScaledHeight() {
-        return this.height * this.scale;
+        return this.getHeight() * this.getScale();
     }
 
     public float getScale() {

@@ -36,54 +36,6 @@ public class PaginationWidget extends Widget {
         this.renderNextButton(matrices, mouseX, mouseY);
     }
 
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-        // TODO - Narrations
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double relativeMouseX = (mouseX - this.x) / this.scale;
-        double relativeMouseY = (mouseY - this.y) / this.scale;
-
-        if (this.isMouseOverPreviousButton(relativeMouseX, relativeMouseY) && this.paginatableWidget.hasPreviousPage()) {
-            this.paginatableWidget.navigateToPrevious();
-            return true;
-        }
-
-        if (this.isMouseOverNextButton(relativeMouseX, relativeMouseY) && this.paginatableWidget.hasNextPage()) {
-            this.paginatableWidget.navigateToNext();
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_LEFT && this.paginatableWidget.hasPreviousPage()) {
-            this.paginatableWidget.navigateToPrevious();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_RIGHT && this.paginatableWidget.hasNextPage()) {
-            this.paginatableWidget.navigateToNext();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_HOME && this.paginatableWidget.hasPage(0)) {
-            this.paginatableWidget.navigateToFirst();
-            return true;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_END && this.paginatableWidget.hasPage(this.paginatableWidget.getPageCount() - 1)) {
-            this.paginatableWidget.navigateToLast();
-            return true;
-        }
-
-        return false;
-    }
-
     private void renderPreviousButton(MatrixStack matrices, double mouseX, double mouseY) {
         this.initRender(matrices);
 
@@ -193,6 +145,54 @@ public class PaginationWidget extends Widget {
         this.textRenderer.draw(matrices, text, textX + 2, textY + 1, 0xFFFFFF);
 
         this.resetRender(matrices);
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {
+        // TODO - Narrations
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        double relativeMouseX = (mouseX - this.getX()) / this.getScale();
+        double relativeMouseY = (mouseY - this.getY()) / this.getScale();
+
+        if (this.isMouseOverPreviousButton(relativeMouseX, relativeMouseY) && this.paginatableWidget.hasPreviousPage()) {
+            this.paginatableWidget.navigateToPrevious();
+            return true;
+        }
+
+        if (this.isMouseOverNextButton(relativeMouseX, relativeMouseY) && this.paginatableWidget.hasNextPage()) {
+            this.paginatableWidget.navigateToNext();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_LEFT && this.paginatableWidget.hasPreviousPage()) {
+            this.paginatableWidget.navigateToPrevious();
+            return true;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_RIGHT && this.paginatableWidget.hasNextPage()) {
+            this.paginatableWidget.navigateToNext();
+            return true;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_HOME && this.paginatableWidget.hasPage(0)) {
+            this.paginatableWidget.navigateToFirst();
+            return true;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_END && this.paginatableWidget.hasPage(this.paginatableWidget.getPageCount() - 1)) {
+            this.paginatableWidget.navigateToLast();
+            return true;
+        }
+
+        return false;
     }
 
     private void initRender(MatrixStack matrices) {

@@ -9,11 +9,11 @@ public abstract class ParentWidget extends Widget {
     }
 
     private double toRelativeX(double mouseX) {
-        return (mouseX - this.x) / this.scale;
+        return (mouseX - this.getX()) / this.getScale();
     }
 
     private double toRelativeY(double mouseY) {
-        return (mouseY - this.y) / this.scale;
+        return (mouseY - this.getY()) / this.getScale();
     }
 
     protected abstract List<? extends Widget> getChildren();

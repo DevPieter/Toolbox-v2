@@ -40,8 +40,8 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
 
         float x = this.paddingLeft;
         float y = this.paddingTop;
-        float width = this.width - this.paddingLeft - this.paddingRight;
-        float height = this.height - this.paddingTop - this.paddingBottom;
+        float width = this.getWidth() - this.paddingLeft - this.paddingRight;
+        float height = this.getHeight() - this.paddingTop - this.paddingBottom;
 
         int moduleCardsPerPage = ModuleCardPageWidget.calculateFittingCards(width, height, this.moduleCardSpacing);
         if (moduleCardsPerPage <= 0) return;
@@ -101,19 +101,26 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
         if (!this.hasPage(index)) return;
         if (index == this.currentPageIndex) return;
 
-        this.moduleCardPages.get(this.currentPageIndex).setVisible(false);
+        long duration = this.currentPageIndex - index == 1 || this.currentPageIndex - index == -1 ? 225 : 175;
+
+        ModuleCardPageWidget currentPage = this.moduleCardPages.get(this.currentPageIndex);
+        currentPage.animateFromCurrent(this.getWidth(), duration, index < this.currentPageIndex, (hasFinished) -> currentPage.setVisible(false));
+
+        ModuleCardPageWidget newPage = this.moduleCardPages.get(index);
+        newPage.animateToCurrent(this.getWidth(), duration, index > this.currentPageIndex, null);
+        newPage.setVisible(true);
+
         this.currentPageIndex = index;
-        this.moduleCardPages.get(this.currentPageIndex).setVisible(true);
     }
 
     public float getXOfModuleCard(int index) {
         ModuleCardPageWidget currentPage = this.moduleCardPages.get(this.currentPageIndex);
-        return ((this.x + this.paddingLeft) + (currentPage.getXOfModuleCard(index) * this.scale));
+        return ((this.getX() + this.paddingLeft) + (currentPage.getXOfModuleCard(index) * this.getScale()));
     }
 
     public float getYOfModuleCard(int index) {
         ModuleCardPageWidget currentPage = this.moduleCardPages.get(this.currentPageIndex);
-        return ((this.y + this.paddingTop) + (currentPage.getYOfModuleCard(index) * this.scale));
+        return ((this.getY() + this.paddingTop) + (currentPage.getYOfModuleCard(index) * this.getScale()));
     }
 
     public float getXOfLastModuleCardInRow() {

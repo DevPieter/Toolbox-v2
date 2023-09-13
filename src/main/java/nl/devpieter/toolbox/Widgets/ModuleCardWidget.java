@@ -56,27 +56,6 @@ public class ModuleCardWidget extends Widget {
         this.renderDescription(matrices, 8, 20 + this.offsetY, 0.75F, 4);
     }
 
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-        // TODO - Narrations
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!this.visible || !this.isMouseOver(mouseX, mouseY)) return false;
-
-        if (IClickableModule.class.isAssignableFrom(this.moduleClass)) {
-            if (this.moduleManager.click(this.moduleClass, button)) return true;
-        }
-
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && IToggleableModule.class.isAssignableFrom(this.moduleClass)) {
-            this.moduleManager.toggle(this.moduleClass);
-            return true;
-        }
-
-        return false;
-    }
-
     private void renderBackground(MatrixStack matrices, double mouseX, double mouseY) {
         matrices.push();
         matrices.scale(1.0F / SCALE_DOWN_FACTOR, 1.0F / SCALE_DOWN_FACTOR, 1);
@@ -116,7 +95,7 @@ public class ModuleCardWidget extends Widget {
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getName(this.moduleClass), style);
 
         /* Calculate */
-        int maxWidth = MathHelper.floor((this.width - (x * 2))) - 3; // 3 = width of the dots / 2
+        int maxWidth = MathHelper.floor((this.getWidth() - (x * 2))) - 3; // 3 = width of the dots / 2
         List<OrderedText> lines = this.textRenderer.wrapLines(text, maxWidth);
 
         /* Draw */
@@ -136,8 +115,8 @@ public class ModuleCardWidget extends Widget {
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getDescription(this.moduleClass), style);
 
         /* Calculate */
-        float maxWidth = (this.width - (x * 2)) / scale - 2; // 2 = some extra space for the dots <3
-        float maxHeight = (this.height - (y + paddingY)) / scale;
+        float maxWidth = (this.getWidth() - (x * 2)) / scale - 2; // 2 = some extra space for the dots <3
+        float maxHeight = (this.getHeight() - (y + paddingY)) / scale;
         float lineHeight = this.textRenderer.fontHeight * 1.1F;
 
         List<OrderedText> lines = this.textRenderer.wrapLines(text, MathHelper.ceil(maxWidth));
@@ -158,6 +137,27 @@ public class ModuleCardWidget extends Widget {
             this.textRenderer.draw(matrices, lines.get(i), 0, (i * lineHeight), 0xFFFFFF);
         }
         matrices.pop();
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {
+        // TODO - Narrations
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!this.isVisible() || !this.isMouseOver(mouseX, mouseY)) return false;
+
+        if (IClickableModule.class.isAssignableFrom(this.moduleClass)) {
+            if (this.moduleManager.click(this.moduleClass, button)) return true;
+        }
+
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && IToggleableModule.class.isAssignableFrom(this.moduleClass)) {
+            this.moduleManager.toggle(this.moduleClass);
+            return true;
+        }
+
+        return false;
     }
 
     private float[] getBackgroundColor(double mouseX, double mouseY) {
