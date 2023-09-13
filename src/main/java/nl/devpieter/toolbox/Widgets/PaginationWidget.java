@@ -109,7 +109,7 @@ public class PaginationWidget extends Widget {
         this.initRender(matrices, 0.75F);
 
         /* Text */
-        String text = "Previous";
+        String text = "Previous"; // TODO - Make translatable
 
         float sectionWidth = SECTION_WIDTH / SCALE_DOWN_FACTOR / 0.75F;
         float sectionHeight = SECTION_HEIGHT / SCALE_DOWN_FACTOR / 0.75F;
@@ -144,7 +144,7 @@ public class PaginationWidget extends Widget {
         this.initRender(matrices, 0.75F);
 
         /* Text */
-        String text = String.format("%d / %d", this.paginatableWidget.getCurrentPage() + 1, this.paginatableWidget.getPageCount());
+        String text = String.format("%d / %d", this.paginatableWidget.getCurrentPage() + 1, this.paginatableWidget.getPageCount()); // TODO - Make translatable (cuz why not)
 
         float sectionWidth = SECTION_WIDTH / SCALE_DOWN_FACTOR / 0.75F;
         float sectionHeight = SECTION_HEIGHT / SCALE_DOWN_FACTOR / 0.75F;
@@ -182,7 +182,7 @@ public class PaginationWidget extends Widget {
         this.initRender(matrices, 0.75F);
 
         /* Text */
-        String text = "Next";
+        String text = "Next"; // TODO - Make translatable
 
         float sectionWidth = SECTION_WIDTH / SCALE_DOWN_FACTOR / 0.75F;
         float sectionHeight = SECTION_HEIGHT / SCALE_DOWN_FACTOR / 0.75F;

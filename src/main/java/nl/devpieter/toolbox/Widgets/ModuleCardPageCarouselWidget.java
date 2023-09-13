@@ -44,7 +44,6 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
         float height = this.height - this.paddingTop - this.paddingBottom;
 
         int moduleCardsPerPage = ModuleCardPageWidget.calculateFittingCards(width, height, this.moduleCardSpacing);
-//        int moduleCardsPerPage = 2;
         if (moduleCardsPerPage <= 0) return;
 
         List<Class<? extends IModule>> moduleClasses = this.moduleManager.getModules();

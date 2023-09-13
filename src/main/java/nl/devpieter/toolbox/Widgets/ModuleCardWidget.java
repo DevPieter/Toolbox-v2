@@ -15,7 +15,6 @@ import nl.devpieter.toolbox.Module.Interfaces.IInteractableModule;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
 

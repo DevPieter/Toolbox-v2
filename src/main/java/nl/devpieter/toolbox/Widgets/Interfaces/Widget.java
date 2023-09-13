@@ -71,11 +71,11 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= this.x && mouseX <= this.x + this.getScaleWidth() && mouseY >= this.y && mouseY <= this.y + this.getScaleHeight();
+        return mouseX >= this.x && mouseX <= this.x + this.getScaledWidth() && mouseY >= this.y && mouseY <= this.y + this.getScaledHeight();
     }
 
     public boolean isMouseOverRelative(double mouseX, double mouseY) {
-        return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+        return this.isMouseOver(mouseX, mouseY, 0, 0, this.width, this.height);
     }
 
     public boolean isMouseOver(double mouseX, double mouseY, float x, float y, float width, float height) {
@@ -90,16 +90,16 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         return this.y;
     }
 
-    public float getScaleWidth() {
+    public float getScaledWidth() {
         return this.width * this.scale;
     }
 
-    public float getScaleHeight() {
+    public float getScaledHeight() {
         return this.height * this.scale;
     }
 
     public float getScale() {
-        return scale;
+        return this.scale;
     }
 
     public void setScale(float scale) {
@@ -107,7 +107,7 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     }
 
     public boolean isVisible() {
-        return visible;
+        return this.visible;
     }
 
     public void setVisible(boolean visible) {

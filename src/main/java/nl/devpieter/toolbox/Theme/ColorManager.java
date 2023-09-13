@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ResourceUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.File;
@@ -26,6 +25,8 @@ public class ColorManager {
 
     private final Gson gson = new Gson();
     private final HashMap<String, Color> loadedColors = new HashMap<>();
+    private final Type colorMapType = new TypeToken<HashMap<String, String>>() {
+    }.getType();
 
     public void load() {
         File colorsFolder = ResourceUtils.getResourceFolder("colors");
@@ -42,9 +43,7 @@ public class ColorManager {
 
         for (File file : files) {
             try {
-                Type type = new TypeToken<HashMap<String, String>>() {
-                }.getType();
-                HashMap<String, String> colorMap = gson.fromJson(new FileReader(file), type);
+                HashMap<String, String> colorMap = gson.fromJson(new FileReader(file), this.colorMapType);
 
                 for (String key : colorMap.keySet()) {
                     String finalKey = file.getName().replace(".json", "") + "." + key;
@@ -75,8 +74,8 @@ public class ColorManager {
         }
     }
 
-    public @Nullable Color get(String key) {
-        return loadedColors.get(key);
+    public Color get(String key) {
+        return this.get(key, Color.WHITE);
     }
 
     public Color get(String key, Color fallback) {

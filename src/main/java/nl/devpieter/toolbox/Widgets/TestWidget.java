@@ -41,9 +41,9 @@ public class TestWidget extends Widget {
 
         float time = (System.currentTimeMillis() - this.animationStart) / this.duration;
         float blend = MathHelper.clamp(time, 0, 1);
-        this.x = (int) (0 + (this.parentWidth - this.getScaleWidth()) * blend);
+        this.x = (int) (0 + (this.parentWidth - this.getScaledWidth()) * blend);
 
-        if (Math.abs(this.x - (this.parentWidth - this.getScaleWidth())) <= 0f) {
+        if (Math.abs(this.x - (this.parentWidth - this.getScaledWidth())) <= 0f) {
             System.out.printf("Animation took %dms%n", System.currentTimeMillis() - this.animationStart);
 
             this.x = 0;
