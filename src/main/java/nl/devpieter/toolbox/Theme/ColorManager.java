@@ -3,11 +3,8 @@ package nl.devpieter.toolbox.Theme;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import nl.devpieter.toolbox.Toolbox;
-import nl.devpieter.toolbox.Utils.ResourceUtils;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
@@ -29,29 +26,55 @@ public class ColorManager {
     }.getType();
 
     public void load() {
-        File colorsFolder = ResourceUtils.getResourceFolder("colors");
-        if (colorsFolder == null) {
-            Toolbox.LOGGER.error("Failed to load colors! (Colors folder not found)");
-            return;
-        }
+//        File colorsFolder = ResourceUtils.getResourceFolder("colors");
+//        if (colorsFolder == null) {
+//            Toolbox.LOGGER.error("Failed to load colors! (Colors folder not found)");
+//            return;
+//        }
+//
+//        File[] files = colorsFolder.listFiles();
+//        if (files == null) {
+//            Toolbox.LOGGER.error("Failed to load colors! (Colors folder is empty)");
+//            return;
+//        }
+//
+//        for (File file : files) {
+//            try {
+//                HashMap<String, String> colorMap = gson.fromJson(new FileReader(file), this.colorMapType);
+//
+//                for (String key : colorMap.keySet()) {
+//                    String finalKey = file.getName().replace(".json", "") + "." + key;
+//                    loadedColors.put(finalKey, this.translateColor(colorMap.get(key)));
+//                }
+//            } catch (Exception e) {
+//                Toolbox.LOGGER.warn("Failed to load colors from file {}", file.getName(), e);
+//            }
+//        }
 
-        File[] files = colorsFolder.listFiles();
-        if (files == null) {
-            Toolbox.LOGGER.error("Failed to load colors! (Colors folder is empty)");
-            return;
-        }
+        HashMap<String, String> colors = new HashMap<>();
+        colors.put("module.name", "#CBCBCB");
+        colors.put("module.description", "#7A7979");
+        colors.put("module.enabled.name", "#47FF91");
+        colors.put("module.enabled.shadow", "#8047FF91");
+        colors.put("module.disabled.name", "#CBCBCB");
+        colors.put("module.conflicting.name", "#FF5555");
+        colors.put("module.conflicting.shadow", "#80FF5555");
 
-        for (File file : files) {
-            try {
-                HashMap<String, String> colorMap = gson.fromJson(new FileReader(file), this.colorMapType);
+        colors.put("text.default", "#FFFFFF");
+        colors.put("text.info", "#55FFFF");
+        colors.put("text.success", "#55FF55");
+        colors.put("text.warning", "#FFFF55");
+        colors.put("text.error", "#FF5555");
 
-                for (String key : colorMap.keySet()) {
-                    String finalKey = file.getName().replace(".json", "") + "." + key;
-                    loadedColors.put(finalKey, this.translateColor(colorMap.get(key)));
-                }
-            } catch (Exception e) {
-                Toolbox.LOGGER.warn("Failed to load colors from file {}", file.getName(), e);
-            }
+        colors.put("widget.background", "#1A1A1A");
+        colors.put("widget.background.hover", "#121212");
+        colors.put("widget.background.disabled", "#222222");
+        colors.put("widget.shadow", "#991A1A1A");
+        colors.put("widget.shadow.hover", "#BF121212");
+        colors.put("widget.shadow.disabled", "#66222222");
+
+        for (String key : colors.keySet()) {
+            loadedColors.put(key, this.translateColor(colors.get(key)));
         }
     }
 

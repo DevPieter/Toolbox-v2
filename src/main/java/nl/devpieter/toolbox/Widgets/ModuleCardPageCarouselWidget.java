@@ -124,10 +124,12 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
     }
 
     public float getXOfLastModuleCardInRow() {
+        // TODO - Out of bounds check ;(
         return this.getXOfModuleCard(this.moduleCardPages.get(this.currentPageIndex).getMaxCardsPerRow() - 1);
     }
 
     public float getYOfLastModuleCardInRow() {
+        // TODO - Out of bounds check ;(
         return this.getYOfModuleCard(this.moduleCardPages.get(this.currentPageIndex).getMaxCardsPerRow() - 1);
     }
 }
