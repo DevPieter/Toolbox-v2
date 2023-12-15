@@ -3,12 +3,9 @@ package nl.devpieter.toolbox.Test.Screens;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import nl.devpieter.toolbox.Module.ModuleManager;
+import nl.devpieter.toolbox.Helpers.BackgroundHelper;
 import nl.devpieter.toolbox.Widgets.ModuleCardPageCarouselWidget;
-import nl.devpieter.toolbox.Widgets.ModuleCardPageWidget;
-import nl.devpieter.toolbox.Widgets.ModuleCardWidget;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
-import org.lwjgl.glfw.GLFW;
 
 public class TestScreen extends Screen {
 
@@ -51,10 +48,11 @@ public class TestScreen extends Screen {
         this.addDrawableChild(new PaginationWidget(this.carousel, this.carousel.getXOfLastModuleCardInRow(), this.carousel.getYOfLastModuleCardInRow() - PaginationWidget.HEIGHT - moduleCardSpacing));
     }
 
+    private final BackgroundHelper backgroundHelper = new BackgroundHelper(10, 0x80, 250);
+
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-
+        this.backgroundHelper.render(matrices, this.width, this.height, delta);
         super.render(matrices, mouseX, mouseY, delta);
 //        drawBorder(matrices, (int) this.carousel.getXOfModuleCard(1), (int) this.carousel.getYOfModuleCard(1), 2, 2, 0xFFFFFFFF);
     }
