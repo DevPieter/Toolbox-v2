@@ -7,10 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class TextUtils {
 
-    public static MutableText currentOrDefaultStyle(@NotNull String text, @NotNull Style defaultStyle) {
-        return currentOrDefaultStyle(Text.of(text), defaultStyle);
-    }
-
     public static MutableText currentOrDefaultStyle(@NotNull Text text, @NotNull Style defaultStyle) {
         return Text.of("").copy().setStyle(defaultStyle).append(text);
     }

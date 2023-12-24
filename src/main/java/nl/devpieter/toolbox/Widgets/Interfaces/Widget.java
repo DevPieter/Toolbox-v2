@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.util.math.MatrixStack;
+import nl.devpieter.toolbox.Theme.CardManager;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Toolbox;
 
@@ -16,6 +17,7 @@ import java.util.Random;
 public abstract class Widget extends DrawableHelper implements Drawable, Element, Selectable {
 
     protected final MinecraftClient client = MinecraftClient.getInstance();
+    protected final CardManager cardManager = CardManager.getInstance();
     protected final ColorManager colorManager = ColorManager.getInstance();
     protected final TextRenderer textRenderer = client.textRenderer;
 
@@ -24,10 +26,14 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     private final Color debugColor = new Color(debugRandom.nextInt(255), debugRandom.nextInt(255), debugRandom.nextInt(255));
     /* =========================================================*/
 
-    protected float x, y, width, height, scale = 1;
+    protected int x, y, width, height;
+    protected float scale = 1f;
+
     protected boolean visible = true, focused = false;
 
-    public Widget(float x, float y, float width, float height) {
+    protected abstract void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta);
+
+    public Widget(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -36,32 +42,23 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.render(matrices, (double) mouseX, (double) mouseY, delta);
-    }
-
-    public void render(MatrixStack matrices, double mouseX, double mouseY, float delta) {
         if (!this.isVisible()) return;
 
         matrices.push();
         matrices.scale(this.getScale(), this.getScale(), 1);
         matrices.translate(this.getX() / this.getScale(), this.getY() / this.getScale(), 0);
 
-        this.renderWidget(matrices, (mouseX - this.getX()) / this.getScale(), (mouseY - this.getY()) / this.getScale(), delta);
+        // TODO - Fix relative mouse position (scaling issue)
+        int relativeMouseX =  (int) (mouseX / this.getScale() - this.getX());
+        int relativeMouseY = (int) (mouseY / this.getScale() - this.getY());
 
-        if (Toolbox.DEBUG) drawBorder(matrices, 0, 0, (int) this.getWidth(), (int) this.getHeight(), this.debugColor.getRGB());
+        this.renderWidget(matrices, relativeMouseX, relativeMouseY, delta);
+
+        if (Toolbox.DEBUG) {
+            drawBorder(matrices, 0, 0, this.getScaledWidth(), this.getScaledHeight(), this.debugColor.getRGB());
+        }
+
         matrices.pop();
-    }
-
-    protected abstract void renderWidget(MatrixStack matrices, double mouseX, double mouseY, float delta);
-
-    @Override
-    public void setFocused(boolean focused) {
-        this.focused = focused;
-    }
-
-    @Override
-    public boolean isFocused() {
-        return this.focused;
     }
 
     @Override
@@ -74,36 +71,32 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         return mouseX >= this.getX() && mouseX <= this.getX() + this.getScaledWidth() && mouseY >= this.getY() && mouseY <= this.getY() + this.getScaledHeight();
     }
 
-    public boolean isMouseOverRelative(double mouseX, double mouseY) {
-        return this.isMouseOver(mouseX, mouseY, 0, 0, this.getWidth(), this.getHeight());
+    public boolean isMouseOver(int relativeMouseX, int relativeMouseY) {
+        return relativeMouseX >= 0 && relativeMouseX <= this.getScaledWidth() && relativeMouseY >= 0 && relativeMouseY <= this.getScaledHeight();
     }
 
-    public boolean isMouseOver(double mouseX, double mouseY, float x, float y, float width, float height) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+    public int getX() {
+        return x;
     }
 
-    public float getX() {
-        return this.x;
+    public int getY() {
+        return y;
     }
 
-    public float getY() {
-        return this.y;
+    public int getWidth() {
+        return width;
     }
 
-    public float getWidth() {
-        return this.width;
+    public int getScaledWidth() {
+        return (int) (this.getWidth() * this.getScale());
     }
 
-    public float getHeight() {
-        return this.height;
+    public int getHeight() {
+        return height;
     }
 
-    public float getScaledWidth() {
-        return this.getWidth() * this.getScale();
-    }
-
-    public float getScaledHeight() {
-        return this.getHeight() * this.getScale();
+    public int getScaledHeight() {
+        return (int) (this.getHeight() * this.getScale());
     }
 
     public float getScale() {
@@ -115,10 +108,20 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     }
 
     public boolean isVisible() {
-        return this.visible;
+        return visible;
     }
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        this.focused = focused;
     }
 }

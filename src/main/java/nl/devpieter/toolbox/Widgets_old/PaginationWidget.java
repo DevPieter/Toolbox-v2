@@ -1,12 +1,12 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets_old;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.PaginatableWidget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
 
 public class PaginationWidget extends Widget {

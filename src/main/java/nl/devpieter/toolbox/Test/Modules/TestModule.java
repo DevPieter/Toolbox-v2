@@ -24,7 +24,7 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
 
     @Override
     public @NotNull Text getDescription() {
-        return Text.of("Lorem Ipsum is simply dummy text of 1 2 the printing and typesetting industry. This is a test module. with a1 2");
+        return Text.of("Lorem Ipsum is simply dummy text of 1 2 the printing and typesetting industry. This is a test module. with a very 1 2 3 long 1 2 3 4 5 6 description that is way too long for a module description");
     }
 
     @Nullable

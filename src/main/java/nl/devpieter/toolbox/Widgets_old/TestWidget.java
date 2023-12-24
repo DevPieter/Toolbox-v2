@@ -1,9 +1,9 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets_old;
 
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.Widget;
 
 public class TestWidget extends Widget {
 

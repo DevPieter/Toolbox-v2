@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets.Interfaces;
+package nl.devpieter.toolbox.Widgets_old.Interfaces;
 
 import java.util.List;
 
