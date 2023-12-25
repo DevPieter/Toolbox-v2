@@ -89,7 +89,7 @@ public class ModuleCardWidget extends Widget {
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.width, this.height, 6, 6, 12, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.width, this.height, 6, 6, 3, 4, backgroundColor, shadowColor);
         matrices.pop();
     }
 

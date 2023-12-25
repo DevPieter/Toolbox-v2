@@ -42,44 +42,19 @@ public class CardManager extends DrawableHelper {
     private CardManager() {
     }
 
-    public void drawCard(@NotNull MatrixStack matrices, int x, int y, int width, int height, int leftRadius, int rightRadius, float upScaleFactor, float @NotNull [] color){
-        int textureWidth = (int) (width * upScaleFactor);
-        int textureHeight = (int) (height * upScaleFactor);
-
-        int leftRadiusScaled = (int) (leftRadius * upScaleFactor);
-        int rightRadiusScaled = (int) (rightRadius * upScaleFactor);
-
-        Identifier cardIdentifier = this.getCardTexture(textureWidth, textureHeight, leftRadiusScaled, rightRadiusScaled);
-
-        matrices.push();
-        matrices.scale(1.0F / upScaleFactor, 1.0F / upScaleFactor, 1.0F);
-        matrices.translate(x, y, 0);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
-        RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
-        RenderSystem.setShaderTexture(0, cardIdentifier);
-        drawTexture(matrices, 0, 0, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
-
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-
-        matrices.pop();
-    }
-
     public void drawCardWithShadow(@NotNull MatrixStack matrices, int x, int y, int width, int height, int leftRadius, int rightRadius, int shadowRadius, float upScaleFactor, float @NotNull [] cardColor, float @NotNull [] shadowColor) {
-        int textureWidth = (int) (width * upScaleFactor);
-        int textureHeight = (int) (height * upScaleFactor);
+        width = (int) (width * upScaleFactor);
+        height = (int) (height * upScaleFactor);
 
-        int leftRadiusScaled = (int) (leftRadius * upScaleFactor);
-        int rightRadiusScaled = (int) (rightRadius * upScaleFactor);
+        leftRadius = (int) (leftRadius * upScaleFactor);
+        rightRadius = (int) (rightRadius * upScaleFactor);
 
-        Identifier cardIdentifier = this.getCardTexture(textureWidth, textureHeight, leftRadiusScaled, rightRadiusScaled);
-        Identifier shadowIdentifier = this.getCardShadowTexture(textureWidth, textureHeight, leftRadiusScaled + shadowRadius, rightRadiusScaled + shadowRadius, shadowRadius);
+        shadowRadius = (int) (shadowRadius * upScaleFactor);
 
-        int[] shadowSize = this.calculateShadowSize(textureWidth, textureHeight, shadowRadius);
+        Identifier cardIdentifier = this.getCardTexture(width, height, leftRadius, rightRadius);
+        Identifier shadowIdentifier = this.getCardShadowTexture(width, height, leftRadius + 5, rightRadius + 5, shadowRadius);
+
+        int[] shadowSize = this.calculateShadowSize(width, height, shadowRadius);
 
         matrices.push();
         matrices.scale(1.0F / upScaleFactor, 1.0F / upScaleFactor, 1.0F);
@@ -91,11 +66,11 @@ public class CardManager extends DrawableHelper {
 
         RenderSystem.setShaderColor(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
         RenderSystem.setShaderTexture(0, shadowIdentifier);
-        drawTexture(matrices, -3, -3, 0, 0, shadowSize[0], shadowSize[1], shadowSize[0], shadowSize[1]);
+        drawTexture(matrices, -5, -5, 0, 0, shadowSize[0], shadowSize[1], shadowSize[0], shadowSize[1]);
 
         RenderSystem.setShaderColor(cardColor[0], cardColor[1], cardColor[2], cardColor[3]);
         RenderSystem.setShaderTexture(0, cardIdentifier);
-        drawTexture(matrices, 0, 0, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        drawTexture(matrices, 0, 0, 0, 0, width, height, width, height);
 
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -166,21 +141,24 @@ public class CardManager extends DrawableHelper {
     }
 
     private @NotNull BufferedImage createDropShadow(@NotNull BufferedImage image, int size) {
-        int[] shadowSize = this.calculateShadowSize(image.getWidth(), image.getHeight(), size);
-
-        int width = shadowSize[0];
-        int height = shadowSize[1];
+        int width = image.getWidth() + size * 2;
+        int height = image.getHeight() + size * 2;
 
         BufferedImage mask = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D graphics = mask.createGraphics();
         graphics.drawImage(image, size, size, null);
-        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, 1));
-        graphics.setColor(Color.WHITE);
-        graphics.fillRect(0, 0, width, height);
         graphics.dispose();
 
-        return this.createBlurOp(size).filter(mask, null);
+        mask = createBlurOp(size).filter(mask, null);
+
+        Graphics2D finalGraphics = mask.createGraphics();
+        finalGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, 1));
+        finalGraphics.setColor(Color.WHITE);
+        finalGraphics.fillRect(0, 0, width, height);
+        finalGraphics.dispose();
+
+        return mask;
     }
 
     private @NotNull ConvolveOp createBlurOp(int size) {
