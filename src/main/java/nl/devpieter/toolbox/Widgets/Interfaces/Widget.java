@@ -10,6 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import nl.devpieter.toolbox.Theme.CardManager;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Toolbox;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Random;
@@ -49,7 +50,7 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         matrices.translate(this.getX() / this.getScale(), this.getY() / this.getScale(), 0);
 
         // TODO - Fix relative mouse position (scaling issue)
-        int relativeMouseX =  (int) (mouseX / this.getScale() - this.getX());
+        int relativeMouseX = (int) (mouseX / this.getScale() - this.getX());
         int relativeMouseY = (int) (mouseY / this.getScale() - this.getY());
 
         this.renderWidget(matrices, relativeMouseX, relativeMouseY, delta);
@@ -73,6 +74,20 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
     public boolean isMouseOver(int relativeMouseX, int relativeMouseY) {
         return relativeMouseX >= 0 && relativeMouseX <= this.getScaledWidth() && relativeMouseY >= 0 && relativeMouseY <= this.getScaledHeight();
+    }
+
+    public void pushMatrices(@NotNull MatrixStack matrices, float x, float y) {
+        this.pushMatrices(matrices, x, y, 1);
+    }
+
+    public void pushMatrices(@NotNull MatrixStack matrices, float x, float y, float scale) {
+        matrices.push();
+        matrices.scale(this.getScale() * scale, this.getScale() * scale, 1);
+        matrices.translate(x / scale, y / scale, 0);
+    }
+
+    public void popMatrices(@NotNull MatrixStack matrices) {
+        matrices.pop();
     }
 
     public int getX() {

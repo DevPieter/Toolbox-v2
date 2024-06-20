@@ -82,21 +82,17 @@ public class ModuleCardWidget extends Widget {
     }
 
     private void drawBackground(@NotNull MatrixStack matrices, float x, float y, boolean hovering) {
-        matrices.push();
-        matrices.scale(this.getScale(), this.getScale(), 1);
-        matrices.translate(x, y, 0);
+        this.pushMatrices(matrices, x, y);
 
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
         this.cardManager.drawCardWithShadow(matrices, 0, 0, this.width, this.height, 6, 6, 3, 4, backgroundColor, shadowColor);
-        matrices.pop();
+        this.popMatrices(matrices);
     }
 
     private void drawName(@NotNull MatrixStack matrices, float x, float y) {
-        matrices.push();
-        matrices.scale(this.getScale(), this.getScale(), 1);
-        matrices.translate(x, y, 0);
+        this.pushMatrices(matrices, x, y);
 
         /* Init */
         Style style = Style.EMPTY.withColor(this.getNameColor());
@@ -110,13 +106,11 @@ public class ModuleCardWidget extends Widget {
         OrderedText finalText = lines.size() > 1 ? OrderedText.concat(lines.get(0), TextUtils.withStyle("...", style).asOrderedText()) : lines.get(0);
         this.textRenderer.draw(matrices, finalText, 0, 0, 0xFFFFFF);
 
-        matrices.pop();
+        this.popMatrices(matrices);
     }
 
     private void drawDescription(@NotNull MatrixStack matrices, float x, float y, float scale, float paddingY) {
-        matrices.push();
-        matrices.scale(this.getScale() * scale, this.getScale() * scale, 1);
-        matrices.translate(x / scale, y / scale, 0);
+        this.pushMatrices(matrices, x, y, scale);
 
         /* Init */
         Style style = Style.EMPTY.withColor(this.colorManager.getRGB("module.description"));
@@ -144,7 +138,8 @@ public class ModuleCardWidget extends Widget {
 
             this.textRenderer.draw(matrices, lines.get(i), 0, (i * lineHeight), 0xFFFFFF);
         }
-        matrices.pop();
+
+        this.popMatrices(matrices);
     }
 
     private float[] getShadowColor(boolean hovering) {
