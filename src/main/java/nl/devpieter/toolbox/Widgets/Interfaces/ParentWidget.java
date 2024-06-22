@@ -1,6 +1,5 @@
 package nl.devpieter.toolbox.Widgets.Interfaces;
 
-
 import java.util.List;
 
 public abstract class ParentWidget extends Widget {
@@ -9,7 +8,13 @@ public abstract class ParentWidget extends Widget {
         super(x, y, width, height);
     }
 
-    // TODO - Check if relative mouse stuff is needed (like in old version)
+    private double toRelativeX(double mouseX) {
+        return (mouseX - this.getX()) / this.getScale();
+    }
+
+    private double toRelativeY(double mouseY) {
+        return (mouseY - this.getY()) / this.getScale();
+    }
 
     protected abstract List<? extends Widget> getChildren();
 
@@ -19,7 +24,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return;
 
         for (Widget child : this.getChildren()) {
-            child.mouseMoved(mouseX, mouseY);
+            child.mouseMoved(this.toRelativeX(mouseX), this.toRelativeY(mouseY));
         }
     }
 
@@ -28,7 +33,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseClicked(mouseX, mouseY, button)) return true;
+            if (child.mouseClicked(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button)) return true;
         }
 
         return false;
@@ -39,7 +44,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseReleased(mouseX, mouseY, button)) return true;
+            if (child.mouseReleased(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button)) return true;
         }
 
         return false;
@@ -50,7 +55,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
+            if (child.mouseDragged(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button, deltaX, deltaY)) return true;
         }
 
         return false;
@@ -61,7 +66,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseScrolled(mouseX, mouseY, amount)) return true;
+            if (child.mouseScrolled(this.toRelativeX(mouseX), this.toRelativeY(mouseY), amount)) return true;
         }
 
         return false;

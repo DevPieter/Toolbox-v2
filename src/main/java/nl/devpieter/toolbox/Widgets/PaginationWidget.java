@@ -2,9 +2,12 @@ package nl.devpieter.toolbox.Widgets;
 
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
+import nl.devpieter.toolbox.Helpers.AnimationHelper;
 import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
+
+import java.time.Duration;
 
 public class PaginationWidget extends Widget {
 
@@ -34,6 +37,21 @@ public class PaginationWidget extends Widget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        if (amount > 0 && this.paginatableWidget.hasPreviousPage()) {
+            this.paginatableWidget.navigateToPrevious();
+            return true;
+        }
+
+        if (amount < 0 && this.paginatableWidget.hasNextPage()) {
+            this.paginatableWidget.navigateToNext();
+            return true;
+        }
+
         return false;
     }
 
@@ -68,7 +86,7 @@ public class PaginationWidget extends Widget {
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 6, 2, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
         drawCenteredTextWithShadow(matrices, this.textRenderer, "<", width / 2, textY, 0xFFFFFF);
@@ -82,7 +100,7 @@ public class PaginationWidget extends Widget {
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 2, 2, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
         drawCenteredTextWithShadow(matrices, this.textRenderer, String.format("%s/%s", this.paginatableWidget.getCurrentPage() + 1, this.paginatableWidget.getPageCount()), width / 2, textY, 0xFFFFFF);
@@ -96,7 +114,7 @@ public class PaginationWidget extends Widget {
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 2, 6, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
         drawCenteredTextWithShadow(matrices, this.textRenderer, ">", width / 2, textY, 0xFFFFFF);

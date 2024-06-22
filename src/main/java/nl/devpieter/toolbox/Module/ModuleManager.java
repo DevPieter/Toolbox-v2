@@ -2,6 +2,7 @@ package nl.devpieter.toolbox.Module;
 
 import com.google.gson.Gson;
 import net.minecraft.text.Text;
+import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
 import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Toolbox;
@@ -24,14 +25,14 @@ public class ModuleManager {
         return INSTANCE;
     }
 
-    private ModuleManager() {
-    }
-
     private final Gson gson = new Gson();
     private final List<IModule> modules = new ArrayList<>();
 
+    private ModuleManager() {
+    }
+
     private @Nullable IModule getInstance(@NotNull Class<? extends IModule> moduleClass) {
-        return this.modules.stream().filter(module -> module.getClass().equals(moduleClass)).findAny().orElse(null);
+        return this.modules.stream().filter(module -> module.getClass().equals(moduleClass)).findFirst().orElse(null);
     }
 
     public void register(@NotNull Class<? extends IModule> moduleClass) {
@@ -67,6 +68,11 @@ public class ModuleManager {
 
     public List<Class<? extends IModule>> getModules() {
         return List.copyOf(this.modules.stream().map(IModule::getClass).toList());
+    }
+
+    public List<Class<? extends IModule>> getModules(@Nullable Class<? extends ICategory> categoryClass) {
+        if (categoryClass == null) return this.getModules();
+        return List.copyOf(this.modules.stream().filter(module -> module.getCategories().contains(categoryClass)).map(IModule::getClass).toList());
     }
 
     public boolean isRegistered(@NotNull Class<? extends IModule> moduleClass) {

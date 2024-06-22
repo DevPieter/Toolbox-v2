@@ -1,19 +1,22 @@
 package nl.devpieter.toolbox.Test.Screens;
 
+import net.minecraft.client.gui.screen.GameModeSelectionScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Helpers.BackgroundHelper;
-import nl.devpieter.toolbox.Test.Filler.*;
-import nl.devpieter.toolbox.Test.Modules.ClickableModule;
-import nl.devpieter.toolbox.Test.Modules.TestModule;
-import nl.devpieter.toolbox.Test.Modules.ToggleableModule;
-import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
-import nl.devpieter.toolbox.Widgets.ModuleCardWidget;
+import nl.devpieter.toolbox.Module.Interfaces.IModule;
+import nl.devpieter.toolbox.Module.ModuleManager;
+import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
+import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
+import nl.devpieter.toolbox.Test.Categories.FillerCategory;
+import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryCardHolderWidget;
+import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryCardWidget;
+import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardPageCarouselWidget;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
+import nl.devpieter.toolbox.Widgets.SidebarWidget;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,6 +25,7 @@ public class TestScreen extends Screen {
 
     private final BackgroundHelper backgroundHelper = new BackgroundHelper(10, 0x80, Duration.ofMillis(250));
 
+    private ModuleCardPageCarouselWidget carousel;
 
     public TestScreen() {
         super(Text.of("test"));
@@ -30,53 +34,25 @@ public class TestScreen extends Screen {
     @Override
     protected void init() {
 
-        addDrawableChild(new PaginationWidget(new PaginatableWidget(0, 0, 0, 0) {
-            private int index = 0;
+        int gap = 8;
+        int left25 = this.width / 4;
+        int top25 = this.height / 4;
 
-            @Override
-            public int getPageCount() {
-                return 5;
-            }
+        this.carousel = new ModuleCardPageCarouselWidget(left25, top25, this.width - left25, this.height - top25, gap);
+        this.carousel.init(ModuleManager.getInstance().getModules());
 
-            @Override
-            public int getCurrentPage() {
-                return this.index;
-            }
+        addDrawableChild(carousel);
+        addDrawableChild(new PaginationWidget(carousel, this.width - left25 - gap - gap, top25 - 18));
 
-            @Override
-            public void navigateTo(int index) {
-                this.index = index;
-            }
+        SidebarWidget sidebar = new SidebarWidget(Text.of("Toolbox"), 0, 0, left25, this.height);
+        addDrawableChild(sidebar);
 
-            @Override
-            protected List<? extends Widget> getChildren() {
-                return null;
-            }
+        CategoryCardHolderWidget categoryCardHolderWidget = new CategoryCardHolderWidget(gap, top25 + gap, left25 - gap - gap, this.height - top25 - gap - gap, gap, value -> {
+            this.carousel.init(ModuleManager.getInstance().getModules(value));
+        });
 
-            @Override
-            protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
-
-            }
-
-            @Override
-            public void appendNarrations(NarrationMessageBuilder builder) {
-
-            }
-        }, 75 + 160 + 10 + 160 + 10, 100 - 18 - 10));
-
-
-        addDrawableChild(new ModuleCardWidget(TestModule.class, 75, 100));
-        addDrawableChild(new ModuleCardWidget(ToggleableModule.class, 75 + 160 + 10, 100));
-        addDrawableChild(new ModuleCardWidget(ClickableModule.class, 75 + 160 + 10 + 160 + 10, 100));
-
-        addDrawableChild(new ModuleCardWidget(FillerModule1.class, 75, 100 + 50 + 10));
-        addDrawableChild(new ModuleCardWidget(FillerModule2.class, 75 + 160 + 10, 100 + 50 + 10));
-        addDrawableChild(new ModuleCardWidget(FillerModule3.class, 75 + 160 + 10 + 160 + 10, 100 + 50 + 10));
-
-        addDrawableChild(new ModuleCardWidget(FillerModule4.class, 75, 100 + 50 + 10 + 50 + 10));
-        addDrawableChild(new ModuleCardWidget(FillerModule5.class, 75 + 160 + 10, 100 + 50 + 10 + 50 + 10));
-        addDrawableChild(new ModuleCardWidget(FillerModule6.class, 75 + 160 + 10 + 160 + 10, 100 + 50 + 10 + 50 + 10));
-
+        categoryCardHolderWidget.init(CategoryManager.getInstance().getCategories());
+        sidebar.addChild(categoryCardHolderWidget);
     }
 
     @Override

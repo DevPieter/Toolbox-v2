@@ -1,8 +1,12 @@
 package nl.devpieter.toolbox.Test.Modules;
 
 import net.minecraft.text.Text;
+import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
+import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ToggleableModule implements IToggleableModule {
 
@@ -26,5 +30,10 @@ public class ToggleableModule implements IToggleableModule {
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public @NotNull List<Class<? extends ICategory>> getCategories() {
+        return List.of(DevPieterCategory.class);
     }
 }

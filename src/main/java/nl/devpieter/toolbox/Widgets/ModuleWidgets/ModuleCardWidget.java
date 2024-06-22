@@ -1,11 +1,9 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
-import net.minecraft.util.math.MathHelper;
 import nl.devpieter.toolbox.Helpers.AnimationHelper;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.IInteractableModule;
@@ -18,9 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
-import java.util.List;
 
 public class ModuleCardWidget extends Widget {
+
+    public static final int WIDTH = 160;
+    public static final int HEIGHT = 50;
 
     private final ModuleManager moduleManager = ModuleManager.getInstance();
 
@@ -33,7 +33,7 @@ public class ModuleCardWidget extends Widget {
     private final AnimationHelper offsetYAnimation = new AnimationHelper(0.0F, -1.4F, Duration.ofMillis(150), AnimationHelper.Easing.SINE_IN_OUT);
 
     public ModuleCardWidget(Class<? extends IModule> moduleClass, int x, int y) {
-        super(x, y, 160, 50);
+        super(x, y, WIDTH, HEIGHT);
 
         this.moduleClass = moduleClass;
         this.isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);
@@ -53,11 +53,16 @@ public class ModuleCardWidget extends Widget {
         this.offsetYAnimation.setForward(this.isInteractable && hovering);
 
         this.scale = this.scaleAnimation.get();
-        float offsetY = this.offsetYAnimation.get();
+//        this.scale = 1F;
 
-        this.drawBackground(matrices, 0, offsetY, hovering);
-        this.drawName(matrices, 6, 6 + offsetY);
-        this.drawDescription(matrices, 6, 20 + offsetY, 0.65F, 4);
+        matrices.push();
+        matrices.translate(0, this.offsetYAnimation.get(), 0);
+
+        this.drawBackground(matrices, hovering);
+        this.drawName(matrices);
+        this.drawDescription(matrices);
+
+        matrices.pop();
     }
 
     @Override
@@ -81,65 +86,35 @@ public class ModuleCardWidget extends Widget {
         return false;
     }
 
-    private void drawBackground(@NotNull MatrixStack matrices, float x, float y, boolean hovering) {
-        this.pushMatrices(matrices, x, y);
+    private void drawBackground(@NotNull MatrixStack matrices, boolean hovering) {
+        this.pushMatrices(matrices, 0, 0);
 
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.width, this.height, 6, 6, 3, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
         this.popMatrices(matrices);
     }
 
-    private void drawName(@NotNull MatrixStack matrices, float x, float y) {
-        this.pushMatrices(matrices, x, y);
-
-        /* Init */
+    private void drawName(@NotNull MatrixStack matrices) {
         Style style = Style.EMPTY.withColor(this.getNameColor());
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getName(this.moduleClass), style);
 
-        /* Calculate */
-        int maxWidth = MathHelper.floor((this.getWidth() - (x * 2))) - 3; // 3 = width of the dots / 2
-        List<OrderedText> lines = this.textRenderer.wrapLines(text, maxWidth);
+        int x = 6, y = 6;
+        int scaledWidth = this.getScaledWidth() - (x * 2);
 
-        /* Draw */
-        OrderedText finalText = lines.size() > 1 ? OrderedText.concat(lines.get(0), TextUtils.withStyle("...", style).asOrderedText()) : lines.get(0);
-        this.textRenderer.draw(matrices, finalText, 0, 0, 0xFFFFFF);
-
-        this.popMatrices(matrices);
+        TextUtils.drawTruncatedText(matrices, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
     }
 
-    private void drawDescription(@NotNull MatrixStack matrices, float x, float y, float scale, float paddingY) {
-        this.pushMatrices(matrices, x, y, scale);
-
-        /* Init */
+    private void drawDescription(@NotNull MatrixStack matrices) {
         Style style = Style.EMPTY.withColor(this.colorManager.getRGB("module.description"));
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getDescription(this.moduleClass), style);
 
-        /* Calculate */
-        float maxWidth = (this.getWidth() - (x * 2)) / scale - 2; // 2 = some extra space for the dots <3
-        float maxHeight = (this.getHeight() - (y + paddingY)) / scale;
-        float lineHeight = this.textRenderer.fontHeight * 1.1F;
+        int x = 6, y = 20;
+        int scaledWidth = this.getScaledWidth() - (x * 2) - 1;
+        int scaledHeight = this.getScaledHeight() - y - 4;
 
-        List<OrderedText> lines = this.textRenderer.wrapLines(text, MathHelper.ceil(maxWidth));
-        int maxLines = MathHelper.clamp(MathHelper.floor(maxHeight / lineHeight), 0, lines.size());
-
-        /* Draw */
-        for (int i = 0; i < maxLines; i++) {
-
-            // Draw the dots if the text is too long
-            if (i == maxLines - 1 && maxLines != lines.size()) {
-                MutableText dots = TextUtils.withStyle("...", style);
-                OrderedText finalText = OrderedText.concat(lines.get(i), dots.asOrderedText());
-
-                this.textRenderer.draw(matrices, finalText, 0, (i * lineHeight), 0xFFFFFF);
-                break;
-            }
-
-            this.textRenderer.draw(matrices, lines.get(i), 0, (i * lineHeight), 0xFFFFFF);
-        }
-
-        this.popMatrices(matrices);
+        TextUtils.drawTruncatedMultilineText(matrices, this.textRenderer, text, style, x, y, scaledWidth, scaledHeight, this.getScale() * 0.8F, false);
     }
 
     private float[] getShadowColor(boolean hovering) {
