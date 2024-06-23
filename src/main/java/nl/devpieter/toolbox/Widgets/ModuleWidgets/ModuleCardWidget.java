@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import nl.devpieter.toolbox.Helpers.AnimationHelper;
@@ -12,7 +12,6 @@ import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Utils.TextUtils;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
@@ -42,7 +41,7 @@ public class ModuleCardWidget extends Widget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         boolean hovering = this.isMouseOver(relativeMouseX, relativeMouseY);
 
         if (this.isInteractable && this.wasHovering != hovering) {
@@ -53,16 +52,16 @@ public class ModuleCardWidget extends Widget {
         this.offsetYAnimation.setForward(this.isInteractable && hovering);
 
         this.scale = this.scaleAnimation.get();
-//        this.scale = 1F;
 
-        matrices.push();
-        matrices.translate(0, this.offsetYAnimation.get(), 0);
+        // TODO - Check matrices
+        this.pushMatrices(context, 0, 0);
+        context.getMatrices().translate(0, this.offsetYAnimation.get(), 0);
 
-        this.drawBackground(matrices, hovering);
-        this.drawName(matrices);
-        this.drawDescription(matrices);
+        this.drawBackground(context, hovering);
+        this.drawName(context);
+        this.drawDescription(context);
 
-        matrices.pop();
+        this.popMatrices(context);
     }
 
     @Override
@@ -86,27 +85,24 @@ public class ModuleCardWidget extends Widget {
         return false;
     }
 
-    private void drawBackground(@NotNull MatrixStack matrices, boolean hovering) {
-        this.pushMatrices(matrices, 0, 0);
-
+    private void drawBackground(DrawContext context, boolean hovering) {
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
-        this.popMatrices(matrices);
+        this.cardManager.drawCardWithShadow(context, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
     }
 
-    private void drawName(@NotNull MatrixStack matrices) {
+    private void drawName(DrawContext context) {
         Style style = Style.EMPTY.withColor(this.getNameColor());
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getName(this.moduleClass), style);
 
         int x = 6, y = 6;
         int scaledWidth = this.getScaledWidth() - (x * 2);
 
-        TextUtils.drawTruncatedText(matrices, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
+        TextUtils.drawTruncatedText(context, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
     }
 
-    private void drawDescription(@NotNull MatrixStack matrices) {
+    private void drawDescription(DrawContext context) {
         Style style = Style.EMPTY.withColor(this.colorManager.getRGB("module.description"));
         MutableText text = TextUtils.currentOrDefaultStyle(this.moduleManager.getDescription(this.moduleClass), style);
 
@@ -114,7 +110,7 @@ public class ModuleCardWidget extends Widget {
         int scaledWidth = this.getScaledWidth() - (x * 2) - 1;
         int scaledHeight = this.getScaledHeight() - y - 4;
 
-        TextUtils.drawTruncatedMultilineText(matrices, this.textRenderer, text, style, x, y, scaledWidth, scaledHeight, this.getScale() * 0.8F, false);
+        TextUtils.drawTruncatedMultilineText(context, this.textRenderer, text, style, x, y, scaledWidth, scaledHeight, this.getScale() * 0.8F, false);
     }
 
     private float[] getShadowColor(boolean hovering) {

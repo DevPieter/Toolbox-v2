@@ -2,8 +2,8 @@ package nl.devpieter.toolbox.Widgets.Interfaces;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.Random;
 
-public abstract class Widget extends DrawableHelper implements Drawable, Element, Selectable {
+public abstract class Widget implements Drawable, Element, Selectable {
 
     protected final MinecraftClient client = MinecraftClient.getInstance();
     protected final CardManager cardManager = CardManager.getInstance();
@@ -32,7 +32,7 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
 
     protected boolean visible = true, focused = false;
 
-    protected abstract void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta);
+    protected abstract void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta);
 
     public Widget(int x, int y, int width, int height) {
         this.x = x;
@@ -42,24 +42,21 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (!this.isVisible()) return;
+        this.pushMatrices(context, this.getX(), this.getY());
 
-        matrices.push();
-        matrices.scale(this.getScale(), this.getScale(), 1);
-        matrices.translate(this.getX() / this.getScale(), this.getY() / this.getScale(), 0);
-
-        // TODO - Fix relative mouse position (scaling issue)
+        // TODO - Does not 100% work as intended when scaled
         int relativeMouseX = (int) (mouseX / this.getScale() - this.getX());
         int relativeMouseY = (int) (mouseY / this.getScale() - this.getY());
 
-        this.renderWidget(matrices, relativeMouseX, relativeMouseY, delta);
+        this.renderWidget(context, relativeMouseX, relativeMouseY, delta);
 
         if (Toolbox.DEBUG) {
-            drawBorder(matrices, 0, 0, this.getScaledWidth(), this.getScaledHeight(), this.debugColor.getRGB());
+            context.drawBorder(0, 0, this.getScaledWidth(), this.getScaledHeight(), this.debugColor.getRGB());
         }
 
-        matrices.pop();
+        this.popMatrices(context);
     }
 
     @Override
@@ -76,18 +73,20 @@ public abstract class Widget extends DrawableHelper implements Drawable, Element
         return relativeMouseX >= 0 && relativeMouseX <= this.getScaledWidth() && relativeMouseY >= 0 && relativeMouseY <= this.getScaledHeight();
     }
 
-    public void pushMatrices(@NotNull MatrixStack matrices, float x, float y) {
-        this.pushMatrices(matrices, x, y, 1);
+    public void pushMatrices(@NotNull DrawContext context, int x, int y) {
+        this.pushMatrices(context, x, y, 1);
     }
 
-    public void pushMatrices(@NotNull MatrixStack matrices, float x, float y, float scale) {
+    public void pushMatrices(@NotNull DrawContext context, int x, int y, float scale) {
+        MatrixStack matrices = context.getMatrices();
+
         matrices.push();
         matrices.scale(this.getScale() * scale, this.getScale() * scale, 1);
-        matrices.translate(x / scale, y / scale, 0);
+        matrices.translate(x / (this.getScale() * scale), y / (this.getScale() * scale), 0);
     }
 
-    public void popMatrices(@NotNull MatrixStack matrices) {
-        matrices.pop();
+    public void popMatrices(@NotNull DrawContext context) {
+        context.getMatrices().pop();
     }
 
     public int getX() {

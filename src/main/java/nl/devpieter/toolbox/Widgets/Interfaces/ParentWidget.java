@@ -62,11 +62,11 @@ public abstract class ParentWidget extends Widget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseScrolled(this.toRelativeX(mouseX), this.toRelativeY(mouseY), amount)) return true;
+            if (child.mouseScrolled(this.toRelativeX(mouseX), this.toRelativeY(mouseY), horizontalAmount, verticalAmount)) return true;
         }
 
         return false;

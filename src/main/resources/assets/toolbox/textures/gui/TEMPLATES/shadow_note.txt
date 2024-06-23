@@ -1,5 +1,0 @@
-Shadow Radius	: 17
-Distance	: 7
-Angle		: -45
-Opacity		: 0,75
-Color		: #FFFFFF

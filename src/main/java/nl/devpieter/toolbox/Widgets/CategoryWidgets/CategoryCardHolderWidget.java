@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
 import nl.devpieter.toolbox.Callbacks.ICallback;
 import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Widgets.Interfaces.ParentWidget;
@@ -49,12 +49,10 @@ public class CategoryCardHolderWidget extends ParentWidget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
-
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         // TODO - Add scrolling
-
         for (Widget child : this.categoryCardWidgets) {
-            child.render(matrices, relativeMouseX, relativeMouseY, delta);
+            child.render(context, relativeMouseX, relativeMouseY, delta);
         }
     }
 
@@ -62,7 +60,7 @@ public class CategoryCardHolderWidget extends ParentWidget {
     public void appendNarrations(NarrationMessageBuilder builder) {
         // TODO - Narrations
     }
-    
+
     private void onCategorySelected(@Nullable Class<? extends ICategory> categoryClass) {
         for (CategoryCardWidget categoryCardWidget : this.categoryCardWidgets) {
             categoryCardWidget.setSelected(categoryCardWidget.getCategoryClass() == categoryClass);

@@ -2,7 +2,7 @@ package nl.devpieter.toolbox.Theme;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class CardManager extends DrawableHelper {
+public class CardManager {
 
     private static final CardManager INSTANCE = new CardManager();
 
@@ -42,7 +42,7 @@ public class CardManager extends DrawableHelper {
     private CardManager() {
     }
 
-    public void drawCardWithShadow(@NotNull MatrixStack matrices, int x, int y, int width, int height, int leftRadius, int rightRadius, int shadowRadius, float upScaleFactor, float @NotNull [] cardColor, float @NotNull [] shadowColor) {
+    public void drawCardWithShadow(@NotNull DrawContext context, int x, int y, int width, int height, int leftRadius, int rightRadius, int shadowRadius, float upScaleFactor, float @NotNull [] cardColor, float @NotNull [] shadowColor) {
         width = (int) (width * upScaleFactor);
         height = (int) (height * upScaleFactor);
 
@@ -56,6 +56,8 @@ public class CardManager extends DrawableHelper {
 
         int[] shadowSize = this.calculateShadowSize(width, height, shadowRadius);
 
+        MatrixStack matrices = context.getMatrices();
+
         matrices.push();
         matrices.scale(1.0F / upScaleFactor, 1.0F / upScaleFactor, 1.0F);
         matrices.translate(x, y, 0);
@@ -65,12 +67,10 @@ public class CardManager extends DrawableHelper {
         RenderSystem.defaultBlendFunc();
 
         RenderSystem.setShaderColor(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
-        RenderSystem.setShaderTexture(0, shadowIdentifier);
-        drawTexture(matrices, -5, -5, 0, 0, shadowSize[0], shadowSize[1], shadowSize[0], shadowSize[1]);
+        context.drawTexture(shadowIdentifier, -5, -5, 0, 0, shadowSize[0], shadowSize[1], shadowSize[0], shadowSize[1]);
 
         RenderSystem.setShaderColor(cardColor[0], cardColor[1], cardColor[2], cardColor[3]);
-        RenderSystem.setShaderTexture(0, cardIdentifier);
-        drawTexture(matrices, 0, 0, 0, 0, width, height, width, height);
+        context.drawTexture(cardIdentifier, 0, 0, 0, 0, width, height, width, height);
 
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1, 1, 1, 1);

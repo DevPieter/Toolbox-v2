@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
@@ -28,7 +28,7 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
 
         if (moduleClasses.isEmpty()) return;
 
-        int fittingCards = ModuleCardPageWidget.fittingCards(this.width, this.height, this.gap);
+        int fittingCards = ModuleCardPageWidget.fittingCards(this.getWidth(), this.getHeight(), this.gap);
         if (fittingCards <= 0) return;
 
         int pages = (int) Math.ceil((double) moduleClasses.size() / fittingCards);
@@ -71,9 +71,10 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         for (ModuleCardPageWidget moduleCardPageWidget : this.moduleCardPageWidgets) {
-            moduleCardPageWidget.render(matrices, relativeMouseX, relativeMouseY, delta);
+            moduleCardPageWidget.setScale(this.getScale());
+            moduleCardPageWidget.render(context, relativeMouseX, relativeMouseY, delta);
         }
     }
 
@@ -81,6 +82,4 @@ public class ModuleCardPageCarouselWidget extends PaginatableWidget {
     public void appendNarrations(NarrationMessageBuilder builder) {
         // TODO - Narrations
     }
-
-
 }

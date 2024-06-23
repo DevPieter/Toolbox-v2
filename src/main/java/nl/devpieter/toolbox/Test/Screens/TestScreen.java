@@ -1,25 +1,17 @@
 package nl.devpieter.toolbox.Test.Screens;
 
-import net.minecraft.client.gui.screen.GameModeSelectionScreen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Helpers.BackgroundHelper;
-import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
-import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
-import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryCardHolderWidget;
-import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryCardWidget;
 import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardPageCarouselWidget;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
 
 import java.time.Duration;
-import java.util.List;
 
 public class TestScreen extends Screen {
 
@@ -56,10 +48,8 @@ public class TestScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.backgroundHelper.render(matrices, this.width, this.height, delta);
-
-        super.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.backgroundHelper.render(context, this.width, this.height, delta);
+        super.render(context, mouseX, mouseY, delta);
     }
-
 }

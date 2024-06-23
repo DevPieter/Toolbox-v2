@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.Widgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -42,17 +43,20 @@ public class SidebarWidget extends ParentWidget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
+        MatrixStack matrices = context.getMatrices();
+
         matrices.push();
         matrices.translate(this.offsetXAnimation.get(), 0, 0);
 
         Color color = new Color(15, 15, 15);
-        fill(matrices, 0, 0, this.getWidth(), this.getHeight(), color.getRGB());
+        context.fill(0, 0, this.getScaledWidth(), this.getScaledHeight(), color.getRGB());
 
-        TextUtils.drawCenteredText(matrices, this.textRenderer, this.title, 0, 20, this.getWidth(), 2.0f, true);
+        TextUtils.drawCenteredText(context, this.textRenderer, this.title, 0, 20, this.getScaledWidth(), 2.0f, true);
 
         for (Widget child : this.children) {
-            child.render(matrices, relativeMouseX, relativeMouseY, delta);
+            child.setScale(this.getScale());
+            child.render(context, relativeMouseX, relativeMouseY, delta);
         }
 
         matrices.pop();

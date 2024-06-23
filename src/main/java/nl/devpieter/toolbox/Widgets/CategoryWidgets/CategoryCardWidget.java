@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
@@ -13,7 +13,6 @@ import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Utils.SoundUtils;
 import nl.devpieter.toolbox.Utils.TextUtils;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,12 +35,12 @@ public class CategoryCardWidget extends Widget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         boolean hovering = this.isMouseOver(relativeMouseX, relativeMouseY);
 
-        this.drawBackground(matrices, hovering);
-        this.drawName(matrices);
-        this.drawDescription(matrices);
+        this.drawBackground(context, hovering);
+        this.drawName(context);
+        this.drawDescription(context);
     }
 
     @Override
@@ -69,34 +68,34 @@ public class CategoryCardWidget extends Widget {
         return this.categoryClass;
     }
 
-    private void drawBackground(@NotNull MatrixStack matrices, boolean hovering) {
-        this.pushMatrices(matrices, 0, 0);
+    private void drawBackground(DrawContext context, boolean hovering) {
+        this.pushMatrices(context, 0, 0);
 
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
-        this.popMatrices(matrices);
+        this.cardManager.drawCardWithShadow(context, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
+        this.popMatrices(context);
     }
 
-    private void drawName(@NotNull MatrixStack matrices) {
+    private void drawName(DrawContext context) {
         Style style = Style.EMPTY.withColor(this.getNameColor());
         MutableText text = TextUtils.currentOrDefaultStyle(this.getName(), style);
 
         int x = 6, y = 6;
         int scaledWidth = this.getScaledWidth() - (x * 2);
 
-        TextUtils.drawTruncatedText(matrices, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
+        TextUtils.drawTruncatedText(context, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
     }
 
-    private void drawDescription(@NotNull MatrixStack matrices) {
+    private void drawDescription(DrawContext context) {
         Style style = Style.EMPTY.withColor(this.colorManager.getRGB("module.description"));
         MutableText text = TextUtils.currentOrDefaultStyle(this.getDescription(), style);
 
         int x = 6, y = 20;
         int scaledWidth = this.getScaledWidth() - (x * 2);
 
-        TextUtils.drawTruncatedText(matrices, this.textRenderer, text, style, x, y, scaledWidth, this.getScale() * 0.8F, false);
+        TextUtils.drawTruncatedText(context, this.textRenderer, text, style, x, y, scaledWidth, this.getScale() * 0.8F, false);
     }
 
     private Text getName() {

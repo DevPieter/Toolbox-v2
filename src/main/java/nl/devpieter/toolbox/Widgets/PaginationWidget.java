@@ -1,13 +1,10 @@
 package nl.devpieter.toolbox.Widgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import nl.devpieter.toolbox.Helpers.AnimationHelper;
 import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
-
-import java.time.Duration;
 
 public class PaginationWidget extends Widget {
 
@@ -20,14 +17,14 @@ public class PaginationWidget extends Widget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         boolean hoveringPrevious = this.isMouseOver(relativeMouseX, relativeMouseY) && relativeMouseX < this.width / 3;
         boolean hoveringNext = this.isMouseOver(relativeMouseX, relativeMouseY) && relativeMouseX > this.width / 3 * 2;
 
         int cardWidth = (this.width - 5 * 2) / 3;
-        this.drawPreviousButton(matrices, 0, 0, cardWidth, hoveringPrevious);
-        this.drawPageNumber(matrices, cardWidth + 5, 0, cardWidth, false);
-        this.drawNextButton(matrices, cardWidth * 2 + 5 * 2, 0, cardWidth, hoveringNext);
+        this.drawPreviousButton(context, 0, 0, cardWidth, hoveringPrevious);
+        this.drawPageNumber(context, cardWidth + 5, 0, cardWidth);
+        this.drawNextButton(context, cardWidth * 2 + 5 * 2, 0, cardWidth, hoveringNext);
     }
 
     @Override
@@ -41,13 +38,13 @@ public class PaginationWidget extends Widget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (amount > 0 && this.paginatableWidget.hasPreviousPage()) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if (verticalAmount > 0 && this.paginatableWidget.hasPreviousPage()) {
             this.paginatableWidget.navigateToPrevious();
             return true;
         }
 
-        if (amount < 0 && this.paginatableWidget.hasNextPage()) {
+        if (verticalAmount < 0 && this.paginatableWidget.hasNextPage()) {
             this.paginatableWidget.navigateToNext();
             return true;
         }
@@ -80,46 +77,46 @@ public class PaginationWidget extends Widget {
         return false;
     }
 
-    private void drawPreviousButton(MatrixStack matrices, int x, int y, int width, boolean hovering) {
-        this.pushMatrices(matrices, x, y);
+    private void drawPreviousButton(DrawContext context, int x, int y, int width, boolean hovering) {
+        this.pushMatrices(context, x, y);
 
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(context, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
-        drawCenteredTextWithShadow(matrices, this.textRenderer, "<", width / 2, textY, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, "<", width / 2, textY, 0xFFFFFF);
 
-        this.popMatrices(matrices);
+        this.popMatrices(context);
     }
 
-    private void drawPageNumber(MatrixStack matrices, int x, int y, int width, boolean hovering) {
-        this.pushMatrices(matrices, x, y);
+    private void drawPageNumber(DrawContext context, int x, int y, int width) {
+        this.pushMatrices(context, x, y);
 
-        float[] shadowColor = this.getShadowColor(hovering);
-        float[] backgroundColor = this.getBackgroundColor(hovering);
+        float[] shadowColor = this.getShadowColor(false);
+        float[] backgroundColor = this.getBackgroundColor(false);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(context, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
-        drawCenteredTextWithShadow(matrices, this.textRenderer, String.format("%s/%s", this.paginatableWidget.getCurrentPage() + 1, this.paginatableWidget.getPageCount()), width / 2, textY, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, String.format("%s/%s", this.paginatableWidget.getCurrentPage() + 1, this.paginatableWidget.getPageCount()), width / 2, textY, 0xFFFFFF);
 
-        this.popMatrices(matrices);
+        this.popMatrices(context);
     }
 
-    private void drawNextButton(MatrixStack matrices, int x, int y, int width, boolean hovering) {
-        this.pushMatrices(matrices, x, y);
+    private void drawNextButton(DrawContext context, int x, int y, int width, boolean hovering) {
+        this.pushMatrices(context, x, y);
 
         float[] shadowColor = this.getShadowColor(hovering);
         float[] backgroundColor = this.getBackgroundColor(hovering);
 
-        this.cardManager.drawCardWithShadow(matrices, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
+        this.cardManager.drawCardWithShadow(context, 0, 0, width, this.height, 0, 0, 1, 4, backgroundColor, shadowColor);
 
         int textY = this.getScaledHeight() / 2 - this.textRenderer.fontHeight / 2 + 1;
-        drawCenteredTextWithShadow(matrices, this.textRenderer, ">", width / 2, textY, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, ">", width / 2, textY, 0xFFFFFF);
 
-        this.popMatrices(matrices);
+        this.popMatrices(context);
     }
 
     private float[] getShadowColor(boolean hovering) {

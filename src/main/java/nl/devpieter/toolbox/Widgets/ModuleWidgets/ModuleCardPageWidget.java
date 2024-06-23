@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Widgets.Interfaces.ParentWidget;
@@ -47,9 +47,9 @@ public class ModuleCardPageWidget extends ParentWidget {
     }
 
     @Override
-    protected void renderWidget(MatrixStack matrices, int relativeMouseX, int relativeMouseY, float delta) {
+    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
         for (ModuleCardWidget moduleCardWidget : this.moduleCardWidgets) {
-            moduleCardWidget.render(matrices, relativeMouseX, relativeMouseY, delta);
+            moduleCardWidget.render(context, relativeMouseX, relativeMouseY, delta);
         }
     }
 
