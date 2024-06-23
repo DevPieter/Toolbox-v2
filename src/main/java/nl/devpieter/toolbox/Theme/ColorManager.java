@@ -66,8 +66,10 @@ public class ColorManager {
         colors.put("text.warning", "#FFFF55");
         colors.put("text.error", "#FF5555");
 
-        colors.put("widget.background", "#1A1A1A");
-        colors.put("widget.background.hover", "#121212");
+//        colors.put("widget.background", "#1A1A1A");
+        colors.put("widget.background", "#1a1b1e");
+//        colors.put("widget.background.hover", "#121212");
+        colors.put("widget.background.hover", "#25262b");
         colors.put("widget.background.disabled", "#222222");
         colors.put("widget.shadow", "#991A1A1A");
         colors.put("widget.shadow.hover", "#BF121212");

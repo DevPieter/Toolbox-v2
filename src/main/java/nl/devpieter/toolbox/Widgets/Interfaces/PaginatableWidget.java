@@ -2,7 +2,7 @@ package nl.devpieter.toolbox.Widgets.Interfaces;
 
 public abstract class PaginatableWidget extends ParentWidget {
 
-    public PaginatableWidget(float x, float y, float width, float height) {
+    public PaginatableWidget(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 

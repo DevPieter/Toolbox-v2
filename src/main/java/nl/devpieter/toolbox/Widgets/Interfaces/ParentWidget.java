@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class ParentWidget extends Widget {
 
-    public ParentWidget(float x, float y, float width, float height) {
+    public ParentWidget(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 
@@ -33,8 +33,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseClicked(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button))
-                return true;
+            if (child.mouseClicked(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button)) return true;
         }
 
         return false;
@@ -45,8 +44,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseReleased(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button))
-                return true;
+            if (child.mouseReleased(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button)) return true;
         }
 
         return false;
@@ -57,8 +55,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseDragged(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button, deltaX, deltaY))
-                return true;
+            if (child.mouseDragged(this.toRelativeX(mouseX), this.toRelativeY(mouseY), button, deltaX, deltaY)) return true;
         }
 
         return false;
@@ -69,8 +66,7 @@ public abstract class ParentWidget extends Widget {
         if (!this.isVisible()) return false;
 
         for (Widget child : this.getChildren()) {
-            if (child.mouseScrolled(this.toRelativeX(mouseX), this.toRelativeY(mouseY), amount))
-                return true;
+            if (child.mouseScrolled(this.toRelativeX(mouseX), this.toRelativeY(mouseY), amount)) return true;
         }
 
         return false;

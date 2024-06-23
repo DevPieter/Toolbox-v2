@@ -5,14 +5,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Screens.ModuleScreen;
+import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
+import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
+import nl.devpieter.toolbox.Test.Categories.FillerCategory;
+import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestScreen;
 import nl.devpieter.toolbox.Test.Filler.*;
-import nl.devpieter.toolbox.Test.Modules.ClickableModule;
-import nl.devpieter.toolbox.Test.Modules.StatefulModule;
-import nl.devpieter.toolbox.Test.Modules.TestModule;
-import nl.devpieter.toolbox.Test.Modules.ToggleableModule;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +29,19 @@ public class Toolbox implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModuleManager moduleManager = ModuleManager.getInstance();
 
+        CategoryManager categoryManager = CategoryManager.getInstance();
+        categoryManager.register(DevPieterCategory.class);
+        categoryManager.register(ExampleCategory.class);
+        categoryManager.register(FillerCategory.class);
+
+        ModuleManager moduleManager = ModuleManager.getInstance();
         moduleManager.register(ClickableModule.class);
         moduleManager.register(StatefulModule.class);
         moduleManager.register(TestModule.class);
         moduleManager.register(ToggleableModule.class);
+        moduleManager.register(AutoElytraModule.class);
+        moduleManager.register(BetterToggleSprintModule.class);
 
         // Filler modules
         moduleManager.register(FillerModule1.class);
@@ -58,7 +65,7 @@ public class Toolbox implements ModInitializer {
                 client.setScreen(new TestScreen());
             }
             if (keyBinding2.wasPressed()) {
-                client.setScreen(new ModuleScreen());
+//                client.setScreen(new ModuleScreen());
             }
 
             if (toggleDebug.wasPressed()) {

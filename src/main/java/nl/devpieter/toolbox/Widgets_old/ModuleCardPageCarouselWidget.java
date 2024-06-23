@@ -1,11 +1,11 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets_old;
 
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.PaginatableWidget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.Widget;
 
 import java.util.ArrayList;
 import java.util.List;

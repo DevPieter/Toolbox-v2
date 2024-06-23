@@ -1,14 +1,19 @@
 package nl.devpieter.toolbox.Test.Modules;
 
 import net.minecraft.text.Text;
+import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.IInteractableModule;
 import nl.devpieter.toolbox.Module.Interfaces.IStatefulModule;
 import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
+import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
+import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
 import nl.devpieter.toolbox.Test.States.TestState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class TestModule implements IStatefulModule<TestState>, IToggleableModule, IClickableModule {
 
@@ -24,7 +29,7 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
 
     @Override
     public @NotNull Text getDescription() {
-        return Text.of("Lorem Ipsum is simply dummy text of 1 2 the printing and typesetting industry. This is a test module. with a1 2");
+        return Text.of("Lorem Ipsum is simply dummy text of 1 2 the printing and typesetting industry. This is a test module. with a very 1 2 3 long 1 2 3 4 5 6 description that is way too long for a module description");
     }
 
     @Nullable
@@ -118,5 +123,10 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
     public @NotNull IInteractableModule.Action onRightClick() {
         System.out.println("Right Clicked!");
         return Action.CONTINUE_NO_SOUND;
+    }
+
+    @Override
+    public @NotNull List<Class<? extends ICategory>> getCategories() {
+        return List.of(DevPieterCategory.class, ExampleCategory.class);
     }
 }

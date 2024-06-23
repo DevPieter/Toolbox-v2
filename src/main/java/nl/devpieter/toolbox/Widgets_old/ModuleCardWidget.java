@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets_old;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -15,7 +15,7 @@ import nl.devpieter.toolbox.Module.Interfaces.IInteractableModule;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_old.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
