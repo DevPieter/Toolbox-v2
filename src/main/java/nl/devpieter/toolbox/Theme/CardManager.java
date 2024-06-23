@@ -83,7 +83,7 @@ public class CardManager {
         if (this.cardTextureCache.containsKey(hash)) return this.cardTextureCache.get(hash);
 
         BufferedImage cardImage = this.createRoundedRect(width, height, leftRadius, rightRadius);
-        Identifier cardIdentifier = new Identifier("toolbox", String.format("generated/card/%s.png", hash));
+        Identifier cardIdentifier = Identifier.of("toolbox", String.format("generated/card/%s.png", hash));
 
         if (this.registerTexture(cardIdentifier, cardImage)) {
             this.cardTextureCache.put(hash, cardIdentifier);
@@ -99,7 +99,7 @@ public class CardManager {
         BufferedImage cardImage = this.createRoundedRect(width, height, leftRadius, rightRadius);
         BufferedImage shadowImage = this.createDropShadow(cardImage, shadowSize);
 
-        Identifier shadowIdentifier = new Identifier("toolbox", String.format("generated/card_shadow/%s.png", hash));
+        Identifier shadowIdentifier = Identifier.of("toolbox", String.format("generated/card_shadow/%s.png", hash));
 
         if (this.registerTexture(shadowIdentifier, shadowImage)) {
             this.cardShadowTextureCache.put(hash, shadowIdentifier);
