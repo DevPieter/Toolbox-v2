@@ -8,6 +8,7 @@ import nl.devpieter.toolbox.Widgets.Interfaces.ParentWidget;
 import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,5 +69,9 @@ public class ModuleCardPageWidget extends ParentWidget {
 
     public static int fittingCardsColumn(int height, int gap) {
         return MathHelper.floor((float) (height - gap) / (ModuleCardWidget.HEIGHT + gap));
+    }
+
+    public static int xLocation(int width, int gap, int index) {
+        return (width - fittingCardsRow(width, gap) * (ModuleCardWidget.WIDTH + gap)) / 2 + gap / 2 + (index % fittingCardsRow(width, gap)) * (ModuleCardWidget.WIDTH + gap);
     }
 }

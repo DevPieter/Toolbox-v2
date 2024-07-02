@@ -72,7 +72,25 @@ public class ModuleManager {
 
     public List<Class<? extends IModule>> getModules(@Nullable Class<? extends ICategory> categoryClass) {
         if (categoryClass == null) return this.getModules();
-        return List.copyOf(this.modules.stream().filter(module -> module.getCategories().contains(categoryClass)).map(IModule::getClass).toList());
+        return List.copyOf(this.modules.stream()
+                .filter(module -> module.getCategories().contains(categoryClass))
+                .map(IModule::getClass)
+                .toList()
+        );
+    }
+
+    public List<Class<? extends IModule>> getModules(@Nullable Class<? extends ICategory> categoryClass, String query) {
+        if (query == null || query.isEmpty()) return this.getModules(categoryClass);
+
+        return List.copyOf(this.getModules(categoryClass).stream()
+                .filter(moduleClass -> {
+                    IModule module = this.getInstance(moduleClass);
+                    return module != null && (module.getName().getString().toLowerCase().contains(query) ||
+                            module.searchTerms().stream().anyMatch(term -> term.toLowerCase().contains(query)) ||
+                            module.getDescription().getString().toLowerCase().contains(query)
+                    );
+                }).toList()
+        );
     }
 
     public boolean isRegistered(@NotNull Class<? extends IModule> moduleClass) {
@@ -133,8 +151,23 @@ public class ModuleManager {
         }
     }
 
+    public <T> @Nullable T getState(@NotNull Class<? extends IModule> moduleClass, Class<T> stateClass) {
+        if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return null;
+
+        try {
+            Object state = statefulModule.getState();
+            if (!stateClass.isInstance(state)) return null;
+
+            return stateClass.cast(state);
+        } catch (Exception e) {
+            Toolbox.LOGGER.error("Failed to get state for module {}!", moduleClass.getSimpleName(), e);
+            return null;
+        }
+    }
+
     public void resetState(@NotNull Class<? extends IModule> moduleClass, boolean save) {
         if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return;
+
         statefulModule.resetState();
         if (save) this.saveState(moduleClass);
     }

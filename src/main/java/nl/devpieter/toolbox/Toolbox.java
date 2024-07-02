@@ -13,6 +13,7 @@ import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestScreen;
+import nl.devpieter.toolbox.Test.States.TestState;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

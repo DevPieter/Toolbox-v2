@@ -19,6 +19,11 @@ public interface IModule {
         return List.of();
     }
 
+    @NotNull
+    default List<String> searchTerms() {
+        return List.of();
+    }
+
 //    default @NotNull List<Class<? extends IModule>> getConflictingModules() {
 //        return List.of();
 //    }
