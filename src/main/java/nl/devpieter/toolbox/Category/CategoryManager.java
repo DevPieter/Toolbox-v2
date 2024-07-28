@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CategoryManager {
@@ -53,6 +54,16 @@ public class CategoryManager {
         return List.copyOf(this.categories.stream().map(ICategory::getClass).toList());
     }
 
+    public List<Class<? extends ICategory>> getCategories(boolean sorted) {
+        if (!sorted) return this.getCategories();
+
+        return List.copyOf(this.categories.stream()
+                .sorted(Comparator.comparingInt(ICategory::getWeight).thenComparing(category -> category.getName().getString()))
+                .map(ICategory::getClass)
+                .toList()
+        );
+    }
+
     public boolean isRegistered(@NotNull Class<? extends ICategory> categoryClass) {
         return this.categories.stream().anyMatch(category -> category.getClass().equals(categoryClass));
     }
@@ -65,5 +76,10 @@ public class CategoryManager {
     public Text getDescription(@NotNull Class<? extends ICategory> categoryClass) {
         ICategory category = this.getInstance(categoryClass);
         return category != null ? category.getDescription() : Text.of("Unknown");
+    }
+
+    public int getWeight(@NotNull Class<? extends ICategory> categoryClass) {
+        ICategory category = this.getInstance(categoryClass);
+        return category != null ? category.getWeight() : 0;
     }
 }

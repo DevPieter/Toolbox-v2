@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import nl.devpieter.toolbox.Category.CategoryManager;
+import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
+import nl.devpieter.toolbox.Defaults.Categories.ToolsCategory;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
 import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
@@ -13,7 +15,6 @@ import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestScreen;
-import nl.devpieter.toolbox.Test.States.TestState;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,30 @@ public class Toolbox implements ModInitializer {
     public void onInitialize() {
 
         CategoryManager categoryManager = CategoryManager.getInstance();
+        categoryManager.register(MiscCategory.class);
+        categoryManager.register(ToolsCategory.class);
+
+        ModuleManager moduleManager = ModuleManager.getInstance();
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (keyBinding1.wasPressed()) {
+                client.setScreen(new TestScreen());
+            }
+            if (keyBinding2.wasPressed()) {
+//                client.setScreen(new ModuleScreen());
+            }
+
+            if (toggleDebug.wasPressed()) {
+                Toolbox.DEBUG = !Toolbox.DEBUG;
+                Toolbox.LOGGER.info("Debug mode: " + Toolbox.DEBUG);
+            }
+        });
+
+        /* DEBUG / TESTING*/
         categoryManager.register(DevPieterCategory.class);
         categoryManager.register(ExampleCategory.class);
         categoryManager.register(FillerCategory.class);
 
-        ModuleManager moduleManager = ModuleManager.getInstance();
         moduleManager.register(ClickableModule.class);
         moduleManager.register(StatefulModule.class);
         moduleManager.register(TestModule.class);
@@ -60,19 +80,5 @@ public class Toolbox implements ModInitializer {
         moduleManager.register(FillerModule13.class);
         moduleManager.register(FillerModule14.class);
         moduleManager.register(FillerModule15.class);
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (keyBinding1.wasPressed()) {
-                client.setScreen(new TestScreen());
-            }
-            if (keyBinding2.wasPressed()) {
-//                client.setScreen(new ModuleScreen());
-            }
-
-            if (toggleDebug.wasPressed()) {
-                Toolbox.DEBUG = !Toolbox.DEBUG;
-                Toolbox.LOGGER.info("Debug mode: " + Toolbox.DEBUG);
-            }
-        });
     }
 }

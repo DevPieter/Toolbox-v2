@@ -64,7 +64,7 @@ public class TestScreen extends Screen {
             this.search();
         });
 
-        categoryCardHolderWidget.init(CategoryManager.getInstance().getCategories());
+        categoryCardHolderWidget.init(CategoryManager.getInstance().getCategories(true));
         sidebar.addChild(categoryCardHolderWidget);
     }
 
