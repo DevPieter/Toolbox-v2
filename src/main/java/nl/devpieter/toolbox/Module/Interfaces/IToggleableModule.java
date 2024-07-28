@@ -1,19 +1,21 @@
 package nl.devpieter.toolbox.Module.Interfaces;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface IToggleableModule extends IInteractableModule {
 
     boolean isEnabled();
 
     void setEnabled(boolean enabled);
 
-    default Action onEnable() {
+    default @NotNull Action onEnable() {
         return Action.CONTINUE;
     }
 
     default void onEnabled() {
     }
 
-    default Action onDisable() {
+    default @NotNull Action onDisable() {
         return Action.CONTINUE;
     }
 

@@ -64,7 +64,7 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
     public void setEnabled(boolean enabled) {
         System.out.println("Setting enabled to " + enabled);
         this.state.enabled(enabled);
-        ModuleManager.getInstance().saveState(this.getClass());
+        this.saveState();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
     }
 
     @Override
-    public IInteractableModule.Action onEnable() {
+    public IInteractableModule.@NotNull Action onEnable() {
         System.out.println("Enabling...");
         return Action.CONTINUE_NO_SOUND;
     }
@@ -92,7 +92,7 @@ public class TestModule implements IStatefulModule<TestState>, IToggleableModule
     }
 
     @Override
-    public IInteractableModule.Action onDisable() {
+    public IInteractableModule.@NotNull Action onDisable() {
         System.out.println("Disabling...");
         return Action.CONTINUE_NO_SOUND;
     }
