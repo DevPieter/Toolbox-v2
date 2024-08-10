@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets.Interfaces;
+package nl.devpieter.toolbox.Widgets_v1.Interfaces;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

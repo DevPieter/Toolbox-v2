@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets.ModuleWidgets;
+package nl.devpieter.toolbox.Widgets_v1.ModuleWidgets;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -11,7 +11,7 @@ import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Utils.TextUtils;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_v1.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;

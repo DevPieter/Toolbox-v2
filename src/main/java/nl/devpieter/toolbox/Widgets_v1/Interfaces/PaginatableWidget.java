@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets.Interfaces;
+package nl.devpieter.toolbox.Widgets_v1.Interfaces;
 
 public abstract class PaginatableWidget extends ParentWidget {
 

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
 import nl.devpieter.toolbox.Defaults.Categories.ToolsCategory;
@@ -15,19 +16,32 @@ import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestScreen;
+import nl.devpieter.toolbox.Test.Screens.TestSquidScreen;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Toolbox implements ModInitializer {
 
+    public static final String MOD_VERSION = "2.x.x";
+    public static final String MOD_STATUS = "Pre-Alpha";
+    public static final String GAME_VERSION = "1.20.6";
+
     public static final Logger LOGGER = LoggerFactory.getLogger("Toolbox");
     public static boolean DEBUG = false;
 
-    private final KeyBinding keyBinding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toggle.test", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "testing"));
-    private final KeyBinding keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("open.screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "testing"));
+    public static final Font KAUSHAN_SCRIPT = new Font("kaushan-script", false,
+            "D:\\DEVELOPMENT\\Minecraft-Coding\\Mods\\Fabric\\Toolbox\\KaushanScript-Regular.ttf",
+            null,
+            null,
+            null,
+            null
+    );
 
-    private final KeyBinding toggleDebug = KeyBindingHelper.registerKeyBinding(new KeyBinding("toggle.debug", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "testing"));
+    private final KeyBinding keyBinding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.toggle.test", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "testing"));
+    private final KeyBinding keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.open.screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "testing"));
+
+    private final KeyBinding toggleDebug = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.toggle.debug", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "testing"));
 
     @Override
     public void onInitialize() {
@@ -40,10 +54,10 @@ public class Toolbox implements ModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (keyBinding1.wasPressed()) {
-                client.setScreen(new TestScreen());
+                client.setScreen(new TestSquidScreen());
             }
             if (keyBinding2.wasPressed()) {
-//                client.setScreen(new ModuleScreen());
+                client.setScreen(new TestScreen());
             }
 
             if (toggleDebug.wasPressed()) {

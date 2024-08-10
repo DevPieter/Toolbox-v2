@@ -1,11 +1,11 @@
-package nl.devpieter.toolbox.Widgets.CategoryWidgets;
+package nl.devpieter.toolbox.Widgets_v1.CategoryWidgets;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import nl.devpieter.toolbox.Callbacks.ICallback;
 import nl.devpieter.toolbox.Category.ICategory;
-import nl.devpieter.toolbox.Widgets.Interfaces.ParentWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_v1.Interfaces.ParentWidget;
+import nl.devpieter.toolbox.Widgets_v1.Interfaces.Widget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

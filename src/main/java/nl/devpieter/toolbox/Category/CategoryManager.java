@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.Category;
 
-import net.minecraft.text.Text;
+import net.minecraft.text.Text; // TODO - Replace Minecraft Text with Squid Text
 import nl.devpieter.toolbox.Toolbox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

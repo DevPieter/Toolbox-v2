@@ -1,126 +1,47 @@
 package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import nl.devpieter.toolbox.Callbacks.ICallback;
-import nl.devpieter.toolbox.Category.CategoryManager;
-import nl.devpieter.toolbox.Category.ICategory;
-import nl.devpieter.toolbox.Utils.SoundUtils;
-import nl.devpieter.toolbox.Utils.TextUtils;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import nl.devpieter.squid.components.SCCard;
+import nl.devpieter.squid.components.SCLabel;
+import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.rendering.font.Fonts;
+import nl.devpieter.squid.rendering.text.SText;
+import nl.devpieter.squid.rendering.text.STextStyle;
 
-public class CategoryCardWidget extends Widget {
+import java.awt.*;
 
-    public static final int HEIGHT = 30;
+public class CategoryCardWidget extends WidgetBase {
 
-    private final CategoryManager categoryManager = CategoryManager.getInstance();
+    public CategoryCardWidget(float x, float y, float width, float height) {
+        super(x, y, width, height);
 
-    private final @Nullable Class<? extends ICategory> categoryClass;
-    private final ICallback<@Nullable Class<? extends ICategory>> callback;
+        float borderSize = 1;
+        Color background = new Color(26, 27, 30);
+        Color text = new Color(255, 255, 255);
+        Color gray = new Color(118, 118, 118);
+        Color selected = new Color(71, 255, 145);
 
-    private boolean selected = false;
+        // TODO - This is a bit hacky, but it works for now
+        SCCard border = new SCCard(this, x - borderSize, y - borderSize, width + borderSize * 2, height + borderSize * 2);
+        border.setColor(gray.brighter(), true).setCornerRadius(8);
+        this.addChild(border);
 
-    public CategoryCardWidget(@Nullable Class<? extends ICategory> categoryClass, int x, int y, int width, ICallback<@Nullable Class<? extends ICategory>> callback) {
-        super(x, y, width, HEIGHT);
+        SCCard card = new SCCard(this, x, y, width, height);
+        card.setColor(background.brighter(), true).setCornerRadius(8);
+        this.addChild(card);
 
-        this.categoryClass = categoryClass;
-        this.callback = callback;
+        STextStyle titleStyle = STextStyle.of().setFont(Fonts.CALIBRI).setFontSize(20);
+        SCLabel title = new SCLabel(this, x + 16, y + 8, width - 32, 20, SText.of(titleStyle).append("Test Category"));
+        title.setColor(text.brighter(), true);
+        this.addChild(title);
+
+        STextStyle descriptionStyle = STextStyle.of().setFont(Fonts.CALIBRI).setFontSize(16);
+        SCLabel description = new SCLabel(this, x + 16, y + 40, width - 32, 16, SText.of(descriptionStyle).append("This is just a test category."));
+        description.setColor(gray.brighter(), true);
+        this.addChild(description);
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
-        boolean hovering = this.isMouseOver(relativeMouseX, relativeMouseY);
+    protected void render(long l, float v) {
 
-        this.drawBackground(context, hovering);
-        this.drawName(context);
-        this.drawDescription(context);
-    }
-
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-        // TODO - Narrations
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!this.isVisible() || !this.isMouseOver(mouseX, mouseY)) return false;
-        if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) return false;
-
-        SoundEvent soundEvent = SoundEvents.ENTITY_ITEM_PICKUP;
-        if (soundEvent != null) SoundUtils.playOnMaster(soundEvent, 1.0F, 1.0F);
-
-        this.callback.invoke(this.categoryClass);
-        return true;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public @Nullable Class<? extends ICategory> getCategoryClass() {
-        return this.categoryClass;
-    }
-
-    private void drawBackground(DrawContext context, boolean hovering) {
-        this.pushMatrices(context, 0, 0);
-
-        float[] shadowColor = this.getShadowColor(hovering);
-        float[] backgroundColor = this.getBackgroundColor(hovering);
-
-        this.cardManager.drawCardWithShadow(context, 0, 0, this.getWidth(), this.getHeight(), 0, 0, 3, 4, backgroundColor, shadowColor);
-        this.popMatrices(context);
-    }
-
-    private void drawName(DrawContext context) {
-        Style style = Style.EMPTY.withColor(this.getNameColor());
-        MutableText text = TextUtils.currentOrDefaultStyle(this.getName(), style);
-
-        int x = 6, y = 6;
-        int scaledWidth = this.getScaledWidth() - (x * 2);
-
-        TextUtils.drawTruncatedText(context, this.textRenderer, text, style, x, y, scaledWidth, this.getScale(), false);
-    }
-
-    private void drawDescription(DrawContext context) {
-        Style style = Style.EMPTY.withColor(this.colorManager.getRGB("module.description"));
-        MutableText text = TextUtils.currentOrDefaultStyle(this.getDescription(), style);
-
-        int x = 6, y = 20;
-        int scaledWidth = this.getScaledWidth() - (x * 2);
-
-        TextUtils.drawTruncatedText(context, this.textRenderer, text, style, x, y, scaledWidth, this.getScale() * 0.8F, false);
-    }
-
-    private Text getName() {
-        if (this.categoryClass == null) return Text.of("All");
-        return this.categoryManager.getName(this.categoryClass);
-    }
-
-    private Text getDescription() {
-        if (this.categoryClass == null) return Text.of("All the modules you love.");
-        return this.categoryManager.getDescription(this.categoryClass);
-    }
-
-    private float[] getShadowColor(boolean hovering) {
-        if (this.selected) return this.colorManager.getFloats("module.enabled.shadow");
-        if (hovering) return this.colorManager.getFloats("widget.shadow.hover");
-        return this.colorManager.getFloats("widget.shadow");
-    }
-
-    private float[] getBackgroundColor(boolean hovering) {
-        if (hovering) return this.colorManager.getFloats("widget.background.hover");
-        return this.colorManager.getFloats("widget.background");
-    }
-
-    private int getNameColor() {
-        if (this.selected) return this.colorManager.getRGB("module.enabled.name");
-        return this.colorManager.getRGB("module.name");
     }
 }

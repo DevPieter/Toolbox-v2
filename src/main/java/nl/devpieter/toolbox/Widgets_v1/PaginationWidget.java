@@ -1,9 +1,9 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets_v1;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import nl.devpieter.toolbox.Widgets.Interfaces.PaginatableWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.toolbox.Widgets_v1.Interfaces.PaginatableWidget;
+import nl.devpieter.toolbox.Widgets_v1.Interfaces.Widget;
 import org.lwjgl.glfw.GLFW;
 
 public class PaginationWidget extends Widget {

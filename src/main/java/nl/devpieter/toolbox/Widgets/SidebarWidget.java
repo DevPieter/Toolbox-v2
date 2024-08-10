@@ -1,69 +1,55 @@
 package nl.devpieter.toolbox.Widgets;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import nl.devpieter.toolbox.Helpers.AnimationHelper;
-import nl.devpieter.toolbox.Utils.TextUtils;
-import nl.devpieter.toolbox.Widgets.Interfaces.ParentWidget;
-import nl.devpieter.toolbox.Widgets.Interfaces.Widget;
+import nl.devpieter.squid.components.SCCard;
+import nl.devpieter.squid.components.SCLabel;
+import nl.devpieter.squid.layout.Alignment;
+import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.rendering.animation.Animation;
+import nl.devpieter.squid.rendering.animation.Easing;
+import nl.devpieter.squid.rendering.font.Fonts;
+import nl.devpieter.squid.rendering.text.SText;
+import nl.devpieter.squid.rendering.text.STextStyle;
+import nl.devpieter.toolbox.Toolbox;
+import org.lwjgl.nanovg.NanoVG;
 
 import java.awt.*;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
-public class SidebarWidget extends ParentWidget {
+public class SidebarWidget extends WidgetBase {
 
-    private final List<Widget> children = new ArrayList<>();
-    private final Text title;
+    private final Animation slideAnimation;
 
-    /* Animation */
-    private final AnimationHelper offsetXAnimation;
-
-    public SidebarWidget(Text title, int x, int y, int width, int height) {
+    public SidebarWidget(float x, float y, float width, float height) {
         super(x, y, width, height);
-        this.title = title;
 
-        this.offsetXAnimation = new AnimationHelper(-width, 0, Duration.ofMillis(400), AnimationHelper.Easing.EXPO_IN_OUT);
-    }
+        Color background = new Color(26, 27, 30);
+        Color text = new Color(255, 255, 255);
+        Color gray = new Color(118, 118, 118);
 
-    public void addChild(Widget widget) {
-        this.children.add(widget);
-    }
+        this.slideAnimation = new Animation(-width, 0, Duration.ofMillis(400), Easing.EXPO_IN_OUT, true);
 
-    public void removeChild(Widget widget) {
-        this.children.remove(widget);
-    }
+        SCCard sidebar = new SCCard(this, x, y, width, height);
+        sidebar.setColor(background);
+        this.addChild(sidebar);
 
-    @Override
-    protected List<? extends Widget> getChildren() {
-        return this.children;
-    }
+        STextStyle titleStyle = STextStyle.of().setFont(Toolbox.KAUSHAN_SCRIPT).setFontSize(96);
+        SCLabel title = new SCLabel(this, x, y + 40, width, 96, SText.of(titleStyle).append("Toolbox"));
+        title.setColor(text).setAlignment(Alignment.MIDDLE_CENTER);
+        this.addChild(title);
 
-    @Override
-    protected void renderWidget(DrawContext context, int relativeMouseX, int relativeMouseY, float delta) {
-        MatrixStack matrices = context.getMatrices();
+        STextStyle subtitleStyle = STextStyle.of().setFont(Toolbox.KAUSHAN_SCRIPT).setFontSize(18);
+        SCLabel subtitle = new SCLabel(this, x, y + 140, width - 120, 18, SText.of(subtitleStyle).append("By DevPieter"));
+        subtitle.setColor(gray).setAlignment(Alignment.MIDDLE_CENTER);
+        this.addChild(subtitle);
 
-        matrices.push();
-        matrices.translate(this.offsetXAnimation.get(), 0, 0);
-
-        Color color = new Color(15, 15, 15);
-        context.fill(0, 0, this.getScaledWidth(), this.getScaledHeight(), color.getRGB());
-
-        TextUtils.drawCenteredText(context, this.textRenderer, this.title, 0, 20, this.getScaledWidth(), 2.0f, true);
-
-        for (Widget child : this.children) {
-            child.setScale(this.getScale());
-            child.render(context, relativeMouseX, relativeMouseY, delta);
-        }
-
-        matrices.pop();
+        STextStyle versionStyle = STextStyle.of().setFont(Fonts.CALIBRI).setFontSize(16);
+        SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s - %s", Toolbox.MOD_VERSION, Toolbox.GAME_VERSION, Toolbox.MOD_STATUS)));
+        version.setColor(gray).setAlignment(Alignment.MIDDLE_CENTER);
+        this.addChild(version);
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-        // TODO - Narrations
+    protected void render(long context, float delta) {
+        NanoVG.nvgTranslate(context, this.slideAnimation.get(), 0);
     }
 }

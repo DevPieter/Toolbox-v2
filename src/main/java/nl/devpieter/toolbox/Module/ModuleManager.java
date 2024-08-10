@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Module;
 
 import com.google.gson.Gson;
-import net.minecraft.text.Text;
+import net.minecraft.text.Text; // TODO - Replace Minecraft Text with Squid Text
 import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Toolbox;

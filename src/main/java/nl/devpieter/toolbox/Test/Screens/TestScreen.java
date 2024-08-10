@@ -9,11 +9,11 @@ import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Helpers.BackgroundHelper;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Toolbox;
-import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryCardHolderWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardPageCarouselWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardPageWidget;
-import nl.devpieter.toolbox.Widgets.PaginationWidget;
-import nl.devpieter.toolbox.Widgets.SidebarWidget;
+import nl.devpieter.toolbox.Widgets_v1.CategoryWidgets.CategoryCardHolderWidget;
+import nl.devpieter.toolbox.Widgets_v1.ModuleWidgets.ModuleCardPageCarouselWidget;
+import nl.devpieter.toolbox.Widgets_v1.ModuleWidgets.ModuleCardPageWidget;
+import nl.devpieter.toolbox.Widgets_v1.PaginationWidget;
+import nl.devpieter.toolbox.Widgets_v1.SidebarWidget;
 
 import java.time.Duration;
 
