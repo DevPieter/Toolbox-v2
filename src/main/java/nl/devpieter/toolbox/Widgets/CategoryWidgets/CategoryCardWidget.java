@@ -3,45 +3,82 @@ package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.rendering.animation.ColorAnimation;
+import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.squid.rendering.font.Fonts;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
+import nl.devpieter.toolbox.Category.CategoryManager;
+import nl.devpieter.toolbox.Category.ICategory;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.util.IConsumer;
 
 import java.awt.*;
+import java.time.Duration;
 
 public class CategoryCardWidget extends WidgetBase {
 
-    public CategoryCardWidget(float x, float y, float width, float height) {
-        super(x, y, width, height);
+    //    public static final int HEIGHT = 67;
+    public static final int HEIGHT = 36 + 24;
 
-        float borderSize = 1;
-        Color background = new Color(26, 27, 30);
-        Color text = new Color(255, 255, 255);
+    private final @Nullable Class<? extends ICategory> categoryClass;
+    private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
+
+    private final ColorAnimation titleColorAnimation;
+    private final SCLabel title;
+
+    public CategoryCardWidget(float x, float y, float width, @Nullable Class<? extends ICategory> categoryClass, IConsumer<Class<? extends ICategory>> categorySelectedCallback) {
+        super(x, y, width, HEIGHT);
+
+        this.categoryClass = categoryClass;
+        this.categorySelectedCallback = categorySelectedCallback;
+
+        CategoryManager categoryManager = CategoryManager.getInstance();
+        String nameText = categoryClass == null ? "All" : categoryManager.getName(categoryClass).getString();
+        String descriptionText = categoryClass == null ? "All categories" : categoryManager.getDescription(categoryClass).getString();
+
+        Color background = new Color(17, 17, 17);
+        Color text = new Color(214, 217, 219);
         Color gray = new Color(118, 118, 118);
-        Color selected = new Color(71, 255, 145);
-
-        // TODO - This is a bit hacky, but it works for now
-        SCCard border = new SCCard(this, x - borderSize, y - borderSize, width + borderSize * 2, height + borderSize * 2);
-        border.setColor(gray.brighter(), true).setCornerRadius(8);
-        this.addChild(border);
 
         SCCard card = new SCCard(this, x, y, width, height);
-        card.setColor(background.brighter(), true).setCornerRadius(8);
-        this.addChild(card);
+        card.color().set(background.brighter(), true).cornerRadius().set(0, 8, 8, 0);
+        addChild(card);
 
-        STextStyle titleStyle = STextStyle.of().setFont(Fonts.CALIBRI).setFontSize(20);
-        SCLabel title = new SCLabel(this, x + 16, y + 8, width - 32, 20, SText.of(titleStyle).append("Test Category"));
-        title.setColor(text.brighter(), true);
-        this.addChild(title);
+        titleColorAnimation = new ColorAnimation(gray, text, Duration.ofMillis(400), Easing.EXPO_OUT);
+        titleColorAnimation.setForward(false);
 
-        STextStyle descriptionStyle = STextStyle.of().setFont(Fonts.CALIBRI).setFontSize(16);
-        SCLabel description = new SCLabel(this, x + 16, y + 40, width - 32, 16, SText.of(descriptionStyle).append("This is just a test category."));
-        description.setColor(gray.brighter(), true);
-        this.addChild(description);
+        STextStyle titleStyle = STextStyle.of(gray).setFont(Fonts.CALIBRI).setBold(true).setFontSize(18);
+        title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
+        addChild(title);
+
+        STextStyle descriptionStyle = STextStyle.of(gray).setFont(Fonts.CALIBRI).setFontSize(14);
+        SCLabel description = new SCLabel(this, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
+        addChild(description);
     }
 
     @Override
-    protected void render(long l, float v) {
+    protected void render(long context, float delta) {
+        title.textStyle().setColor(titleColorAnimation.get());
+    }
 
+    @Override
+    public void mouseReleased(float mouseX, float mouseY, int button) {
+        super.mouseReleased(mouseX, mouseY, button);
+        if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return;
+
+        categorySelectedCallback.accept(categoryClass);
+    }
+
+    public @Nullable Class<? extends ICategory> getCategoryClass() {
+        return categoryClass;
+    }
+
+    public void setSelected(boolean selected) {
+        if (titleColorAnimation.isForward() == selected) return;
+        titleColorAnimation.setForward(selected);
+
+        if (selected) titleColorAnimation.reset();
+        else titleColorAnimation.complete();
     }
 }

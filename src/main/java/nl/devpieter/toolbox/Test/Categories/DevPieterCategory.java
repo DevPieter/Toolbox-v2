@@ -13,6 +13,6 @@ public class DevPieterCategory implements ICategory {
 
     @Override
     public @NotNull Text getDescription() {
-        return Text.of("All the awesome modules by DevPieter 1 2 3 4 5 6 7 8 9 0");
+        return Text.of("All the awesome modules by DevPieter");
     }
 }
