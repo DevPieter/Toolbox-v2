@@ -1,15 +1,13 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
-import nl.devpieter.squid.renderable.widget.WidgetBase;
-import nl.devpieter.squid.rendering.animation.Animation;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
+import nl.devpieter.toolbox.Widgets.PaginatableComponentBase;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleCarouselWidget extends WidgetBase {
+public class ModuleCarouselComponent extends PaginatableComponentBase {
 
     private final List<ModuleContainerWidget> pageWidgets = new ArrayList<>();
 
@@ -17,10 +15,7 @@ public class ModuleCarouselWidget extends WidgetBase {
 
     private int currentPage;
 
-    // TODO - Remove debug
-    private Animation autoSwapAnimation;
-
-    public ModuleCarouselWidget(float x, float y, float width, float height, int gap) {
+    public ModuleCarouselComponent(float x, float y, float width, float height, int gap) {
         super(x, y, width, height);
 
         this.gap = gap;
@@ -28,9 +23,14 @@ public class ModuleCarouselWidget extends WidgetBase {
 
     public void init(@NotNull List<Class<? extends IModule>> moduleClasses) {
         clearChildren();
-        currentPage = 0;
+        pageWidgets.clear();
 
-        if (moduleClasses.isEmpty()) return;
+        if (moduleClasses.isEmpty()) {
+            this.currentPage = 0;
+            this.notifyPageChange(-1, 0);
+
+            return;
+        }
 
         int fittingCards = ModuleContainerWidget.fittingCards(getWidth(), getHeight(), gap);
         if (fittingCards <= 0) return;
@@ -40,8 +40,7 @@ public class ModuleCarouselWidget extends WidgetBase {
         for (int i = 0; i < pages; i++) {
             List<Class<? extends IModule>> fitting = moduleClasses.subList(i * fittingCards, Math.min((i + 1) * fittingCards, moduleClasses.size()));
 
-//            ModuleContainerWidget page = new ModuleContainerWidget(gap, gap, getWidth() - gap - gap, getHeight() - gap - gap, gap);
-            ModuleContainerWidget page = new ModuleContainerWidget(getX(), getY(), getWidth(), getHeight(), gap);
+            ModuleContainerWidget page = new ModuleContainerWidget(this, getX(), getY(), getWidth(), getHeight(), gap);
             page.setVisible(i == 0);
             page.init(fitting);
 
@@ -49,30 +48,34 @@ public class ModuleCarouselWidget extends WidgetBase {
             pageWidgets.add(page);
         }
 
-        // TODO - Remove debug
-        autoSwapAnimation = new Animation(0, pages - 1, Duration.ofSeconds(5), true);
+        this.currentPage = 0;
+        this.notifyPageChange(-1, 0);
     }
 
     @Override
     protected void render(long context, float delta) {
-        if (autoSwapAnimation == null) return;
 
-        // TODO - Remove debug
-        if (autoSwapAnimation.isDone()) {
-            autoSwapAnimation.setForward(!autoSwapAnimation.isForward());
-            autoSwapAnimation.reset();
-        }
-
-        int index = Math.round(autoSwapAnimation.get());
-        if (index != currentPage) navigateTo(index);
     }
 
+    @Override
+    public int getPageCount() {
+        return pageWidgets.size();
+    }
+
+    @Override
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    @Override
     public void navigateTo(int index) {
         if (index == this.currentPage) return;
+        int previousPage = this.currentPage;
 
-        pageWidgets.get(this.currentPage).setVisible(false);
+        pageWidgets.get(previousPage).setVisible(false);
         pageWidgets.get(index).setVisible(true);
 
         this.currentPage = index;
+        this.notifyPageChange(previousPage, index);
     }
 }

@@ -1,7 +1,8 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import net.minecraft.util.math.MathHelper;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.IRenderable;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.animation.Animation;
 import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
@@ -10,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.util.List;
 
-public class ModuleContainerWidget extends WidgetBase {
+public class ModuleContainerWidget extends ComponentBase {
 
     private final float gap;
 
-    public ModuleContainerWidget(float x, float y, float width, float height, float gap) {
-        super(x, y, width, height);
+    public ModuleContainerWidget(IRenderable parent, float x, float y, float width, float height, float gap) {
+        super(parent, x, y, width, height);
 
         this.gap = gap;
     }
@@ -36,7 +37,7 @@ public class ModuleContainerWidget extends WidgetBase {
             float x = startX + (i % maxPerRow) * moduleCardWidthWithGap + getX();
             float y = (i / maxPerRow) * moduleCardHeightWithGap + getY();
 
-            addChild(new ModuleCardWidget(x, y, moduleClasses.get(i)));
+            addChild(new ModuleCardWidget(this, x, y, moduleClasses.get(i)));
         }
     }
 

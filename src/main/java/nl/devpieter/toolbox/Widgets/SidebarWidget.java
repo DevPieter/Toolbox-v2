@@ -44,7 +44,7 @@ public class SidebarWidget extends WidgetBase {
         addChild(subtitle);
 
         STextStyle versionStyle = STextStyle.of(gray).setFont(Fonts.CALIBRI).setFontSize(16);
-        SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s - %s", Toolbox.MOD_VERSION, Toolbox.GAME_VERSION, Toolbox.MOD_STATUS)));
+        SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s - %s", Toolbox.getToolboxVersion(), Toolbox.getMinecraftVersion(), Toolbox.getBuildStatus())));
         version.setAlignment(Alignment.MIDDLE_CENTER);
         addChild(version);
     }

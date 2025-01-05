@@ -3,7 +3,8 @@ package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.layout.Alignment;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.IRenderable;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
 import nl.devpieter.squid.rendering.font.Fonts;
 import nl.devpieter.squid.rendering.text.SText;
@@ -17,7 +18,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
-public class ModuleCardWidget extends WidgetBase {
+public class ModuleCardWidget extends ComponentBase {
 
     public static final int WIDTH = 400;
     public static final int HEIGHT = 145;
@@ -29,8 +30,8 @@ public class ModuleCardWidget extends WidgetBase {
 
     private final SCLabel title;
 
-    public ModuleCardWidget(float x, float y, Class<? extends IModule> moduleClass) {
-        super(x, y, WIDTH, HEIGHT);
+    public ModuleCardWidget(IRenderable parent, float x, float y, Class<? extends IModule> moduleClass) {
+        super(parent, x, y, WIDTH, HEIGHT);
 
         this.moduleClass = moduleClass;
         isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);

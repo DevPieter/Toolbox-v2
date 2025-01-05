@@ -8,27 +8,38 @@ import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselWidget;
+import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardWidget;
+import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
+import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
+import nl.devpieter.toolbox.Widgets_v1.ModuleWidgets.ModuleCardPageWidget;
 
 public class TestSquidScreen extends SquidScreen {
 
     public TestSquidScreen() {
         super(Text.of("test"));
+    }
 
+    @Override
+    protected void init() {
+        super.init();
         int gap = 16;
 
         ContentWidget content = new ContentWidget(424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32);
 
-        ModuleCarouselWidget moduleCarouselWidget = new ModuleCarouselWidget(424 + 16, 324 + 8 + 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 324 - 8 - 16 - 16, 32);
+        ModuleCarouselComponent moduleCarouselWidget = new ModuleCarouselComponent(424 + 16, 324 + 8 + 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 324 - 8 - 16 - 16, 32);
         moduleCarouselWidget.init(ModuleManager.getInstance().getModules());
         content.addChild(moduleCarouselWidget);
+
+        float centerPaginationX = 424 + 16 + (this.windowWidth - 424 - 16 - 16) / 2F - PaginationWidget.WIDTH / 2F;
+
+        PaginationWidget paginationWidget = new PaginationWidget(centerPaginationX, 324 - PaginationWidget.HEIGHT - 16, moduleCarouselWidget);
+        content.addChild(paginationWidget);
 
         this.addWidget(content);
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
         CategoryContainerWidget categoryContainer = new CategoryContainerWidget(0, 324 + 8 + 16, 424, sidebar.getHeight() - 324 - 25 - 32, gap, aClass -> {
-            System.out.println("Category selected: " + aClass);
             moduleCarouselWidget.init(ModuleManager.getInstance().getModules(aClass));
         });
 
