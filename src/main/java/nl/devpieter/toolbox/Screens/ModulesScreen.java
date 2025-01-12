@@ -4,9 +4,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-public class ModuleScreen extends Screen {
+public class ModulesScreen extends Screen {
 
-    public ModuleScreen() {
+    public ModulesScreen() {
         // TODO - Translate
         super(Text.of("Module Page"));
     }

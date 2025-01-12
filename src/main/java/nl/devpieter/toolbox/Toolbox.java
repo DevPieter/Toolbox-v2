@@ -33,10 +33,19 @@ public class Toolbox implements ModInitializer {
 
     public static Font KAUSHAN_SCRIPT;
 
-    private final KeyBinding keyBinding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.toggle.test", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "testing"));
-    private final KeyBinding keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.open.screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B, "testing"));
+    private final KeyBinding openModulesScreen = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "toolbox.key.open",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_RIGHT_SHIFT,
+            "toolbox.key.categories.toolbox"
+    ));
 
-    private final KeyBinding toggleDebug = KeyBindingHelper.registerKeyBinding(new KeyBinding("toolbox.toggle.debug", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "testing"));
+    private final KeyBinding toggleDebug = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "toolbox.key.debug",
+            InputUtil.Type.KEYSYM,
+            InputUtil.UNKNOWN_KEY.getCode(),
+            "toolbox.key.categories.toolbox"
+    ));
 
     public Toolbox() {
         KAUSHAN_SCRIPT = new Font("kaushan-script", false,
@@ -56,7 +65,7 @@ public class Toolbox implements ModInitializer {
         ModuleManager moduleManager = ModuleManager.getInstance();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (keyBinding1.wasPressed()) {
+            if (openModulesScreen.wasPressed()) {
                 client.setScreen(new TestSquidScreen());
             }
 
@@ -68,36 +77,41 @@ public class Toolbox implements ModInitializer {
         });
 
         /* DEBUG / TESTING*/
-        categoryManager.register(MiscCategory.class);
-        categoryManager.register(ToolsCategory.class);
+        boolean runningAsDev = FabricLoader.getInstance().isDevelopmentEnvironment();
+        Toolbox.LOGGER.info("Running as dev: " + runningAsDev);
 
-        categoryManager.register(DevPieterCategory.class);
-        categoryManager.register(ExampleCategory.class);
-        categoryManager.register(FillerCategory.class);
+        if (runningAsDev) {
+            categoryManager.register(MiscCategory.class);
+            categoryManager.register(ToolsCategory.class);
 
-        moduleManager.register(ClickableModule.class);
-        moduleManager.register(StatefulModule.class);
-        moduleManager.register(TestModule.class);
-        moduleManager.register(ToggleableModule.class);
-        moduleManager.register(AutoElytraModule.class);
-        moduleManager.register(BetterToggleSprintModule.class);
+            categoryManager.register(DevPieterCategory.class);
+            categoryManager.register(ExampleCategory.class);
+            categoryManager.register(FillerCategory.class);
 
-        // Filler modules
-        moduleManager.register(FillerModule1.class);
-        moduleManager.register(FillerModule2.class);
-        moduleManager.register(FillerModule3.class);
-        moduleManager.register(FillerModule4.class);
-        moduleManager.register(FillerModule5.class);
-        moduleManager.register(FillerModule6.class);
-        moduleManager.register(FillerModule7.class);
-        moduleManager.register(FillerModule8.class);
-        moduleManager.register(FillerModule9.class);
-        moduleManager.register(FillerModule10.class);
-        moduleManager.register(FillerModule11.class);
-        moduleManager.register(FillerModule12.class);
-        moduleManager.register(FillerModule13.class);
-        moduleManager.register(FillerModule14.class);
-        moduleManager.register(FillerModule15.class);
+            moduleManager.register(ClickableModule.class);
+            moduleManager.register(StatefulModule.class);
+            moduleManager.register(TestModule.class);
+            moduleManager.register(ToggleableModule.class);
+            moduleManager.register(AutoElytraModule.class);
+            moduleManager.register(BetterToggleSprintModule.class);
+
+            // Filler modules
+            moduleManager.register(FillerModule1.class);
+            moduleManager.register(FillerModule2.class);
+            moduleManager.register(FillerModule3.class);
+            moduleManager.register(FillerModule4.class);
+            moduleManager.register(FillerModule5.class);
+            moduleManager.register(FillerModule6.class);
+            moduleManager.register(FillerModule7.class);
+            moduleManager.register(FillerModule8.class);
+            moduleManager.register(FillerModule9.class);
+            moduleManager.register(FillerModule10.class);
+            moduleManager.register(FillerModule11.class);
+            moduleManager.register(FillerModule12.class);
+            moduleManager.register(FillerModule13.class);
+            moduleManager.register(FillerModule14.class);
+            moduleManager.register(FillerModule15.class);
+        }
     }
 
     public static String getToolboxVersion() {
