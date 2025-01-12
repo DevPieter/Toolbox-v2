@@ -8,11 +8,9 @@ import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCardWidget;
 import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
-import nl.devpieter.toolbox.Widgets_v1.ModuleWidgets.ModuleCardPageWidget;
 
 public class TestSquidScreen extends SquidScreen {
 
