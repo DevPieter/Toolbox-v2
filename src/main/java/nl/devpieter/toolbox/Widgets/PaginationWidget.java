@@ -6,6 +6,7 @@ import nl.devpieter.squid.layout.Alignment;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -16,6 +17,8 @@ public class PaginationWidget extends WidgetBase {
     public static final int HEIGHT = 45;
     public static final int GAP = 8;
 
+    private final ColorManager colorManager = ColorManager.getInstance();
+
     private final PaginatableComponentBase paginatableWidget;
 
     private final SCCard left;
@@ -25,15 +28,18 @@ public class PaginationWidget extends WidgetBase {
     public PaginationWidget(float x, float y, PaginatableComponentBase paginatableWidget) {
         super(x, y, WIDTH, HEIGHT);
 
-        Color card = new Color(17, 17, 17);
-        Color text = new Color(214, 217, 219);
+//        Color backgroundColor = new Color(17, 17, 17);
+//        Color textColor = new Color(214, 217, 219);
 
-        STextStyle textStyle = STextStyle.of(text).setFontSize(18);
+        Color backgroundColor = colorManager.get("pagination.background");
+        Color textColor = colorManager.get("pagination.text");
+
+        STextStyle textStyle = STextStyle.of(textColor).setFontSize(18);
 
         float size = (width - GAP * 2) / 3;
 
         left = new SCCard(this, x, y, size, height);
-        left.color().set(card).cornerRadius().set(8, 0, 0, 8);
+        left.color().set(backgroundColor).cornerRadius().set(8, 0, 0, 8);
         addChild(left);
 
         SText previousText = SText.of(textStyle).append("Previous");
@@ -42,7 +48,7 @@ public class PaginationWidget extends WidgetBase {
         addChild(previous);
 
         SCCard middle = new SCCard(this, x + size + GAP, y, size, height);
-        middle.color().set(card);
+        middle.color().set(backgroundColor);
         addChild(middle);
 
         page = new SCLabel(this, x + size + GAP, y, size, height, SText.of(textStyle).append("? / ?"));
@@ -50,7 +56,7 @@ public class PaginationWidget extends WidgetBase {
         addChild(page);
 
         right = new SCCard(this, x + size * 2 + GAP * 2, y, size, height);
-        right.color().set(card).cornerRadius().set(0, 8, 8, 0);
+        right.color().set(backgroundColor).cornerRadius().set(0, 8, 8, 0);
         addChild(right);
 
         SText nextText = SText.of(textStyle).append("Next");

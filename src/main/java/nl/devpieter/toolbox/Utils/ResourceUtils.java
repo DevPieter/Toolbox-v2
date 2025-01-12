@@ -1,42 +1,40 @@
 package nl.devpieter.toolbox.Utils;
 
-import nl.devpieter.toolbox.Toolbox;
-import org.jetbrains.annotations.Nullable;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.minecraft.util.JsonHelper;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class ResourceUtils {
 
-    public static @Nullable File getResourceFolder(String path) {
+    private static final Gson GSON = new Gson();
 
-//        ResourcePackManager resourcePackManager = MinecraftClient.getInstance().getResourcePackManager();
-//        resourcePackManager.scanPacks();
-//
-//        for (ResourcePack pack : resourcePackManager.createResourcePacks()) {
-//            for(String namespace : pack.getNamespaces(ResourceType.CLIENT_RESOURCES)) {
-//
-//                pack.findResources(ResourceType.CLIENT_RESOURCES, namespace, path, (identifier, inputStreamSupplier) -> {
-//                    Toolbox.LOGGER.info("=== Found resource: " + identifier);
-//                });
-//            }
-//        }
+    public static @NotNull ImmutableMap<String, String> readInternalJson(String path) throws IOException {
+        try (InputStream inputStream = ResourceUtils.class.getResourceAsStream(path)) {
+            if (inputStream == null) throw new IOException("Resource not found: " + path);
 
-        URL resource = ResourceUtils.class.getClassLoader().getResource("assets/toolbox/" + path);
-        if (resource == null) {
-            Toolbox.LOGGER.error("Failed to find resource folder!");
-            return null;
+            return readJson(inputStream);
+        }
+    }
+
+    public static @NotNull ImmutableMap<String, String> readJson(InputStream inputStream) throws IOException {
+        ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+
+        try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
+
+            jsonObject.entrySet().forEach(entry -> {
+                String string = JsonHelper.asString(entry.getValue(), entry.getKey());
+                builder.put(entry.getKey(), string);
+            });
         }
 
-        try {
-            return new File(resource.toURI());
-        } catch (Exception e) {
-            try {
-                return new File(resource.getPath());
-            } catch (Exception e2) {
-                Toolbox.LOGGER.error("Failed to find resource folder!", e2);
-                return null;
-            }
-        }
+        return builder.build();
     }
 }

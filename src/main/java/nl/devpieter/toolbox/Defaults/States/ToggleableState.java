@@ -1,9 +1,9 @@
 package nl.devpieter.toolbox.Defaults.States;
 
-public class ToggleableState {
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-    public static final ToggleableState ENABLED = new ToggleableState(true);
-    public static final ToggleableState DISABLED = new ToggleableState(false);
+public class ToggleableState {
 
     private boolean enabled;
 
@@ -13,6 +13,21 @@ public class ToggleableState {
 
     public ToggleableState(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull ToggleableState of(boolean enabled) {
+        return new ToggleableState(enabled);
+    }
+
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull ToggleableState enabled() {
+        return new ToggleableState(true);
+    }
+
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull ToggleableState disabled() {
+        return new ToggleableState(false);
     }
 
     public boolean isEnabled() {

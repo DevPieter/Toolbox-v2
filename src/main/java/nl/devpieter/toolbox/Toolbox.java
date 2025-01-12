@@ -1,13 +1,16 @@
 package nl.devpieter.toolbox;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
 import nl.devpieter.squid.debug.DebugOptions;
 import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.toolbox.Category.CategoryManager;
@@ -20,6 +23,7 @@ import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestSquidScreen;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +68,14 @@ public class Toolbox implements ModInitializer {
         CategoryManager categoryManager = CategoryManager.getInstance();
         ModuleManager moduleManager = ModuleManager.getInstance();
 
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            if (!(MinecraftClient.getInstance().getResourceManager() instanceof ReloadableResourceManagerImpl resourceManager)) return;
+            ColorManager colorManager = ColorManager.getInstance();
+
+            resourceManager.registerReloader(colorManager);
+            colorManager.reload(resourceManager);
+        });
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (openModulesScreen.wasPressed()) {
                 client.setScreen(new TestSquidScreen());
@@ -76,7 +88,7 @@ public class Toolbox implements ModInitializer {
             }
         });
 
-        /* DEBUG / TESTING*/
+        /* DEBUG / TESTING */
         boolean runningAsDev = FabricLoader.getInstance().isDevelopmentEnvironment();
         Toolbox.LOGGER.info("Running as dev: " + runningAsDev);
 

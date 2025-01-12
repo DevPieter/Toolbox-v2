@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Module;
 
 import com.google.gson.Gson;
-import net.minecraft.text.Text; // TODO - Replace Minecraft Text with Squid Text
+import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Toolbox;
@@ -19,11 +19,7 @@ import java.util.List;
 
 public class ModuleManager {
 
-    private static final ModuleManager INSTANCE = new ModuleManager();
-
-    public static ModuleManager getInstance() {
-        return INSTANCE;
-    }
+    private static ModuleManager INSTANCE;
 
     private final Gson gson = new Gson();
     private final List<IModule> modules = new ArrayList<>();
@@ -31,8 +27,9 @@ public class ModuleManager {
     private ModuleManager() {
     }
 
-    private @Nullable IModule getInstance(@NotNull Class<? extends IModule> moduleClass) {
-        return this.modules.stream().filter(module -> module.getClass().equals(moduleClass)).findFirst().orElse(null);
+    public static ModuleManager getInstance() {
+        if (INSTANCE == null) INSTANCE = new ModuleManager();
+        return INSTANCE;
     }
 
     public void register(@NotNull Class<? extends IModule> moduleClass) {
@@ -201,5 +198,9 @@ public class ModuleManager {
     public void toggle(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof IToggleableModule toggleableModule)) return;
         this.setEnabled(moduleClass, !toggleableModule.isEnabled());
+    }
+
+    private @Nullable IModule getInstance(@NotNull Class<? extends IModule> moduleClass) {
+        return this.modules.stream().filter(module -> module.getClass().equals(moduleClass)).findFirst().orElse(null);
     }
 }

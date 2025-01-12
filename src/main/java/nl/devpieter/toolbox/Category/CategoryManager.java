@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.Category;
 
-import net.minecraft.text.Text; // TODO - Replace Minecraft Text with String
+import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Toolbox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,19 +11,16 @@ import java.util.List;
 
 public class CategoryManager {
 
-    private static final CategoryManager INSTANCE = new CategoryManager();
-
-    public static CategoryManager getInstance() {
-        return INSTANCE;
-    }
+    private static CategoryManager INSTANCE;
 
     private final List<ICategory> categories = new ArrayList<>();
 
     private CategoryManager() {
     }
 
-    private @Nullable ICategory getInstance(@NotNull Class<? extends ICategory> categoryClass) {
-        return this.categories.stream().filter(category -> category.getClass().equals(categoryClass)).findFirst().orElse(null);
+    public static CategoryManager getInstance() {
+        if (INSTANCE == null) INSTANCE = new CategoryManager();
+        return INSTANCE;
     }
 
     public void register(@NotNull Class<? extends ICategory> categoryClass) {
@@ -81,5 +78,9 @@ public class CategoryManager {
     public int getWeight(@NotNull Class<? extends ICategory> categoryClass) {
         ICategory category = this.getInstance(categoryClass);
         return category != null ? category.getWeight() : 0;
+    }
+
+    private @Nullable ICategory getInstance(@NotNull Class<? extends ICategory> categoryClass) {
+        return this.categories.stream().filter(category -> category.getClass().equals(categoryClass)).findFirst().orElse(null);
     }
 }

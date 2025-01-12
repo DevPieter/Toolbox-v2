@@ -6,6 +6,7 @@ import nl.devpieter.squid.renderable.widget.WidgetBase;
 import nl.devpieter.squid.rendering.animation.Animation;
 import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.toolbox.Category.ICategory;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.util.IConsumer;
@@ -15,6 +16,8 @@ import java.time.Duration;
 import java.util.List;
 
 public class CategoryContainerWidget extends WidgetBase {
+
+    private final ColorManager colorManager = ColorManager.getInstance();
 
     private final float gap;
     private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
@@ -54,8 +57,8 @@ public class CategoryContainerWidget extends WidgetBase {
             y += CategoryCardWidget.HEIGHT + gap;
         }
 
-//        Color selectedColor = Color.decode("#47FF91");
-        Color selectedColor = new Color(138, 131, 235);
+//        Color selectedColor = new Color(138, 131, 235);
+        Color selectedColor = colorManager.get("category.selector");
 
         selectedBorder = new SCBorder(this, x, y, 1, CategoryCardWidget.HEIGHT, 2);
         selectedBorder.color().set(selectedColor).cornerRadius().set(8, 0, 0, 8);

@@ -10,6 +10,7 @@ import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Category.ICategory;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.util.IConsumer;
 
@@ -20,6 +21,8 @@ public class CategoryCardWidget extends WidgetBase {
 
     //    public static final int HEIGHT = 67;
     public static final int HEIGHT = 36 + 24;
+
+    private final ColorManager colorManager = ColorManager.getInstance();
 
     private final @Nullable Class<? extends ICategory> categoryClass;
     private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
@@ -37,22 +40,23 @@ public class CategoryCardWidget extends WidgetBase {
         String nameText = categoryClass == null ? "All" : categoryManager.getName(categoryClass).getString();
         String descriptionText = categoryClass == null ? "All categories" : categoryManager.getDescription(categoryClass).getString();
 
-        Color background = new Color(17, 17, 17);
-        Color text = new Color(214, 217, 219);
-        Color gray = new Color(118, 118, 118);
+        Color backgroundColor = colorManager.get("category.card.background");
+        Color titleColor = colorManager.get("category.card.title");
+        Color titleSelectedColor = colorManager.get("category.card.title.selected");
+        Color descriptionColor = colorManager.get("category.card.description");
 
         SCCard card = new SCCard(this, x, y, width, height);
-        card.color().set(background.brighter(), true).cornerRadius().set(0, 8, 8, 0);
+        card.color().set(backgroundColor.brighter(), true).cornerRadius().set(0, 8, 8, 0);
         addChild(card);
 
-        titleColorAnimation = new ColorAnimation(gray, text, Duration.ofMillis(400), Easing.EXPO_OUT);
+        titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);
         titleColorAnimation.setForward(false);
 
-        STextStyle titleStyle = STextStyle.of(gray).setFont(Fonts.CALIBRI).setBold(true).setFontSize(18);
+        STextStyle titleStyle = STextStyle.of(titleColor).setFont(Fonts.CALIBRI).setBold(true).setFontSize(18);
         title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
         addChild(title);
 
-        STextStyle descriptionStyle = STextStyle.of(gray).setFont(Fonts.CALIBRI).setFontSize(14);
+        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFont(Fonts.CALIBRI).setFontSize(14);
         SCLabel description = new SCLabel(this, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
         addChild(description);
     }

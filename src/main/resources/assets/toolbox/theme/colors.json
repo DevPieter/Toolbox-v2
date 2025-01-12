@@ -1,0 +1,26 @@
+{
+  "sidebar.background": "#090909",
+  "sidebar.title": "#d6d9db",
+  "sidebar.subtitle": "#767676",
+  "sidebar.version": "#767676",
+  "sidebar.shadow": "#33000000",
+
+  "pagination.background": "#111111",
+  "pagination.text": "#d6d9db",
+
+  "content.background": "#6f1a1b1e",
+
+  "module.card.top": "#090909",
+  "module.card.bottom": "#111111",
+  "module.card.title": "#767676",
+  "module.card.title.enabled": "#8a83eb",
+  "module.card.description": "#767676",
+  "module.card.shadow": "#090909",
+  "module.card.shadow.enabled": "#8a83eb",
+
+  "category.selector": "#8a83eb",
+  "category.card.background": "#111111",
+  "category.card.title": "#767676",
+  "category.card.title.selected": "#d6d9db",
+  "category.card.description": "#767676"
+}
