@@ -29,6 +29,8 @@ public class ColorManager implements SynchronousResourceReloader {
 
     @Override
     public void reload(ResourceManager manager) {
+        this.loadedColors.clear();
+
         Map<Identifier, List<Resource>> map = manager.findAllResources("theme", (path) -> {
             if (!path.getNamespace().equals("toolbox")) return false;
             return path.getPath().endsWith("colors.json");

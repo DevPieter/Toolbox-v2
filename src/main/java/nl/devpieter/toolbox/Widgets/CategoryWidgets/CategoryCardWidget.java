@@ -41,12 +41,13 @@ public class CategoryCardWidget extends WidgetBase {
         String descriptionText = categoryClass == null ? "All categories" : categoryManager.getDescription(categoryClass).getString();
 
         Color backgroundColor = colorManager.get("category.card.background");
+        Color backgroundHoverColor = colorManager.get("category.card.background.hover");
         Color titleColor = colorManager.get("category.card.title");
         Color titleSelectedColor = colorManager.get("category.card.title.selected");
         Color descriptionColor = colorManager.get("category.card.description");
 
         SCCard card = new SCCard(this, x, y, width, height);
-        card.color().set(backgroundColor.brighter(), true).cornerRadius().set(0, 8, 8, 0);
+        card.color().set(backgroundColor, backgroundHoverColor).cornerRadius().set(0, 8, 8, 0);
         addChild(card);
 
         titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);

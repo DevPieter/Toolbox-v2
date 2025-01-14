@@ -11,6 +11,7 @@ import nl.devpieter.squid.rendering.font.Fonts;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Theme.FontManager;
 import nl.devpieter.toolbox.Toolbox;
 import org.lwjgl.nanovg.NanoVG;
 
@@ -42,12 +43,12 @@ public class SidebarWidget extends WidgetBase {
         sidebar.color().set(backgroundColor).cornerRadius().set(0, 16, 16, 0);
         addChild(sidebar);
 
-        STextStyle titleStyle = STextStyle.of(titleColor).setFont(Toolbox.KAUSHAN_SCRIPT).setFontSize(96);
+        STextStyle titleStyle = STextStyle.of(titleColor).setFont(FontManager.getInstance().KAUSHAN_SCRIPT).setFontSize(96);
         SCLabel title = new SCLabel(this, x, y + 40, width, 96, SText.of(titleStyle).append("Toolbox"));
         title.setAlignment(Alignment.MIDDLE_CENTER);
         addChild(title);
 
-        STextStyle subtitleStyle = STextStyle.of(subtitleColor).setFont(Toolbox.KAUSHAN_SCRIPT).setFontSize(18);
+        STextStyle subtitleStyle = STextStyle.of(subtitleColor).setFont(FontManager.getInstance().KAUSHAN_SCRIPT).setFontSize(18);
         SCLabel subtitle = new SCLabel(this, x, y + 140, width - 120, 18, SText.of(subtitleStyle).append("By DevPieter"));
         subtitle.setAlignment(Alignment.MIDDLE_CENTER);
         addChild(subtitle);

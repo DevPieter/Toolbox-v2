@@ -48,9 +48,9 @@ public class TestSquidScreen extends SquidScreen {
 
     @Override
     protected void render(long context, float mouseX, float mouseY, float delta) {
-        if (!Toolbox.KAUSHAN_SCRIPT.getRegular().loaded()) { // TODO - Change this to a more reliable method
-            FontUtils.loadFont(context, Toolbox.KAUSHAN_SCRIPT);
-        }
+//        if (!Toolbox.KAUSHAN_SCRIPT.getRegular().loaded()) { // TODO - Change this to a more reliable method
+//            FontUtils.loadFont(context, Toolbox.KAUSHAN_SCRIPT);
+//        }
 
 //        Color top = new Color(9, 9, 9, 103);
 //        NVGHelper.drawRoundedRec(context, 424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32, 16, top.getRGB());

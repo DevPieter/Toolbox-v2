@@ -5,10 +5,11 @@
   "sidebar.version": "#767676",
   "sidebar.shadow": "#33000000",
 
-  "pagination.background": "#111111",
-  "pagination.text": "#d6d9db",
-
   "content.background": "#6f1a1b1e",
+
+  "pagination.background": "#101010",
+  "pagination.background.hover": "#181818",
+  "pagination.text": "#d6d9db",
 
   "module.card.top": "#090909",
   "module.card.bottom": "#111111",
@@ -19,7 +20,8 @@
   "module.card.shadow.enabled": "#8a83eb",
 
   "category.selector": "#8a83eb",
-  "category.card.background": "#111111",
+  "category.card.background": "#101010",
+  "category.card.background.hover": "#181818",
   "category.card.title": "#767676",
   "category.card.title.selected": "#d6d9db",
   "category.card.description": "#767676"

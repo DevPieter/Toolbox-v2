@@ -32,6 +32,7 @@ public class PaginationWidget extends WidgetBase {
 //        Color textColor = new Color(214, 217, 219);
 
         Color backgroundColor = colorManager.get("pagination.background");
+        Color backgroundHoverColor = colorManager.get("pagination.background.hover");
         Color textColor = colorManager.get("pagination.text");
 
         STextStyle textStyle = STextStyle.of(textColor).setFontSize(18);
@@ -39,7 +40,9 @@ public class PaginationWidget extends WidgetBase {
         float size = (width - GAP * 2) / 3;
 
         left = new SCCard(this, x, y, size, height);
-        left.color().set(backgroundColor).cornerRadius().set(8, 0, 0, 8);
+        left.setInheritParentHover(false);
+        left.color().set(backgroundColor, backgroundHoverColor);
+        left.cornerRadius().set(8, 0, 0, 8);
         addChild(left);
 
         SText previousText = SText.of(textStyle).append("Previous");
@@ -56,7 +59,9 @@ public class PaginationWidget extends WidgetBase {
         addChild(page);
 
         right = new SCCard(this, x + size * 2 + GAP * 2, y, size, height);
-        right.color().set(backgroundColor).cornerRadius().set(0, 8, 8, 0);
+        right.setInheritParentHover(false);
+        right.color().set(backgroundColor, backgroundHoverColor);
+        right.cornerRadius().set(0, 8, 8, 0);
         addChild(right);
 
         SText nextText = SText.of(textStyle).append("Next");

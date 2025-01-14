@@ -12,7 +12,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import nl.devpieter.squid.debug.DebugOptions;
-import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
 import nl.devpieter.toolbox.Defaults.Categories.ToolsCategory;
@@ -24,6 +23,7 @@ import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.TestSquidScreen;
 import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Theme.FontManager;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +34,6 @@ public class Toolbox implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Toolbox");
     public static boolean DEBUG = false;
-
-    public static Font KAUSHAN_SCRIPT;
 
     private final KeyBinding openModulesScreen = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "toolbox.key.open",
@@ -51,17 +49,6 @@ public class Toolbox implements ModInitializer {
             "toolbox.key.categories.toolbox"
     ));
 
-    public Toolbox() {
-        KAUSHAN_SCRIPT = new Font("kaushan-script", false,
-//            "D:\\DEVELOPMENT\\Minecraft-Coding\\Mods\\Fabric\\Toolbox\\KaushanScript-Regular.ttf",
-                System.getProperty("user.home") + "\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KaushanScript-Regular.ttf",
-                null,
-                null,
-                null,
-                null
-        );
-    }
-
     @Override
     public void onInitialize() {
 
@@ -70,10 +57,14 @@ public class Toolbox implements ModInitializer {
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             if (!(MinecraftClient.getInstance().getResourceManager() instanceof ReloadableResourceManagerImpl resourceManager)) return;
-            ColorManager colorManager = ColorManager.getInstance();
 
+            ColorManager colorManager = ColorManager.getInstance();
             resourceManager.registerReloader(colorManager);
             colorManager.reload(resourceManager);
+
+            FontManager fontManager = FontManager.getInstance();
+            resourceManager.registerReloader(fontManager);
+            fontManager.reload(resourceManager);
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
