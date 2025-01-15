@@ -6,7 +6,6 @@ import nl.devpieter.squid.layout.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
-import nl.devpieter.squid.rendering.font.Fonts;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
@@ -65,12 +64,12 @@ public class ModuleCardWidget extends ComponentBase {
         cardBottom.color().set(bottomColor).cornerRadius().set(12, 12, 8, 8);
         addChild(cardBottom);
 
-        STextStyle titleStyle = STextStyle.of(titleColor).setFont(Fonts.CALIBRI).setBold(true).setFontSize(24);
+        STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(24);
         title = new SCLabel(this, x + 12, y, width - 24, 40, SText.of(titleStyle).append(nameText));
         title.setAlignment(Alignment.MIDDLE_LEFT);
         addChild(title);
 
-        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFont(Fonts.CALIBRI).setFontSize(18);
+        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(18);
         SCLabel description = new SCLabel(this, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionStyle).append(descriptionText));
         description.setMultiLine(true);
         addChild(description);

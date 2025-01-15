@@ -23,7 +23,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation files("D:\\DEVELOPMENT\\Minecraft-Coding\\Mods\\Fabric\\Squid\\Squid\\build\\libs\\Squid-1.0.1-shadow.jar")
+    modImplementation files("D:\\DEVELOPMENT\\Minecraft-Coding\\Mods\\Fabric\\Squid\\Squid\\build\\libs\\Squid-1.1.0-shadow.jar")
 
     implementation "org.lwjgl:lwjgl-nanovg:3.3.4"
     runtimeOnly "org.lwjgl:lwjgl-nanovg:3.3.4:natives-windows"

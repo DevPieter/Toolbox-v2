@@ -1,25 +1,27 @@
 package nl.devpieter.toolbox.Theme;
 
+import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SynchronousResourceReloader;
-import nl.devpieter.squid.rendering.NVGHelper;
+import net.minecraft.util.Identifier;
+import nl.devpieter.squid.Squid;
+import nl.devpieter.squid.rendering.RenderingManager;
 import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.squid.rendering.font.FontUtils;
+import nl.devpieter.squid.rendering.font.fontHolders.FontHolder;
 import nl.devpieter.toolbox.Toolbox;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FontManager implements SynchronousResourceReloader {
 
     private static FontManager INSTANCE;
 
-    public static Font KAUSHAN_SCRIPT = new Font("kaushan-script", true,
-            "/assets/toolbox/fonts/kaushan_script/KaushanScript-Regular.ttf",
-            null,
-            null,
-            null,
-            null
-    );
+    private final RenderingManager renderingManager = RenderingManager.getInstance();
+
+    private final HashMap<String, Font> loadedFonts = new HashMap<>();
 
     private FontManager() {
     }
@@ -31,17 +33,68 @@ public class FontManager implements SynchronousResourceReloader {
 
     @Override
     public void reload(ResourceManager manager) {
-        try (InputStream inputStream = FontManager.class.getResourceAsStream("/assets/toolbox/fonts/kaushan_script/KaushanScript-Regular.ttf")) {
-            if (inputStream == null) throw new Exception("Resource not found");
+        this.loadedFonts.clear();
+        this.renderingManager.init();
 
-            if (!NVGHelper.hasContext()) {
-                NVGHelper.init();
+        Map<Identifier, Resource> map = manager.findResources("fonts", (path) -> {
+            if (!path.getNamespace().equals("toolbox")) return false;
+            return path.getPath().endsWith(".ttf");
+        });
+
+        HashMap<String, HashMap<String, FontHolder>> fontHolders = new HashMap<>();
+
+        for (Map.Entry<Identifier, Resource> entry : map.entrySet()) {
+            String fontName = entry.getKey().getPath().split("/")[1];
+            String fontType = entry.getKey().getPath().split("/")[2].replace(".ttf", "");
+
+            FontHolder fontHolder = new FontHolder(fontName + "-" + fontType);
+
+            try (InputStream inputStream = entry.getValue().getInputStream()) {
+                FontUtils.loadFontHolder(renderingManager.getContext(), fontHolder, inputStream);
+            } catch (Exception e) {
+                Toolbox.LOGGER.error("Failed to load font holder: {}", fontHolder.identifier(), e);
             }
 
-            FontUtils.loadFontHolder(NVGHelper.vgContext, KAUSHAN_SCRIPT.getRegular(), inputStream);
-
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to load font: Kaushan Script", e);
+            if (!fontHolders.containsKey(fontName)) fontHolders.put(fontName, new HashMap<>());
+            fontHolders.get(fontName).put(fontType, fontHolder);
         }
+
+        for (Map.Entry<String, HashMap<String, FontHolder>> entry : fontHolders.entrySet()) {
+            String fontName = entry.getKey();
+            HashMap<String, FontHolder> fontHolderMap = entry.getValue();
+
+            Font font = new Font(fontName,
+                    fontHolderMap.get("regular"),
+                    fontHolderMap.get("bold"),
+                    fontHolderMap.get("italic"),
+                    fontHolderMap.get("bold_italic"),
+                    fontHolderMap.get("light")
+            );
+
+            this.loadedFonts.put(fontName, font);
+        }
+
+        Toolbox.LOGGER.info("Loaded {} fonts", this.loadedFonts.size());
     }
+
+    public Font get(String key) {
+        return this.get(key, Squid.DEFAULT_FONT);
+    }
+
+    public Font get(String key, Font fallback) {
+        return this.loadedFonts.getOrDefault(key, fallback);
+    }
+
+//        try (InputStream inputStream = FontManager.class.getResourceAsStream("/assets/toolbox/fonts/kaushan_script/kaushanscript-regular.ttf")) {
+//            if (inputStream == null) throw new Exception("Resource not found");
+//
+//            if (!NVGHelper.hasContext()) {
+//                NVGHelper.init();
+//            }
+//
+//            FontUtils.loadFontHolder(NVGHelper.vgContext, KAUSHAN_SCRIPT.getRegular(), inputStream);
+//
+//        } catch (Exception e) {
+//            Toolbox.LOGGER.error("Failed to load font: Kaushan Script", e);
+//        }
 }

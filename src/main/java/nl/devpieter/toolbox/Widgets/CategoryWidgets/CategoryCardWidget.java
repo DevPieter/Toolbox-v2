@@ -5,7 +5,6 @@ import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
 import nl.devpieter.squid.rendering.animation.ColorAnimation;
 import nl.devpieter.squid.rendering.animation.Easing;
-import nl.devpieter.squid.rendering.font.Fonts;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Category.CategoryManager;
@@ -53,11 +52,11 @@ public class CategoryCardWidget extends WidgetBase {
         titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);
         titleColorAnimation.setForward(false);
 
-        STextStyle titleStyle = STextStyle.of(titleColor).setFont(Fonts.CALIBRI).setBold(true).setFontSize(18);
+        STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(18);
         title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
         addChild(title);
 
-        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFont(Fonts.CALIBRI).setFontSize(14);
+        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(14);
         SCLabel description = new SCLabel(this, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
         addChild(description);
     }
