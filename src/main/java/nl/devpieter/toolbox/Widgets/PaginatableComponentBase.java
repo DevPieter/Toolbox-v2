@@ -1,15 +1,14 @@
 package nl.devpieter.toolbox.Widgets;
 
 import nl.devpieter.squid.renderable.widget.WidgetBase;
-import org.apache.commons.io.function.IOBiConsumer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public abstract class PaginatableComponentBase extends WidgetBase {
 
-    protected final List<IOBiConsumer<Integer, Integer>> pageChangeListeners = new ArrayList<>();
+    protected final List<BiConsumer<Integer, Integer>> pageChangeListeners = new ArrayList<>();
 
     public PaginatableComponentBase(float x, float y, float width, float height) {
         super(x, y, width, height);
@@ -54,23 +53,15 @@ public abstract class PaginatableComponentBase extends WidgetBase {
         navigateTo(getPageCount() - 1);
     }
 
-    public void subscribePageChangeListener(IOBiConsumer<Integer, Integer> listener) {
+    public void subscribePageChangeListener(BiConsumer<Integer, Integer> listener) {
         pageChangeListeners.add(listener);
 
-        try {
-            listener.accept(-1, getCurrentPage());
-        } catch (IOException ignored) {
-
-        }
+        listener.accept(-1, getCurrentPage());
     }
 
     protected void notifyPageChange(int previousPage, int newPage) {
-        for (IOBiConsumer<Integer, Integer> listener : pageChangeListeners) {
-            try {
-                listener.accept(previousPage, newPage);
-            } catch (IOException ignored) {
-
-            }
+        for (BiConsumer<Integer, Integer> listener : pageChangeListeners) {
+            listener.accept(previousPage, newPage);
         }
     }
 }
