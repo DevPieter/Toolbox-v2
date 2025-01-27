@@ -63,7 +63,7 @@ public class Toolbox implements ModInitializer {
             colorManager.reload(resourceManager);
 
             FontManager fontManager = FontManager.getInstance();
-            resourceManager.registerReloader(fontManager);
+//            resourceManager.registerReloader(fontManager);
             fontManager.reload(resourceManager);
         });
 
@@ -91,6 +91,7 @@ public class Toolbox implements ModInitializer {
             categoryManager.register(ExampleCategory.class);
             categoryManager.register(FillerCategory.class);
 
+            moduleManager.register(TestSettingModule.class);
             moduleManager.register(ClickableModule.class);
             moduleManager.register(StatefulModule.class);
             moduleManager.register(TestModule.class);

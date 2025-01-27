@@ -6,6 +6,7 @@ import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
+import nl.devpieter.toolbox.setting.SettingManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -23,6 +24,8 @@ public class ModuleManager {
 
     private final Gson gson = new Gson();
     private final List<IModule> modules = new ArrayList<>();
+
+    private final SettingManager settingManager = SettingManager.getInstance();
 
     private ModuleManager() {
     }
@@ -43,6 +46,7 @@ public class ModuleManager {
 
             this.modules.add(module);
             if (module instanceof IStatefulModule<?>) this.loadState(moduleClass);
+            if (module instanceof ISettingModule settingModule) this.settingManager.loadSettings(settingModule);
 
             module.onRegistered();
         } catch (Exception e) {
@@ -58,6 +62,7 @@ public class ModuleManager {
         }
 
         if (module instanceof IStatefulModule<?>) this.saveState(moduleClass);
+        if (module instanceof ISettingModule settingModule) this.settingManager.saveSettings(settingModule);
         this.modules.remove(module);
 
         module.onUnregistered();
