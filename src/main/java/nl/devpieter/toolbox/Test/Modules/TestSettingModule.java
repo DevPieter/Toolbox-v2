@@ -1,8 +1,10 @@
 package nl.devpieter.toolbox.Test.Modules;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.setting.ISetting;
 import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.settings.IntSetting;
@@ -36,8 +38,10 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     @Override
     public @NotNull Action onLeftClick() {
         leftClicks.increment();
-
         SettingManager.getInstance().saveSetting(this, leftClicks);
+
+        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(this));
+
         return IClickableModule.super.onLeftClick();
     }
 

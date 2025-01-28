@@ -21,4 +21,24 @@ public class ListSetting<T> extends SettingBase<List<T>> {
         return new TypeToken<List<T>>() {
         }.getType();
     }
+
+    public void add(T value) {
+        getValue().add(value);
+    }
+
+    public void remove(T value) {
+        getValue().remove(value);
+    }
+
+    public void removeFirst() {
+        getValue().removeFirst();
+    }
+
+    public void removeLast() {
+        getValue().removeLast();
+    }
+
+    public void clear() {
+        getValue().clear();
+    }
 }

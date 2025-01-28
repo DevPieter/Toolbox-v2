@@ -21,7 +21,7 @@ import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
 import nl.devpieter.toolbox.Test.Categories.FillerCategory;
 import nl.devpieter.toolbox.Test.Filler.*;
 import nl.devpieter.toolbox.Test.Modules.*;
-import nl.devpieter.toolbox.Test.Screens.TestSquidScreen;
+import nl.devpieter.toolbox.Test.Screens.ModulesScreen;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Theme.FontManager;
 import org.lwjgl.glfw.GLFW;
@@ -69,7 +69,7 @@ public class Toolbox implements ModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (openModulesScreen.wasPressed()) {
-                client.setScreen(new TestSquidScreen());
+                client.setScreen(new ModulesScreen());
             }
 
             if (toggleDebug.wasPressed()) {
