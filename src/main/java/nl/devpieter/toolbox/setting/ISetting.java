@@ -1,12 +1,14 @@
 package nl.devpieter.toolbox.setting;
 
+import java.lang.reflect.Type;
+
 public interface ISetting<T> {
 
-    Class<T> getType();
+    Type getType();
 
     String getIdentifier();
 
-    boolean allowNull();
+    boolean shouldAllowNull();
 
     T getValue();
 

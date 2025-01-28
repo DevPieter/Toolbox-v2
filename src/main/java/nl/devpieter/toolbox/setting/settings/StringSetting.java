@@ -2,6 +2,8 @@ package nl.devpieter.toolbox.setting.settings;
 
 import nl.devpieter.toolbox.setting.SettingBase;
 
+import java.lang.reflect.Type;
+
 public class StringSetting extends SettingBase<String> {
 
     public StringSetting(String identifier, String defaultValue) {
@@ -13,7 +15,7 @@ public class StringSetting extends SettingBase<String> {
     }
 
     @Override
-    public Class<String> getType() {
+    public Type getType() {
         return String.class;
     }
 }

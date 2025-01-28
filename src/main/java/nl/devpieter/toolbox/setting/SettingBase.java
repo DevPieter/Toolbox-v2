@@ -28,7 +28,7 @@ public abstract class SettingBase<T> implements ISetting<T> {
     }
 
     @Override
-    public boolean allowNull() {
+    public boolean shouldAllowNull() {
         return allowNull;
     }
 

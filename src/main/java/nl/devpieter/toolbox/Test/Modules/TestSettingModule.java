@@ -6,6 +6,7 @@ import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.setting.ISetting;
 import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.settings.IntSetting;
+import nl.devpieter.toolbox.setting.settings.ListSetting;
 import nl.devpieter.toolbox.setting.settings.StringSetting;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,13 +20,16 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     private final IntSetting leftClicks = new IntSetting("left-clicks", 0);
     private final IntSetting rightClicks = new IntSetting("right-clicks", 0);
 
+    private final ListSetting<String> myList = new ListSetting<>("my-list", List.of("Hello", "World", "This", "Is", "A", "List"));
+
     @Override
     public List<ISetting<?>> getSettings() {
         return List.of(
                 myString,
                 myString2,
                 leftClicks,
-                rightClicks
+                rightClicks,
+                myList
         );
     }
 
