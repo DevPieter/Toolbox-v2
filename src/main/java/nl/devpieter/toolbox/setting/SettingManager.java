@@ -26,24 +26,6 @@ public class SettingManager {
         return INSTANCE;
     }
 
-    public boolean loadSettings(ISettingModule module) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) return false;
-
-        for (ISetting<?> setting : module.getSettings()) {
-            loadSetting(moduleFile, setting);
-        }
-
-        return true;
-    }
-
-    public <T> boolean loadSetting(ISettingModule module, ISetting<T> setting) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) return false;
-
-        return loadSetting(moduleFile, setting);
-    }
-
     public boolean saveSettings(ISettingModule module) {
         File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
         if (moduleFile == null) return false;
@@ -60,6 +42,24 @@ public class SettingManager {
         if (moduleFile == null) return false;
 
         return saveSetting(moduleFile, setting);
+    }
+
+    public boolean loadSettings(ISettingModule module) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
+        if (moduleFile == null) return false;
+
+        for (ISetting<?> setting : module.getSettings()) {
+            loadSetting(moduleFile, setting);
+        }
+
+        return true;
+    }
+
+    public <T> boolean loadSetting(ISettingModule module, ISetting<T> setting) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
+        if (moduleFile == null) return false;
+
+        return loadSetting(moduleFile, setting);
     }
 
     private boolean saveSetting(File file, ISetting<?> setting) {
