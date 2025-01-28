@@ -94,7 +94,7 @@ public class SettingManager {
             JsonElement jsonElement = gson.toJsonTree(keyedSetting.value());
             T value = gson.fromJson(jsonElement, setting.getType());
 
-            setting.setValue(setting.allowNull() ? value : value != null ? value : setting.getDefault());
+            setting.setValue(setting.shouldAllowNull() ? value : value != null ? value : setting.getDefault());
             return true;
         }
 
