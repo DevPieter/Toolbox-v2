@@ -36,13 +36,4 @@ public interface IStatefulModule<T> extends IModule {
     default void saveState() {
         ModuleManager.getInstance().saveState(this.getClass());
     }
-
-    default String getFileName() {
-        // TODO - Instead of using the encoded class name, use a part of the package name as the path and the class name as the file name.
-        // in: nl.devpieter.toolbox.Test.Modules.TestModule
-        // now: bmwuZGV2cGlldGVyLnRvb2xib3guVGVzdC5Nb2R1bGVzLlRlc3RNb2R1bGU=.json
-        // new: devpieter/toolbox/TestModule_VGVzdC5Nb2R1bGVz.json (VGVzdC5Nb2R1bGVz = Test.Modules) (this is not final, just an example)
-
-        return new String(Base64.getEncoder().encode(this.getClass().getName().getBytes())) + ".json";
-    }
 }

@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,69 +26,43 @@ public class SettingManager {
         return INSTANCE;
     }
 
-    public void loadSettings(ISettingModule module) {
-        File base = ConfigUtils.getModulesFolder(false);
-        if (base == null) return;
-
-        String modulePath = module.getFilePath();
-        File moduleFile = new File(base, modulePath);
+    public boolean loadSettings(ISettingModule module) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
+        if (moduleFile == null) return false;
 
         for (ISetting<?> setting : module.getSettings()) {
-            loadSetting(moduleFile.getAbsolutePath(), setting);
+            loadSetting(moduleFile, setting);
         }
+
+        return true;
     }
 
-    public void saveSettings(ISettingModule module) {
-        File base = ConfigUtils.getModulesFolder(true);
-        if (base == null) return;
+    public <T> boolean loadSetting(ISettingModule module, ISetting<T> setting) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
+        if (moduleFile == null) return false;
 
-        String modulePath = module.getFilePath();
-        File moduleFile = new File(base, modulePath);
+        return loadSetting(moduleFile, setting);
+    }
 
-        try {
-            File parentDir = moduleFile.getParentFile();
-            if (!parentDir.exists() && !parentDir.mkdirs()) {
-                Toolbox.LOGGER.error("Failed to create directories for module file: {}", moduleFile.getAbsolutePath());
-                return;
-            }
-
-            if (!moduleFile.exists() && !moduleFile.createNewFile()) {
-                Toolbox.LOGGER.error("Failed to create module file: {}", moduleFile.getAbsolutePath());
-                return;
-            }
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to create module file: {}", moduleFile.getAbsolutePath(), e);
-            return;
-        }
+    public boolean saveSettings(ISettingModule module) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
+        if (moduleFile == null) return false;
 
         for (ISetting<?> setting : module.getSettings()) {
-            saveSetting(moduleFile.getAbsolutePath(), setting);
+            saveSetting(moduleFile, setting);
         }
+
+        return true;
     }
 
-    public void saveSetting(ISettingModule module, ISetting<?> setting) {
-        File base = ConfigUtils.getModulesFolder(true);
-        if (base == null) return;
+    public boolean saveSetting(ISettingModule module, ISetting<?> setting) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
+        if (moduleFile == null) return false;
 
-        String modulePath = module.getFilePath();
-        File moduleFile = new File(base, modulePath);
-
-        saveSetting(moduleFile.getAbsolutePath(), setting);
+        return saveSetting(moduleFile, setting);
     }
 
-    public <T> void loadSetting(ISettingModule module, ISetting<T> setting) {
-        File base = ConfigUtils.getModulesFolder(false);
-        if (base == null) return;
-
-        String modulePath = module.getFilePath();
-        File moduleFile = new File(base, modulePath);
-
-        loadSetting(moduleFile.getAbsolutePath(), setting);
-    }
-
-    private void saveSetting(String path, ISetting<?> setting) {
-        File file = new File(path);
-
+    private boolean saveSetting(File file, ISetting<?> setting) {
         List<KeyedSetting<?>> settingsList = loadSettings(file);
         if (settingsList == null) settingsList = new ArrayList<>();
 
@@ -96,16 +71,22 @@ public class SettingManager {
 
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(settingsList, writer);
+            return true;
         } catch (IOException e) {
             Toolbox.LOGGER.error("Failed to save settings to file: {}", file.getAbsolutePath(), e);
+            return false;
         }
     }
 
-    private <T> boolean loadSetting(String path, ISetting<T> setting) {
-        File file = new File(path);
-
+    private <T> boolean loadSetting(File file, ISetting<T> setting) {
         List<KeyedSetting<?>> settingsList = loadSettings(file);
-        if (settingsList == null) return false;
+
+        if (settingsList == null) {
+            Toolbox.LOGGER.warn("Failed to load settings from file, using default value");
+
+            setting.setValue(setting.getDefault());
+            return false;
+        }
 
         for (KeyedSetting<?> keyedSetting : settingsList) {
             if (!keyedSetting.key().equals(setting.getIdentifier())) continue;
@@ -120,14 +101,13 @@ public class SettingManager {
         return false;
     }
 
-    private List<KeyedSetting<?>> loadSettings(File file) {
+    private @Nullable List<KeyedSetting<?>> loadSettings(File file) {
         try (Reader reader = new FileReader(file)) {
             return gson.fromJson(reader, new TypeToken<List<KeyedSetting<?>>>() {
             }.getType());
         } catch (IOException e) {
             Toolbox.LOGGER.error("Failed to load settings from file: {}", file.getAbsolutePath(), e);
+            return null;
         }
-
-        return new ArrayList<>();
     }
 }

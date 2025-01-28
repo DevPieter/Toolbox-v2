@@ -128,7 +128,7 @@ public class ModuleManager {
         if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return;
 
         try {
-            File moduleFile = ConfigUtils.getModuleFile(statefulModule, false);
+            File moduleFile = ConfigUtils.getModuleStateFile(statefulModule, false);
             if (moduleFile == null || statefulModule.getState() == null) return;
 
             statefulModule.setState(this.gson.fromJson(new FileReader(moduleFile), (Type) statefulModule.getState().getClass()));
@@ -142,7 +142,7 @@ public class ModuleManager {
         if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return;
 
         try {
-            File moduleFile = ConfigUtils.getModuleFile(statefulModule, true);
+            File moduleFile = ConfigUtils.getModuleStateFile(statefulModule, true);
             if (moduleFile == null) return;
 
             try (FileWriter writer = new FileWriter(moduleFile)) {
