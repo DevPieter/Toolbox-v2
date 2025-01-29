@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
-import nl.devpieter.toolbox.Widgets.PaginatableComponentBase;
+import nl.devpieter.toolbox.Widgets.Abstractions.PaginatableComponentBase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

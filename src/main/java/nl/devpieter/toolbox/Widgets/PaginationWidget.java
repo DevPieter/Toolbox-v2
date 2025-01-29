@@ -7,6 +7,7 @@ import nl.devpieter.squid.renderable.widget.WidgetBase;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Widgets.Abstractions.PaginatableComponentBase;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
