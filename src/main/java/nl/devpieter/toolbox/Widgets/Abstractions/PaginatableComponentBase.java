@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.Widgets;
+package nl.devpieter.toolbox.Widgets.Abstractions;
 
 import nl.devpieter.squid.renderable.widget.WidgetBase;
 

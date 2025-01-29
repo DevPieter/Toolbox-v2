@@ -84,17 +84,4 @@ public class FontManager implements SynchronousResourceReloader {
     public Font get(String key, Font fallback) {
         return this.loadedFonts.getOrDefault(key, fallback);
     }
-
-//        try (InputStream inputStream = FontManager.class.getResourceAsStream("/assets/toolbox/fonts/kaushan_script/kaushanscript-regular.ttf")) {
-//            if (inputStream == null) throw new Exception("Resource not found");
-//
-//            if (!NVGHelper.hasContext()) {
-//                NVGHelper.init();
-//            }
-//
-//            FontUtils.loadFontHolder(NVGHelper.vgContext, KAUSHAN_SCRIPT.getRegular(), inputStream);
-//
-//        } catch (Exception e) {
-//            Toolbox.LOGGER.error("Failed to load font: Kaushan Script", e);
-//        }
 }
