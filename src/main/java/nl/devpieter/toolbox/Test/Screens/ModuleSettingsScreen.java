@@ -5,14 +5,14 @@ import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.layout.Alignment;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.screen.SquidScreen;
-import nl.devpieter.squid.widgets.SSlider;
-import nl.devpieter.squid.widgets.STextField;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
+import nl.devpieter.toolbox.Widgets.SettingWidgets.BooleanSettingWidget;
+import nl.devpieter.toolbox.Widgets.SettingWidgets.NumberSettingWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
-import nl.devpieter.toolbox.setting.ISetting;
-import nl.devpieter.toolbox.setting.settings.IntSetting;
-import nl.devpieter.toolbox.setting.settings.StringSetting;
+import nl.devpieter.toolbox.setting.abstractions.ISetting;
+import nl.devpieter.toolbox.setting.widgetSettings.BooleanWidgetSetting;
+import nl.devpieter.toolbox.setting.widgetSettings.NumberWidgetSetting;
 
 public class ModuleSettingsScreen extends SquidScreen {
 
@@ -44,20 +44,42 @@ public class ModuleSettingsScreen extends SquidScreen {
         for (int i = 0; i < this.module.getSettings().size(); i++) {
             ISetting<?> setting = this.module.getSettings().get(i);
 
-//            SText settingText = SText.of().append(setting.getIdentifier());
-//            SCLabel settingLabel = new SCLabel(content, 500, y, 100, 20, settingText);
-//            content.addChild(settingLabel);
-
-            if (setting instanceof IntSetting intSetting) {
-                SText valueText = SText.of().append(setting.getIdentifier());
-                SSlider<Integer> slider = new SSlider<>(valueText, 0, 100, 500, y, 500, 120);
-                slider.setValue(intSetting.getValue());
-
-                content.addChild(slider);
+            if (setting instanceof BooleanWidgetSetting booleanSetting) {
+                BooleanSettingWidget booleanSettingWidget = new BooleanSettingWidget(500, y, 275, 200, this.module, booleanSetting);
+                content.addChild(booleanSettingWidget);
             }
-            if (setting instanceof StringSetting stringSetting) {
-                STextField textField = new STextField(500, y, 500 + 120, 30, setting.getIdentifier());
-                content.addChild(textField);
+
+            if (setting instanceof NumberWidgetSetting<?> genericSetting) {
+
+                if (genericSetting.getValue() instanceof Integer) {
+                    NumberWidgetSetting<Integer> intSetting = (NumberWidgetSetting<Integer>) genericSetting;
+                    NumberSettingWidget<Integer, NumberWidgetSetting<Integer>> intSettingWidget = new NumberSettingWidget<>(
+                            500,
+                            y,
+                            600,
+                            200,
+                            this.module,
+                            intSetting,
+                            intSetting.getMin(),
+                            intSetting.getMax()
+                    );
+                    content.addChild(intSettingWidget);
+                }
+
+                if (genericSetting.getValue() instanceof Float) {
+                    NumberWidgetSetting<Float> floatSetting = (NumberWidgetSetting<Float>) genericSetting;
+                    NumberSettingWidget<Float, NumberWidgetSetting<Float>> floatSettingWidget = new NumberSettingWidget<>(
+                            500,
+                            y,
+                            600,
+                            200,
+                            this.module,
+                            floatSetting,
+                            floatSetting.getMin(),
+                            floatSetting.getMax()
+                    );
+                    content.addChild(floatSettingWidget);
+                }
             }
 
             y += 50;

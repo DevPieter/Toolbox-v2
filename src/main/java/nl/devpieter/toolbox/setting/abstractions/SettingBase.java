@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.setting;
+package nl.devpieter.toolbox.setting.abstractions;
 
 public abstract class SettingBase<T> implements ISetting<T> {
 
@@ -10,9 +10,7 @@ public abstract class SettingBase<T> implements ISetting<T> {
     private T value;
 
     public SettingBase(String identifier, T defaultValue) {
-        this.identifier = identifier;
-        this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        this(identifier, defaultValue, false);
     }
 
     public SettingBase(String identifier, T defaultValue, boolean allowNull) {

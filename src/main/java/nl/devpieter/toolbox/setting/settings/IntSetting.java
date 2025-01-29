@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.setting.settings;
 
-import nl.devpieter.toolbox.setting.SettingBase;
+import nl.devpieter.toolbox.setting.abstractions.SettingBase;
 
 import java.lang.reflect.Type;
 
@@ -17,6 +17,10 @@ public class IntSetting extends SettingBase<Integer> {
     @Override
     public Type getType() {
         return Integer.class;
+    }
+
+    public void setVal(Number value) {
+        setValue(value.intValue());
     }
 
     public void increment() {

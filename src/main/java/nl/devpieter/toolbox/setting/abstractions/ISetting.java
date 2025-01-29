@@ -1,4 +1,6 @@
-package nl.devpieter.toolbox.setting;
+package nl.devpieter.toolbox.setting.abstractions;
+
+import nl.devpieter.toolbox.setting.KeyedSetting;
 
 import java.lang.reflect.Type;
 
@@ -15,6 +17,14 @@ public interface ISetting<T> {
     T getDefault();
 
     void setValue(T value);
+
+    default void reset() {
+        setValue(getDefault());
+    }
+
+    default boolean isDefaultValueSet() {
+        return !getValue().equals(getDefault());
+    }
 
     default KeyedSetting<T> asKeyedSetting() {
         return new KeyedSetting<>(getIdentifier(), getValue());

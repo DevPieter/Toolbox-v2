@@ -3,9 +3,12 @@ package nl.devpieter.toolbox.setting;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.client.MinecraftClient;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
+import nl.devpieter.toolbox.setting.abstractions.ISetting;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -24,6 +27,10 @@ public class SettingManager {
     public static SettingManager getInstance() {
         if (INSTANCE == null) INSTANCE = new SettingManager();
         return INSTANCE;
+    }
+
+    public void openSettingsScreen(ISettingModule module) {
+        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(module));
     }
 
     public boolean saveSettings(ISettingModule module) {

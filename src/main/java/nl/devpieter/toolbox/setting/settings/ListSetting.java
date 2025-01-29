@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.setting.settings;
 
 import com.google.common.reflect.TypeToken;
-import nl.devpieter.toolbox.setting.SettingBase;
+import nl.devpieter.toolbox.setting.abstractions.SettingBase;
 
 import java.lang.reflect.Type;
 import java.util.List;

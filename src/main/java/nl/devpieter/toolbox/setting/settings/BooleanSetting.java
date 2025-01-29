@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.setting.settings;
 
-import nl.devpieter.toolbox.setting.SettingBase;
+import nl.devpieter.toolbox.setting.abstractions.SettingBase;
 
 import java.lang.reflect.Type;
 

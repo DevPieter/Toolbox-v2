@@ -5,40 +5,63 @@ import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
-import nl.devpieter.toolbox.setting.ISetting;
 import nl.devpieter.toolbox.setting.SettingManager;
-import nl.devpieter.toolbox.setting.settings.IntSetting;
-import nl.devpieter.toolbox.setting.settings.ListSetting;
-import nl.devpieter.toolbox.setting.settings.StringSetting;
+import nl.devpieter.toolbox.setting.abstractions.ISetting;
+import nl.devpieter.toolbox.setting.widgetSettings.BooleanWidgetSetting;
+import nl.devpieter.toolbox.setting.widgetSettings.NumberWidgetSetting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class TestSettingModule implements ISettingModule, IClickableModule {
 
-    private final StringSetting myString = new StringSetting("my-string", "Hello, World!");
-    private final StringSetting myString2 = new StringSetting("my-string-2", "This is a test setting!");
+    private final NumberWidgetSetting<Integer> leftClicks = new NumberWidgetSetting<>(
+            "left-clicks",
+            0,
+            "Left Clicks",
+            "The amount of left clicks.",
+            Integer.class,
+            0,
+            100
+    );
 
-    private final IntSetting leftClicks = new IntSetting("left-clicks", 0);
-    private final IntSetting rightClicks = new IntSetting("right-clicks", 0);
+    private final NumberWidgetSetting<Integer> rightClicks = new NumberWidgetSetting<>(
+            "right-clicks",
+            0,
+            "Right Clicks",
+            "The amount of right clicks.",
+            Integer.class,
+            0,
+            100
+    );
 
-    private final ListSetting<String> myList = new ListSetting<>("my-list", List.of("Hello", "World", "This", "Is", "A", "List"));
+    private final BooleanWidgetSetting isEnable = new BooleanWidgetSetting(
+            "is-enable",
+            false,
+            "Is Enable",
+            "Is this module enabled?"
+    );
+
+    private final BooleanWidgetSetting myBoolean = new BooleanWidgetSetting(
+            "my-boolean",
+            false,
+            "My Boolean Setting",
+            "This is a test boolean setting."
+    );
 
     @Override
     public List<ISetting<?>> getSettings() {
         return List.of(
-                myString,
-                myString2,
                 leftClicks,
                 rightClicks,
-                myList
+                isEnable,
+                myBoolean
         );
     }
 
     @Override
     public @NotNull Action onLeftClick() {
-        leftClicks.increment();
-        SettingManager.getInstance().saveSetting(this, leftClicks);
+//        SettingManager.getInstance().saveSetting(this, leftClicks);
 
         MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(this));
 
@@ -56,9 +79,9 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
 
     @Override
     public @NotNull Action onRightClick() {
-        rightClicks.increment();
+//        rightClicks.increment();
 
-        SettingManager.getInstance().saveSetting(this, rightClicks);
+//        SettingManager.getInstance().saveSetting(this, rightClicks);
         return IClickableModule.super.onRightClick();
     }
 
