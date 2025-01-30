@@ -1,12 +1,13 @@
 package nl.devpieter.toolbox.Widgets.SettingWidgets;
 
+import nl.devpieter.squid.Squid;
+import nl.devpieter.squid.animation.Animation;
+import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCKnob;
 import nl.devpieter.squid.components.SCLabel;
-import nl.devpieter.squid.layout.Alignment;
-import nl.devpieter.squid.rendering.animation.Animation;
-import nl.devpieter.squid.rendering.animation.ColorAnimation;
-import nl.devpieter.squid.rendering.animation.Easing;
+import nl.devpieter.squid.enums.Alignment;
+import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
@@ -39,12 +40,12 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         this.gap = gap;
 
         this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.QUINT_OUT);
-        this.slideColorAnimation = new ColorAnimation(this.theme.container, this.theme.primary, Duration.ofMillis(400), Easing.QUINT_OUT);
+        this.slideColorAnimation = new ColorAnimation(Squid.THEME.container, Squid.THEME.primary, Duration.ofMillis(400), Easing.QUINT_OUT);
 
         float halfHeight = this.height / 2;
 
         /* Label */
-        STextStyle labelStyle = STextStyle.of().setFontSize(this.theme.labelSize);
+        STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
         this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
         this.label.setAlignment(Alignment.MIDDLE_LEFT).setTextStyle(labelStyle).setHoverable(true);
         this.addChild(this.label);
@@ -94,7 +95,7 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         }
 
         this.slideAnimation.setTo(state ? 1f : 0);
-        this.slideColorAnimation.setTo(state ? this.theme.primary : this.theme.container);
+        this.slideColorAnimation.setTo(state ? Squid.THEME.primary : Squid.THEME.container);
 
         this.setting.setValue(state);
         if (save) this.save();

@@ -1,10 +1,11 @@
 package nl.devpieter.toolbox.Widgets.SettingWidgets;
 
+import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.components.SCKnob;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.components.SCNumberInputDisplay;
 import nl.devpieter.squid.components.SCProgressBar;
-import nl.devpieter.squid.layout.Alignment;
+import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
@@ -42,7 +43,7 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         float halfHeight = this.height / 2;
 
         /* Label */
-        STextStyle labelStyle = STextStyle.of().setFontSize(this.theme.labelSize);
+        STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
         this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
         this.label.setAlignment(Alignment.MIDDLE_LEFT).setTextStyle(labelStyle).setHoverable(true);
         this.addChild(this.label);

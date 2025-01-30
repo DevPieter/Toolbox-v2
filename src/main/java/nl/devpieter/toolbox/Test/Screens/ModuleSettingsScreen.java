@@ -2,9 +2,9 @@ package nl.devpieter.toolbox.Test.Screens;
 
 import net.minecraft.text.Text;
 import nl.devpieter.squid.components.SCLabel;
-import nl.devpieter.squid.layout.Alignment;
+import nl.devpieter.squid.enums.Alignment;
+import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.squid.rendering.text.SText;
-import nl.devpieter.squid.screen.SquidScreen;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
 import nl.devpieter.toolbox.Widgets.SettingWidgets.BooleanSettingWidget;

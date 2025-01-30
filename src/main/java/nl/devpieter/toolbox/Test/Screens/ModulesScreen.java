@@ -10,9 +10,9 @@ import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
 
-public class TestSquidScreen extends SquidScreen {
+public class ModulesScreen extends SquidScreen {
 
-    public TestSquidScreen() {
+    public ModulesScreen() {
         super(Text.of("test"));
     }
 
