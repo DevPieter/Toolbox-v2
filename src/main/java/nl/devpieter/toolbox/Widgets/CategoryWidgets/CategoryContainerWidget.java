@@ -2,6 +2,7 @@ package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCBorder;
+import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
@@ -22,6 +23,8 @@ public class CategoryContainerWidget extends WidgetBase {
     private final float gap;
     private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
 
+    private final SCContainer container;
+
     private final Animation selectedSlideAnimation;
     private SCBorder selectedBorder;
 
@@ -31,12 +34,15 @@ public class CategoryContainerWidget extends WidgetBase {
         this.gap = gap;
         this.categorySelectedCallback = categorySelectedCallback;
 
+        container = new SCContainer(this, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        addChild(container);
+
         selectedSlideAnimation = new Animation(y, y, Duration.ofMillis(400), Easing.EXPO_OUT);
         selectedSlideAnimation.complete();
     }
 
     public void init(@NotNull List<Class<? extends ICategory>> categoryClasses) {
-        clearChildren();
+        container.clearChildren();
         if (categoryClasses.isEmpty()) return;
 
         int paddingX = 16;
@@ -46,25 +52,27 @@ public class CategoryContainerWidget extends WidgetBase {
         float width = getWidth() - paddingX * 2;
 
         CategoryCardWidget allCategoryCardWidget = new CategoryCardWidget(x, y, width, null, this::onCategorySelected);
+        allCategoryCardWidget.setParent(container);
         allCategoryCardWidget.setSelected(true);
-        addChild(allCategoryCardWidget);
+        container.addChild(allCategoryCardWidget);
 
         y += CategoryCardWidget.HEIGHT + gap;
 
         for (Class<? extends ICategory> categoryClass : categoryClasses) {
             CategoryCardWidget categoryCardWidget = new CategoryCardWidget(x, y, width, categoryClass, this::onCategorySelected);
-            addChild(categoryCardWidget);
+            categoryCardWidget.setParent(container);
+            container.addChild(categoryCardWidget);
             y += CategoryCardWidget.HEIGHT + gap;
         }
 
 //        Color selectedColor = new Color(138, 131, 235);
         Color selectedColor = colorManager.get("category.selector");
 
-        selectedBorder = new SCBorder(this, x, y, 1, CategoryCardWidget.HEIGHT, 2);
+        selectedBorder = new SCBorder(container, x, y, 1, CategoryCardWidget.HEIGHT, 2);
         selectedBorder.color().set(selectedColor).cornerRadius().set(8, 0, 0, 8);
-        addChild(selectedBorder);
+        container.addChild(selectedBorder);
 
-        setFocusedChild(allCategoryCardWidget);
+        container.setFocusedChild(allCategoryCardWidget);
     }
 
     @Override
@@ -74,11 +82,12 @@ public class CategoryContainerWidget extends WidgetBase {
     }
 
     private void onCategorySelected(@Nullable Class<? extends ICategory> categoryClass) {
-        getChildren().stream()
+
+        container.getChildren().stream()
                 .filter(c -> c instanceof CategoryCardWidget cc && cc.getCategoryClass() != categoryClass)
                 .forEach(c -> ((CategoryCardWidget) c).setSelected(false));
 
-        IRenderable child = getChildren()
+        IRenderable child = container.getChildren()
                 .stream()
                 .filter(c -> c instanceof CategoryCardWidget cc && cc.getCategoryClass() == categoryClass)
                 .findFirst()
@@ -86,7 +95,7 @@ public class CategoryContainerWidget extends WidgetBase {
 
         if (!(child instanceof CategoryCardWidget categoryCard)) return;
 
-        setFocusedChild(child);
+        container.setFocusedChild(child);
         categoryCard.setSelected(true);
         categorySelectedCallback.accept(categoryClass);
 

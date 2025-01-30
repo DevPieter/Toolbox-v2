@@ -4,7 +4,7 @@ import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Easing;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Category.CategoryManager;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.util.IConsumer;
 import java.awt.*;
 import java.time.Duration;
 
-public class CategoryCardWidget extends WidgetBase {
+public class CategoryCardWidget extends ComponentBase {
 
     //    public static final int HEIGHT = 67;
     public static final int HEIGHT = 36 + 24;
@@ -69,7 +69,7 @@ public class CategoryCardWidget extends WidgetBase {
     @Override
     public void mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return;
+        if (!wasPressedInBounds() || !isHovered() || !isParentHovered() || !isInteractable()) return;
 
         categorySelectedCallback.accept(categoryClass);
     }
