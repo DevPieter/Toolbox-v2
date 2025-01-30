@@ -7,8 +7,8 @@ import net.minecraft.util.Identifier;
 import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.rendering.RenderingManager;
 import nl.devpieter.squid.rendering.font.Font;
+import nl.devpieter.squid.rendering.font.FontHolder;
 import nl.devpieter.squid.rendering.font.FontUtils;
-import nl.devpieter.squid.rendering.font.fontHolders.FontHolder;
 import nl.devpieter.toolbox.Toolbox;
 
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public class FontManager implements SynchronousResourceReloader {
             try (InputStream inputStream = entry.getValue().getInputStream()) {
                 FontUtils.loadFontHolder(renderingManager.getContext(), fontHolder, inputStream);
             } catch (Exception e) {
-                Toolbox.LOGGER.error("Failed to load font holder: {}", fontHolder.identifier(), e);
+                Toolbox.LOGGER.error("Failed to load font holder: {}", fontHolder.getIdentifier(), e);
             }
 
             if (!fontHolders.containsKey(fontName)) fontHolders.put(fontName, new HashMap<>());

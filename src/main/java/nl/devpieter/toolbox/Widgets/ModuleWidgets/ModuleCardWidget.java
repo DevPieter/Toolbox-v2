@@ -2,7 +2,7 @@ package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
-import nl.devpieter.squid.layout.Alignment;
+import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
@@ -37,7 +37,8 @@ public class ModuleCardWidget extends ComponentBase {
     private final SCLabel title;
 
     public ModuleCardWidget(IRenderable parent, float x, float y, Class<? extends IModule> moduleClass) {
-        super(parent, x, y, WIDTH, HEIGHT);
+        super(x, y, WIDTH, HEIGHT);
+        this.setParent(parent);
 
         this.moduleClass = moduleClass;
         isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);

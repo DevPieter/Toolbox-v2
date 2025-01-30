@@ -1,9 +1,9 @@
 package nl.devpieter.toolbox.Widgets;
 
+import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCCard;
+import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
-import nl.devpieter.squid.rendering.animation.Animation;
-import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import org.lwjgl.nanovg.NanoVG;
 

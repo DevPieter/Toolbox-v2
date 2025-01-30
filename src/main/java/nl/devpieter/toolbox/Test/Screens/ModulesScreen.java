@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.Test.Screens;
 
 import net.minecraft.text.Text;
-import nl.devpieter.squid.screen.SquidScreen;
+import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
@@ -10,9 +10,9 @@ import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
 
-public class ModulesScreen extends SquidScreen {
+public class TestSquidScreen extends SquidScreen {
 
-    public ModulesScreen() {
+    public TestSquidScreen() {
         super(Text.of("test"));
     }
 
