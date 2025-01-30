@@ -95,6 +95,7 @@ public class PaginationWidget extends WidgetBase {
     public void mouseScrolled(float mouseX, float mouseY, double horizontalAmount, double verticalAmount) {
         super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
         if (getFocusedChild() != null) return;
+        if (!this.isHovered()) return; // TODO - Check if parent is hovered
 
         if (verticalAmount > 0 && paginatableWidget.hasPreviousPage()) {
             paginatableWidget.navigateToPrevious();

@@ -41,6 +41,7 @@ public class ModulesScreen extends SquidScreen {
 
         categoryContainer.init(CategoryManager.getInstance().getCategories());
         sidebar.addChild(categoryContainer);
+
         this.addWidget(sidebar);
     }
 
