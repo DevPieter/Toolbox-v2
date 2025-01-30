@@ -1,10 +1,10 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import net.minecraft.util.math.MathHelper;
+import nl.devpieter.squid.animation.Animation;
+import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.ComponentBase;
-import nl.devpieter.squid.rendering.animation.Animation;
-import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,8 @@ public class ModuleContainerWidget extends ComponentBase {
     private final float gap;
 
     public ModuleContainerWidget(IRenderable parent, float x, float y, float width, float height, float gap) {
-        super(parent, x, y, width, height);
+        super(x, y, width, height);
+        this.setParent(parent);
 
         this.gap = gap;
     }

@@ -1,10 +1,10 @@
 package nl.devpieter.toolbox.Widgets.CategoryWidgets;
 
+import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
+import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.widget.WidgetBase;
-import nl.devpieter.squid.rendering.animation.ColorAnimation;
-import nl.devpieter.squid.rendering.animation.Easing;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Category.CategoryManager;

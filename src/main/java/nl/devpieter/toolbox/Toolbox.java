@@ -74,7 +74,7 @@ public class Toolbox implements ModInitializer {
 
             if (toggleDebug.wasPressed()) {
                 Toolbox.DEBUG = !Toolbox.DEBUG;
-                DebugOptions.getInstance().setDebug(Toolbox.DEBUG);
+                DebugOptions.getInstance().setDebugEnabled(Toolbox.DEBUG);
                 Toolbox.LOGGER.info("Debug mode: " + Toolbox.DEBUG);
             }
         });

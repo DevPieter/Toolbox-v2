@@ -1,11 +1,9 @@
 package nl.devpieter.toolbox.Test.Screens;
 
 import net.minecraft.text.Text;
-import nl.devpieter.squid.rendering.font.FontUtils;
-import nl.devpieter.squid.screen.SquidScreen;
+import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
 import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
