@@ -5,7 +5,7 @@ import nl.devpieter.squid.components.SCBorder;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.toolbox.Category.ICategory;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.List;
 
-public class CategoryContainerWidget extends WidgetBase {
+public class CategoryContainerWidget extends ComponentBase {
 
     private final ColorManager colorManager = ColorManager.getInstance();
 
@@ -34,60 +34,63 @@ public class CategoryContainerWidget extends WidgetBase {
         this.gap = gap;
         this.categorySelectedCallback = categorySelectedCallback;
 
-        container = new SCContainer(this, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        addChild(container);
+        this.container = new SCContainer(this, x, y, width, height);
+        this.container.setParent(this);
+        this.addChild(this.container);
 
-        selectedSlideAnimation = new Animation(y, y, Duration.ofMillis(400), Easing.EXPO_OUT);
-        selectedSlideAnimation.complete();
+        this.selectedSlideAnimation = new Animation(y, y, Duration.ofMillis(400), Easing.EXPO_OUT);
+        this.selectedSlideAnimation.complete();
     }
 
     public void init(@NotNull List<Class<? extends ICategory>> categoryClasses) {
-        container.clearChildren();
+        this.container.clearChildren();
         if (categoryClasses.isEmpty()) return;
 
         int paddingX = 16;
 
-        float x = getX() + paddingX;
-        float y = getY();
-        float width = getWidth() - paddingX * 2;
+        float x = this.getX() + paddingX;
+        float y = this.getY();
+        float width = this.getWidth() - paddingX * 2;
 
         CategoryCardWidget allCategoryCardWidget = new CategoryCardWidget(x, y, width, null, this::onCategorySelected);
-        allCategoryCardWidget.setParent(container);
+        allCategoryCardWidget.setParent(this.container);
         allCategoryCardWidget.setSelected(true);
-        container.addChild(allCategoryCardWidget);
+
+        this.container.addChild(allCategoryCardWidget);
+        this.container.setFocusedChild(allCategoryCardWidget);
 
         y += CategoryCardWidget.HEIGHT + gap;
 
         for (Class<? extends ICategory> categoryClass : categoryClasses) {
             CategoryCardWidget categoryCardWidget = new CategoryCardWidget(x, y, width, categoryClass, this::onCategorySelected);
-            categoryCardWidget.setParent(container);
-            container.addChild(categoryCardWidget);
+            categoryCardWidget.setParent(this.container);
+            this.container.addChild(categoryCardWidget);
+
             y += CategoryCardWidget.HEIGHT + gap;
         }
 
-//        Color selectedColor = new Color(138, 131, 235);
-        Color selectedColor = colorManager.get("category.selector");
+        Color selectedColor = this.colorManager.get("category.selector");
 
-        selectedBorder = new SCBorder(container, x, y, 1, CategoryCardWidget.HEIGHT, 2);
-        selectedBorder.color().set(selectedColor).cornerRadius().set(8, 0, 0, 8);
-        container.addChild(selectedBorder);
-
-        container.setFocusedChild(allCategoryCardWidget);
+        this.selectedBorder = new SCBorder(this.container, x, y, 1, CategoryCardWidget.HEIGHT, 2);
+        this.selectedBorder.color().set(selectedColor).cornerRadius().set(8, 0, 0, 8);
+        this.container.addChild(selectedBorder);
     }
 
     @Override
     protected void render(long context, float delta) {
-        if (selectedBorder == null) return;
-        selectedBorder.setY(selectedSlideAnimation.get());
+        if (this.selectedBorder == null) return;
+        this.selectedBorder.setY(this.selectedSlideAnimation.get());
     }
 
     private void onCategorySelected(@Nullable Class<? extends ICategory> categoryClass) {
 
-        container.getChildren().stream()
+        // Unselect all other category cards
+        this.container.getChildren().stream()
                 .filter(c -> c instanceof CategoryCardWidget cc && cc.getCategoryClass() != categoryClass)
                 .forEach(c -> ((CategoryCardWidget) c).setSelected(false));
 
-        IRenderable child = container.getChildren()
+        // Find the selected category card
+        IRenderable child = this.container.getChildren()
                 .stream()
                 .filter(c -> c instanceof CategoryCardWidget cc && cc.getCategoryClass() == categoryClass)
                 .findFirst()
@@ -95,12 +98,12 @@ public class CategoryContainerWidget extends WidgetBase {
 
         if (!(child instanceof CategoryCardWidget categoryCard)) return;
 
-        container.setFocusedChild(child);
+        this.container.setFocusedChild(child);
         categoryCard.setSelected(true);
-        categorySelectedCallback.accept(categoryClass);
+        this.categorySelectedCallback.accept(categoryClass);
 
-        selectedSlideAnimation.setFrom(selectedSlideAnimation.get());
-        selectedSlideAnimation.setTo(child.getY());
-        selectedSlideAnimation.reset();
+        this.selectedSlideAnimation.setFrom(this.selectedSlideAnimation.get());
+        this.selectedSlideAnimation.setTo(child.getY());
+        this.selectedSlideAnimation.reset();
     }
 }

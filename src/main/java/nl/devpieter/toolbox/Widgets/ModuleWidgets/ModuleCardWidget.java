@@ -67,18 +67,18 @@ public class ModuleCardWidget extends ComponentBase {
 
         STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(24);
         title = new SCLabel(this, x + 12, y, width - 24, 40, SText.of(titleStyle).append(nameText));
-        title.setAlignment(Alignment.MIDDLE_LEFT);
+        title.alignment().set(Alignment.MIDDLE_LEFT);
         addChild(title);
 
         STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(18);
         SCLabel description = new SCLabel(this, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionStyle).append(descriptionText));
-        description.setMultiLine(true);
+        description.multiLine().setTrue();
         addChild(description);
     }
 
     @Override
     protected void render(long context, float delta) {
-        title.textStyle().setColor(moduleManager.isEnabled(moduleClass) ? titleEnabledColor : titleColor);
+        title.text().getStyle().setColor(moduleManager.isEnabled(moduleClass) ? titleEnabledColor : titleColor);
 
         int color = moduleManager.isEnabled(moduleClass) ? shadowEnabledColor : shadowColor;
         NVGHelper.drawDropShadow(context, getX() + 12, getY() + 12, getWidth() - 16, getHeight() - 16, 12, 6, 4, color);

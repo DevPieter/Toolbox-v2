@@ -25,14 +25,16 @@ public class ModulesScreen extends SquidScreen {
 
         ModuleCarouselComponent moduleCarouselWidget = new ModuleCarouselComponent(424 + 16, 324 + 8 + 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 324 - 8 - 16 - 16, 32);
         moduleCarouselWidget.init(ModuleManager.getInstance().getModules());
+        moduleCarouselWidget.setParent(content);
         content.addChild(moduleCarouselWidget);
 
         float centerPaginationX = 424 + 16 + (this.windowWidth - 424 - 16 - 16) / 2F - PaginationWidget.WIDTH / 2F;
 
         PaginationWidget paginationWidget = new PaginationWidget(centerPaginationX, 324 - PaginationWidget.HEIGHT - 16, moduleCarouselWidget);
+        paginationWidget.setParent(content);
         content.addChild(paginationWidget);
 
-        this.addWidget(content);
+        this.addRenderable(content);
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
         CategoryContainerWidget categoryContainer = new CategoryContainerWidget(0, 324 + 8 + 16, 424, sidebar.getHeight() - 324 - 25 - 32, gap, aClass -> {
@@ -40,9 +42,10 @@ public class ModulesScreen extends SquidScreen {
         });
 
         categoryContainer.init(CategoryManager.getInstance().getCategories());
+        categoryContainer.setParent(sidebar);
         sidebar.addChild(categoryContainer);
 
-        this.addWidget(sidebar);
+        this.addRenderable(sidebar);
     }
 
     @Override

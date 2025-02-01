@@ -21,6 +21,7 @@ public class CategoryCardWidget extends ComponentBase {
     //    public static final int HEIGHT = 67;
     public static final int HEIGHT = 36 + 24;
 
+    private final CategoryManager categoryManager = CategoryManager.getInstance();
     private final ColorManager colorManager = ColorManager.getInstance();
 
     private final @Nullable Class<? extends ICategory> categoryClass;
@@ -35,35 +36,34 @@ public class CategoryCardWidget extends ComponentBase {
         this.categoryClass = categoryClass;
         this.categorySelectedCallback = categorySelectedCallback;
 
-        CategoryManager categoryManager = CategoryManager.getInstance();
-        String nameText = categoryClass == null ? "All" : categoryManager.getName(categoryClass).getString();
-        String descriptionText = categoryClass == null ? "All categories" : categoryManager.getDescription(categoryClass).getString();
+        String nameText = categoryClass == null ? "All" : this.categoryManager.getName(categoryClass).getString();
+        String descriptionText = categoryClass == null ? "All categories" : this.categoryManager.getDescription(categoryClass).getString();
 
-        Color backgroundColor = colorManager.get("category.card.background");
-        Color backgroundHoverColor = colorManager.get("category.card.background.hover");
-        Color titleColor = colorManager.get("category.card.title");
-        Color titleSelectedColor = colorManager.get("category.card.title.selected");
-        Color descriptionColor = colorManager.get("category.card.description");
+        Color backgroundColor = this.colorManager.get("category.card.background");
+        Color backgroundHoverColor = this.colorManager.get("category.card.background.hover");
+        Color titleColor = this.colorManager.get("category.card.title");
+        Color titleSelectedColor = this.colorManager.get("category.card.title.selected");
+        Color descriptionColor = this.colorManager.get("category.card.description");
 
         SCCard card = new SCCard(this, x, y, width, height);
         card.color().set(backgroundColor, backgroundHoverColor).cornerRadius().set(0, 8, 8, 0);
-        addChild(card);
+        this.addChild(card);
 
-        titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);
-        titleColorAnimation.setForward(false);
+        this.titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);
+        this.titleColorAnimation.setForward(false);
 
         STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(18);
-        title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
-        addChild(title);
+        this.title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
+        this.addChild(this.title);
 
         STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(14);
         SCLabel description = new SCLabel(this, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
-        addChild(description);
+        this.addChild(description);
     }
 
     @Override
     protected void render(long context, float delta) {
-        title.textStyle().setColor(titleColorAnimation.get());
+        this.title.text().getStyle().setColor(this.titleColorAnimation.get());
     }
 
     @Override
@@ -71,18 +71,18 @@ public class CategoryCardWidget extends ComponentBase {
         super.mouseReleased(mouseX, mouseY, button);
         if (!wasPressedInBounds() || !isHovered() || !isParentHovered() || !isInteractable()) return;
 
-        categorySelectedCallback.accept(categoryClass);
+        this.categorySelectedCallback.accept(this.categoryClass);
     }
 
     public @Nullable Class<? extends ICategory> getCategoryClass() {
-        return categoryClass;
+        return this.categoryClass;
     }
 
     public void setSelected(boolean selected) {
-        if (titleColorAnimation.isForward() == selected) return;
-        titleColorAnimation.setForward(selected);
+        if (this.titleColorAnimation.isForward() == selected) return;
+        this.titleColorAnimation.setForward(selected);
 
-        if (selected) titleColorAnimation.reset();
-        else titleColorAnimation.complete();
+        if (selected) this.titleColorAnimation.reset();
+        else this.titleColorAnimation.complete();
     }
 }
