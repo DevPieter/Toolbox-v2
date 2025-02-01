@@ -3,7 +3,7 @@ package nl.devpieter.toolbox.Widgets;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Theme.ColorManager;
@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
-public class PaginationWidget extends WidgetBase {
+public class PaginationWidget extends ComponentBase {
 
     public static final int WIDTH = 400;
     public static final int HEIGHT = 45;
@@ -29,9 +29,6 @@ public class PaginationWidget extends WidgetBase {
     public PaginationWidget(float x, float y, PaginatableComponentBase paginatableWidget) {
         super(x, y, WIDTH, HEIGHT);
 
-//        Color backgroundColor = new Color(17, 17, 17);
-//        Color textColor = new Color(214, 217, 219);
-
         Color backgroundColor = colorManager.get("pagination.background");
         Color backgroundHoverColor = colorManager.get("pagination.background.hover");
         Color textColor = colorManager.get("pagination.text");
@@ -40,35 +37,35 @@ public class PaginationWidget extends WidgetBase {
 
         float size = (width - GAP * 2) / 3;
 
-        left = new SCCard(this, x, y, size, height);
-        left.setInheritParentHover(false);
-        left.color().set(backgroundColor, backgroundHoverColor);
-        left.cornerRadius().set(8, 0, 0, 8);
-        addChild(left);
+        this.left = new SCCard(this, x, y, size, height);
+        this.left.inheritParentHover().setFalse();
+        this.left.color().set(backgroundColor, backgroundHoverColor);
+        this.left.cornerRadius().set(8, 0, 0, 8);
+        this.addChild(this.left);
 
         SText previousText = SText.of(textStyle).append("Previous");
         SCLabel previous = new SCLabel(this, x, y, size, height, previousText);
-        previous.setAlignment(Alignment.MIDDLE_CENTER);
-        addChild(previous);
+        previous.alignment().set(Alignment.MIDDLE_CENTER);
+        this.addChild(previous);
 
         SCCard middle = new SCCard(this, x + size + GAP, y, size, height);
         middle.color().set(backgroundColor);
-        addChild(middle);
+        this.addChild(middle);
 
-        page = new SCLabel(this, x + size + GAP, y, size, height, SText.of(textStyle).append("? / ?"));
-        page.setAlignment(Alignment.MIDDLE_CENTER);
-        addChild(page);
+        this.page = new SCLabel(this, x + size + GAP, y, size, height, SText.of(textStyle).append("? / ?"));
+        this.page.alignment().set(Alignment.MIDDLE_CENTER);
+        this.addChild(this.page);
 
-        right = new SCCard(this, x + size * 2 + GAP * 2, y, size, height);
-        right.setInheritParentHover(false);
-        right.color().set(backgroundColor, backgroundHoverColor);
-        right.cornerRadius().set(0, 8, 8, 0);
-        addChild(right);
+        this.right = new SCCard(this, x + size * 2 + GAP * 2, y, size, height);
+        this.right.inheritParentHover().setFalse();
+        this.right.color().set(backgroundColor, backgroundHoverColor);
+        this.right.cornerRadius().set(0, 8, 8, 0);
+        this.addChild(this.right);
 
         SText nextText = SText.of(textStyle).append("Next");
         SCLabel next = new SCLabel(this, x + size * 2 + GAP * 2, y, size, height, nextText);
-        next.setAlignment(Alignment.MIDDLE_CENTER);
-        addChild(next);
+        next.alignment().set(Alignment.MIDDLE_CENTER);
+        this.addChild(next);
 
         this.paginatableWidget = paginatableWidget;
         paginatableWidget.subscribePageChangeListener(this::onPageChange);
@@ -82,54 +79,53 @@ public class PaginationWidget extends WidgetBase {
     @Override
     public void mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return;
+        if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return;
 
-        if (left.isHovered() && left.wasPressedInBounds()) {
-            paginatableWidget.navigateToPrevious();
-        } else if (right.isHovered() && right.wasPressedInBounds()) {
-            paginatableWidget.navigateToNext();
+        if (this.left.isHovered() && this.left.wasPressedInBounds()) {
+            this.paginatableWidget.navigateToPrevious();
+        } else if (this.right.isHovered() && this.right.wasPressedInBounds()) {
+            this.paginatableWidget.navigateToNext();
         }
     }
 
     @Override
     public void mouseScrolled(float mouseX, float mouseY, double horizontalAmount, double verticalAmount) {
         super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-        if (getFocusedChild() != null) return;
+        if (this.getFocusedChild() != null) return;
         if (!this.isHovered()) return; // TODO - Check if parent is hovered
 
-        if (verticalAmount > 0 && paginatableWidget.hasPreviousPage()) {
-            paginatableWidget.navigateToPrevious();
-        } else if (verticalAmount < 0 && paginatableWidget.hasNextPage()) {
-            paginatableWidget.navigateToNext();
+        if (verticalAmount > 0 && this.paginatableWidget.hasPreviousPage()) {
+            this.paginatableWidget.navigateToPrevious();
+        } else if (verticalAmount < 0 && this.paginatableWidget.hasNextPage()) {
+            this.paginatableWidget.navigateToNext();
         }
     }
 
     @Override
     public void keyReleased(int keyCode, int scanCode, int modifiers) {
         super.keyReleased(keyCode, scanCode, modifiers);
-        if (getFocusedChild() != null) return;
+        if (this.getFocusedChild() != null) return;
 
         switch (keyCode) {
             case GLFW.GLFW_KEY_LEFT:
-                paginatableWidget.navigateToPrevious();
+                this.paginatableWidget.navigateToPrevious();
                 break;
             case GLFW.GLFW_KEY_RIGHT:
-                paginatableWidget.navigateToNext();
+                this.paginatableWidget.navigateToNext();
                 break;
             case GLFW.GLFW_KEY_HOME:
-                paginatableWidget.navigateToFirst();
+                this.paginatableWidget.navigateToFirst();
                 break;
             case GLFW.GLFW_KEY_END:
-                paginatableWidget.navigateToLast();
+                this.paginatableWidget.navigateToLast();
                 break;
         }
     }
 
     private void onPageChange(int previousPage, int newPage) {
-
         int current = Math.max(newPage + 1, 1);
-        int total = Math.max(paginatableWidget.getPageCount(), 1);
+        int total = Math.max(this.paginatableWidget.getPageCount(), 1);
 
-        page.setText(SText.of(this.page.textStyle()).append(current + " / " + total));
+        this.page.text().set(SText.of(this.page.text().getStyle()).append(current + " / " + total));
     }
 }

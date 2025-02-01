@@ -5,7 +5,7 @@ import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.enums.Easing;
-import nl.devpieter.squid.renderable.widget.WidgetBase;
+import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
 import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.squid.rendering.text.SText;
@@ -18,7 +18,7 @@ import org.lwjgl.nanovg.NanoVG;
 import java.awt.*;
 import java.time.Duration;
 
-public class SidebarWidget extends WidgetBase {
+public class SidebarWidget extends ComponentBase {
 
     private final ColorManager colorManager = ColorManager.getInstance();
     private final FontManager fontManager = FontManager.getInstance();
@@ -49,17 +49,17 @@ public class SidebarWidget extends WidgetBase {
 
         STextStyle titleStyle = STextStyle.of(titleColor).setFont(font).setFontSize(96);
         SCLabel title = new SCLabel(this, x, y + 40, width, 96, SText.of(titleStyle).append("Toolbox"));
-        title.setAlignment(Alignment.MIDDLE_CENTER);
+        title.alignment().set(Alignment.MIDDLE_CENTER);
         addChild(title);
 
         STextStyle subtitleStyle = STextStyle.of(subtitleColor).setFont(font).setFontSize(18);
         SCLabel subtitle = new SCLabel(this, x, y + 140, width - 120, 18, SText.of(subtitleStyle).append("By DevPieter"));
-        subtitle.setAlignment(Alignment.MIDDLE_CENTER);
+        subtitle.alignment().set(Alignment.MIDDLE_CENTER);
         addChild(subtitle);
 
         STextStyle versionStyle = STextStyle.of(versionColor).setFontSize(16);
         SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s - %s", Toolbox.getToolboxVersion(), Toolbox.getMinecraftVersion(), Toolbox.getBuildStatus())));
-        version.setAlignment(Alignment.MIDDLE_CENTER);
+        version.alignment().set(Alignment.MIDDLE_CENTER);
         addChild(version);
     }
 
