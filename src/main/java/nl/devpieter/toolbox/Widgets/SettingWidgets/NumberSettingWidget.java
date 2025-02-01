@@ -45,7 +45,7 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         /* Label */
         STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
         this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
-        this.label.setAlignment(Alignment.MIDDLE_LEFT).setTextStyle(labelStyle).setHoverable(true);
+        this.label.alignment().set(Alignment.MIDDLE_LEFT).text().setStyle(labelStyle).hoverable().setTrue();
         this.addChild(this.label);
 
         /* Progress Bar */
@@ -54,7 +54,7 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         float barWidth = this.width - this.gap - this.knobSize - this.displayWidth;
 
         this.progressBar = new SCProgressBar(this, barX, barY, barWidth, this.barThickness);
-        this.progressBar.setUserChangeAllowed(true).setScrollChangeAllowed(true).setParentScrollChangeAllowed(true);
+        this.progressBar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
         this.addChild(this.progressBar);
 
         /* Knob */
@@ -68,7 +68,7 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         int displayDigits = this.min instanceof Integer ? 0 : 2;
 
         this.display = new SCNumberInputDisplay(this, displayX, this.y, this.displayWidth, this.height);
-        this.display.configureFormatter(displayDigits, displayDigits);
+        this.display.formatter().setFractionDigits(displayDigits, displayDigits);
         this.addChild(this.display);
 
         this.setValue(this.setting.getValue(), false, false);

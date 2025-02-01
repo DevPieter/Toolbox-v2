@@ -28,16 +28,16 @@ public class ModuleSettingsScreen extends SquidScreen {
         super.init();
 
         ContentWidget content = new ContentWidget(424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32);
-        this.addWidget(content);
+        this.addRenderable(content);
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
 
         SText text = SText.of().append(this.module.getName().getString());
         SCLabel label = new SCLabel(sidebar, 0, 324 + 8 + 16, 424, 20, text);
-        label.setAlignment(Alignment.MIDDLE_CENTER);
+        label.alignment().set(Alignment.MIDDLE_CENTER);
         sidebar.addChild(label);
 
-        this.addWidget(sidebar);
+        this.addRenderable(sidebar);
 
         int y = 100;
 
@@ -63,6 +63,8 @@ public class ModuleSettingsScreen extends SquidScreen {
                             intSetting.getMin(),
                             intSetting.getMax()
                     );
+
+                    intSettingWidget.setParent(content);
                     content.addChild(intSettingWidget);
                 }
 
@@ -78,6 +80,8 @@ public class ModuleSettingsScreen extends SquidScreen {
                             floatSetting.getMin(),
                             floatSetting.getMax()
                     );
+
+                    floatSettingWidget.setParent(content);
                     content.addChild(floatSettingWidget);
                 }
             }

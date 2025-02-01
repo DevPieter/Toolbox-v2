@@ -47,7 +47,7 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         /* Label */
         STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
         this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
-        this.label.setAlignment(Alignment.MIDDLE_LEFT).setTextStyle(labelStyle).setHoverable(true);
+        this.label.alignment().set(Alignment.MIDDLE_LEFT).text().setStyle(labelStyle).hoverable().setTrue();
         this.addChild(this.label);
 
         /* Base */
