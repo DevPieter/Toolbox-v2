@@ -5,8 +5,10 @@ import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
+import nl.devpieter.toolbox.setting.SettingGroup;
 import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.abstractions.ISetting;
+import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
 import nl.devpieter.toolbox.setting.widgetSettings.BooleanWidgetSetting;
 import nl.devpieter.toolbox.setting.widgetSettings.NumberWidgetSetting;
 import org.jetbrains.annotations.NotNull;
@@ -52,10 +54,17 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     @Override
     public List<ISetting<?>> getSettings() {
         return List.of(
-                leftClicks,
-                rightClicks,
+//                leftClicks,
+//                rightClicks,
                 isEnable,
                 myBoolean
+        );
+    }
+
+    @Override
+    public List<ISettingGroup> getSettingGroups() {
+        return List.of(
+                new SettingGroup("Clicks", List.of(leftClicks, rightClicks))
         );
     }
 
