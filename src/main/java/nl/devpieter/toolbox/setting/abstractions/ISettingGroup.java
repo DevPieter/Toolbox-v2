@@ -6,5 +6,5 @@ public interface ISettingGroup {
 
     String getTitle();
 
-    List<ISetting> getSettings();
+    List<IWidgetSetting<?>> getSettings();
 }

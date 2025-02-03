@@ -54,8 +54,8 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     @Override
     public List<ISetting<?>> getSettings() {
         return List.of(
-//                leftClicks,
-//                rightClicks,
+                leftClicks,
+                rightClicks,
                 isEnable,
                 myBoolean
         );
@@ -64,7 +64,8 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     @Override
     public List<ISettingGroup> getSettingGroups() {
         return List.of(
-                new SettingGroup("Clicks", List.of(leftClicks, rightClicks))
+                new SettingGroup("Clicks", List.of(leftClicks, rightClicks)),
+                new SettingGroup("Settings", List.of(isEnable, myBoolean))
         );
     }
 

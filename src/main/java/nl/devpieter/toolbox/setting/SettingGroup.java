@@ -1,16 +1,16 @@
 package nl.devpieter.toolbox.setting;
 
-import nl.devpieter.toolbox.setting.abstractions.ISetting;
 import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
+import nl.devpieter.toolbox.setting.abstractions.IWidgetSetting;
 
 import java.util.List;
 
 public class SettingGroup implements ISettingGroup {
 
     private final String title;
-    private final List<ISetting> settings;
+    private final List<IWidgetSetting<?>> settings;
 
-    public SettingGroup(String title, List<ISetting> settings) {
+    public SettingGroup(String title, List<IWidgetSetting<?>> settings) {
         this.title = title;
         this.settings = settings;
     }
@@ -21,7 +21,7 @@ public class SettingGroup implements ISettingGroup {
     }
 
     @Override
-    public List<ISetting> getSettings() {
+    public List<IWidgetSetting<?>> getSettings() {
         return settings;
     }
 }
