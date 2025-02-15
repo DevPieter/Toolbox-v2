@@ -7,9 +7,8 @@ import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.SettingWidgets.SettingGroupWidget;
+import nl.devpieter.toolbox.Widgets.SettingWidgets.SettingGroupContainerWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
-import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
 
 public class ModuleSettingsScreen extends SquidScreen {
 
@@ -25,6 +24,13 @@ public class ModuleSettingsScreen extends SquidScreen {
         super.init();
 
         ContentWidget content = new ContentWidget(424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32);
+
+        SettingGroupContainerWidget settingGroupContainer = new SettingGroupContainerWidget(content.getX(), content.getY(), content.getWidth(), content.getHeight(), 16);
+        settingGroupContainer.init(this.module);
+
+        settingGroupContainer.setParent(content);
+        content.addChild(settingGroupContainer);
+
         this.addRenderable(content);
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
@@ -36,7 +42,7 @@ public class ModuleSettingsScreen extends SquidScreen {
 
         this.addRenderable(sidebar);
 
-        this.initSettingGroups(content);
+//        this.initSettingGroups(content);
 
 //        int y = 100;
 //
@@ -88,25 +94,40 @@ public class ModuleSettingsScreen extends SquidScreen {
 //            y += 50;
     }
 
-    private void initSettingGroups(ContentWidget content) {
-        float gap = 16;
-
-        float x = content.getX() + gap;
-        float y = content.getY() + gap;
-
-        for (int i = 0; i < this.module.getSettingGroups().size(); i++) {
-            ISettingGroup settingGroup = this.module.getSettingGroups().get(i);
-            SettingGroupWidget settingGroupWidget = new SettingGroupWidget(x, y, content.getWidth() / 2 - gap -gap, settingGroup);
-
-            settingGroupWidget.setParent(content);
-            content.addChild(settingGroupWidget);
-
-            if (i % 2 == 0) {
-                x = content.getX() + gap;
-                y += settingGroupWidget.getHeight() + gap;
-            } else {
-                x += settingGroupWidget.getWidth() + gap;
-            }
-        }
-    }
+//    private void initSettingGroups(ContentWidget content) {
+//        float gap = 16;
+//
+//        float minWidth = 400;
+//        float maxWidth = 600;
+//
+//        int maxPerRow = calculateFittingCardsRow(content.getWidth(), minWidth, maxWidth, gap);
+//        float cardWidth = calculateCardWidth(content.getWidth(), gap, maxPerRow);
+//
+//        float[] rowsHeights = new float[maxPerRow];
+//
+//        for (int i = 0; i < this.module.getSettingGroups().size(); i++) {
+//            int row = i % maxPerRow;
+//            float rowHeight = rowsHeights[row];
+//
+//            float x = content.getX() + row * (cardWidth + gap) + gap;
+//            float y = content.getY() + rowHeight + gap /*+ (324 + 8 + 16)*/;
+//
+//            ISettingGroup settingGroup = this.module.getSettingGroups().get(i);
+//            SettingGroupWidget settingGroupWidget = new SettingGroupWidget(x, y, cardWidth, settingGroup);
+//
+//            settingGroupWidget.setParent(content);
+//            content.addChild(settingGroupWidget);
+//
+//            rowsHeights[row] += settingGroupWidget.getHeight() + gap;
+//        }
+//    }
+//
+//    // Calculate the amount of cards that fit in the horizontal direction
+//    private int calculateFittingCardsRow(float width, float minWidth, float maxWidth, float gap) {
+//        return Math.max(1, Math.min((int) Math.floor((width - gap) / (minWidth + gap)), (int) Math.floor((width - gap) / (maxWidth + gap))));
+//    }
+//
+//    private float calculateCardWidth(float width, float gap, int maxPerRow) {
+//        return (width - gap * (maxPerRow + 1)) / maxPerRow;
+//    }
 }

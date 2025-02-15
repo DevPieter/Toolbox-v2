@@ -1,14 +1,11 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import net.minecraft.util.math.MathHelper;
-import nl.devpieter.squid.animation.Animation;
-import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.util.List;
 
 public class ModuleContainerWidget extends ComponentBase {
@@ -42,24 +39,9 @@ public class ModuleContainerWidget extends ComponentBase {
         }
     }
 
-    private final Animation scaleAnimation = new Animation(0.2F, 1.0F, Duration.ofMillis(400), Easing.BACK_IN_OUT, true);
-
     @Override
     protected void render(long context, float delta) {
 
-//        float scale = 0.8F;
-//        float scale = 1.0F;
-
-//        if(scaleAnimation.isDone()) {
-//            scaleAnimation.setForward(!scaleAnimation.isForward());
-//            scaleAnimation.reset();
-//        }
-
-//        float scale = scaleAnimation.get();
-//
-//        NanoVG.nvgTranslate(context, getX() + getWidth() / 2, getY() + getHeight() / 2);
-//        NVGHelper.scale(context, scale, scale);
-//        NanoVG.nvgTranslate(context, -(getX() + getWidth() / 2), -(getY() + getHeight() / 2));
     }
 
     public static int fittingCards(float width, float height, float gap) {
@@ -67,10 +49,10 @@ public class ModuleContainerWidget extends ComponentBase {
     }
 
     public static int fittingCardsRow(float width, float gap) {
-        return MathHelper.floor((float) (width - gap) / (ModuleCardWidget.WIDTH + gap));
+        return MathHelper.floor((width - gap) / (ModuleCardWidget.WIDTH + gap));
     }
 
     public static int fittingCardsColumn(float height, float gap) {
-        return MathHelper.floor((float) (height - gap) / (ModuleCardWidget.HEIGHT + gap));
+        return MathHelper.floor((height - gap) / (ModuleCardWidget.HEIGHT + gap));
     }
 }

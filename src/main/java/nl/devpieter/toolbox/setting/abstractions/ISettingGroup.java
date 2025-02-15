@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ISettingGroup {
 
-    String getTitle();
+    String title();
 
-    List<IWidgetSetting<?>> getSettings();
+    List<IWidgetSetting<?>> settings();
 }

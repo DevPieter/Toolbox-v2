@@ -65,7 +65,10 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
     public List<ISettingGroup> getSettingGroups() {
         return List.of(
                 new SettingGroup("Clicks", List.of(leftClicks, rightClicks)),
-                new SettingGroup("Settings", List.of(isEnable, myBoolean))
+                new SettingGroup("Settings", List.of(leftClicks, rightClicks, isEnable)),
+                new SettingGroup("Test", List.of(myBoolean)),
+                new SettingGroup("Movement", List.of(leftClicks, rightClicks)),
+                new SettingGroup("Misc", List.of(isEnable))
         );
     }
 
