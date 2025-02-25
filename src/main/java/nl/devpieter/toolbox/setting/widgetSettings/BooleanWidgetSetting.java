@@ -1,5 +1,9 @@
 package nl.devpieter.toolbox.setting.widgetSettings;
 
+import nl.devpieter.squid.renderable.IRenderable;
+import nl.devpieter.squid.renderable.component.IComponent;
+import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Widgets.SettingWidgets.BooleanSettingWidget;
 import nl.devpieter.toolbox.setting.abstractions.WidgetSettingBase;
 
 import java.lang.reflect.Type;
@@ -21,6 +25,14 @@ public class BooleanWidgetSetting extends WidgetSettingBase<Boolean> {
     @Override
     public Type getType() {
         return Boolean.class;
+    }
+
+    @Override
+    public IComponent createWidget(IRenderable parent, float x, float y, float width, float gap, ISettingModule module) {
+        BooleanSettingWidget widget = new BooleanSettingWidget(x, y, width, gap, module, this);
+        widget.setParent(parent);
+
+        return widget;
     }
 
     public void toggle() {

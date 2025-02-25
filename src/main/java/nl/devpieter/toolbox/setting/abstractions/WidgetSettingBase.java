@@ -46,17 +46,9 @@ public abstract class WidgetSettingBase<T> implements IWidgetSetting<T> {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
     @Override
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override
@@ -64,17 +56,9 @@ public abstract class WidgetSettingBase<T> implements IWidgetSetting<T> {
         return allowNull;
     }
 
-    public void setAllowNull(boolean allowNull) {
-        this.allowNull = allowNull;
-    }
-
     @Override
     public boolean isEditable() {
         return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 
     @Override
@@ -82,17 +66,9 @@ public abstract class WidgetSettingBase<T> implements IWidgetSetting<T> {
         return hidden;
     }
 
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
     @Override
     public boolean isRequired() {
         return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
     }
 
     @Override

@@ -23,46 +23,34 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
     private final float radius = 8;
     private final float knobPadding = 3;
 
+    private final float gap;
+
     private final Animation slideAnimation;
     private final ColorAnimation slideColorAnimation;
 
-    private SCLabel label;
-    private SCCard base;
-    private SCKnob knob;
-
-    private SText labelText;
-    private float gap;
+    private final SCCard base;
+    private final SCKnob knob;
 
     public BooleanSettingWidget(float x, float y, float width, float gap, ISettingModule module, BooleanWidgetSetting setting) {
-        super(x, y, width, HEIGHT, module, setting);
+        super(x, y, width, HEIGHT, gap, module, setting);
 
-        this.labelText = SText.of().append(setting.getDisplayName());
         this.gap = gap;
 
         this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.QUINT_OUT);
         this.slideColorAnimation = new ColorAnimation(Squid.THEME.container, Squid.THEME.primary, Duration.ofMillis(400), Easing.QUINT_OUT);
 
-        float halfHeight = this.height / 2;
-
-        /* Label */
         STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
-        this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
-        this.label.alignment().set(Alignment.MIDDLE_LEFT).text().setStyle(labelStyle).hoverable().setTrue();
-        this.addChild(this.label);
+        SText labelText = SText.of(labelStyle).append(setting.getDisplayName());
+        SCLabel label = new SCLabel(this, x, y, gap, this.height, labelText);
+        label.alignment().set(Alignment.MIDDLE_LEFT).hoverable().setTrue();
+        this.addChild(label);
 
-        /* Base */
-        float baseX = this.x + this.gap;
-        float baseY = this.y + (halfHeight - (this.height / 2));
-        float baseWidth = this.width - this.gap;
-
-        this.base = new SCCard(this, baseX, baseY, baseWidth, this.height);
+        this.base = new SCCard(this, x + gap, y, 60, this.height);
         this.base.cornerRadius().set(this.radius);
         this.addChild(this.base);
 
-        /* Knob */
-        float knobY = this.y + knobPadding;
-
-        this.knob = new SCKnob(this, 0, knobY, this.height - (knobPadding * 2));
+        this.knob = new SCKnob(this, 0, y + knobPadding, this.height - (knobPadding * 2));
+        this.knob.radiusAnimation().set(this.radius / 2, this.radius);
         this.addChild(this.knob);
 
         this.setState(setting.getValue(), false, false);
@@ -84,7 +72,7 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         this.setState(!this.setting.getValue(), true, true);
     }
 
-    public BooleanSettingWidget setState(boolean state, boolean animate, boolean save) {
+    private void setState(boolean state, boolean animate, boolean save) {
 
         if (animate) {
             this.slideAnimation.setFrom(this.slideAnimation.get());
@@ -99,7 +87,5 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
 
         this.setting.setValue(state);
         if (save) this.save();
-
-        return this;
     }
 }

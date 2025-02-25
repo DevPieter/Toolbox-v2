@@ -27,31 +27,29 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
     private SCNumberInputDisplay display;
 
     private SText labelText;
-    private float gap;
 
-    private T min;
-    private T max;
+    private final T min;
+    private final T max;
 
-    public NumberSettingWidget(float x, float y, float width, float gap, ISettingModule module, S setting, T min, T max) {
-        super(x, y, width, HEIGHT, module, setting);
+    public NumberSettingWidget(float x, float y, float width, float gap, ISettingModule module, S setting) {
+        super(x, y, width, HEIGHT, gap, module, setting);
 
         this.labelText = SText.of().append(setting.getDisplayName());
-        this.gap = gap;
-        this.min = min;
-        this.max = max;
+        this.min = setting.getMin();
+        this.max = setting.getMax();
 
         float halfHeight = this.height / 2;
 
         /* Label */
         STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
-        this.label = new SCLabel(this, this.x, this.y, this.gap, this.height, this.labelText);
+        this.label = new SCLabel(this, this.x, this.y, gap, this.height, this.labelText);
         this.label.alignment().set(Alignment.MIDDLE_LEFT).text().setStyle(labelStyle).hoverable().setTrue();
         this.addChild(this.label);
 
         /* Progress Bar */
-        float barX = this.x + this.gap;
+        float barX = this.x + gap;
         float barY = this.y + (halfHeight - (this.barThickness / 2));
-        float barWidth = this.width - this.gap - this.knobSize - this.displayWidth;
+        float barWidth = this.width - gap - this.knobSize - this.displayWidth;
 
         this.progressBar = new SCProgressBar(this, barX, barY, barWidth, this.barThickness);
         this.progressBar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
@@ -61,6 +59,7 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         float knobY = this.y + (halfHeight - (this.knobSize / 2));
 
         this.knob = new SCKnob(this, 0, knobY, this.knobSize);
+        this.knob.radiusAnimation().set(4, 8);
         this.addChild(this.knob);
 
         /* Display */

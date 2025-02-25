@@ -1,5 +1,9 @@
 package nl.devpieter.toolbox.setting.widgetSettings;
 
+import nl.devpieter.squid.renderable.IRenderable;
+import nl.devpieter.squid.renderable.component.IComponent;
+import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Widgets.SettingWidgets.NumberSettingWidget;
 import nl.devpieter.toolbox.setting.abstractions.WidgetSettingBase;
 
 import java.lang.reflect.Type;
@@ -29,6 +33,14 @@ public class NumberWidgetSetting<T extends Number> extends WidgetSettingBase<T> 
     @Override
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public IComponent createWidget(IRenderable parent, float x, float y, float width, float gap, ISettingModule module) {
+        NumberSettingWidget<T, NumberWidgetSetting<T>> widget = new NumberSettingWidget<>(x, y, width, gap, module, this);
+        widget.setParent(parent);
+
+        return widget;
     }
 
     public T getMin() {

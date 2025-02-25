@@ -10,6 +10,9 @@ import java.util.List;
 
 public class SettingGroupContainerWidget extends ComponentBase {
 
+    public static final float MIN_WIDTH = 400;
+    public static final float MAX_WIDTH = 600;
+
     private final float gap;
 
     private final SCContainer container;
@@ -20,7 +23,6 @@ public class SettingGroupContainerWidget extends ComponentBase {
         this.gap = gap;
 
         this.container = new SCContainer(this, x, y, width, height);
-        this.container.setParent(this);
         this.addChild(this.container);
     }
 
@@ -30,14 +32,11 @@ public class SettingGroupContainerWidget extends ComponentBase {
         List<ISettingGroup> settingGroups = module.getSettingGroups();
         if (settingGroups.isEmpty()) return;
 
-        float minWidth = 400;
-        float maxWidth = 600;
-
-        int maxPerRow = this.fittingGroupsRow(this.getWidth(), minWidth, maxWidth, this.gap);
+        int maxPerRow = this.fittingGroupsRow(this.getWidth(), this.gap);
         if (maxPerRow <= 0) return;
 
         float groupWidth = this.calculateGroupWidth(this.getWidth(), this.gap, maxPerRow);
-        if (groupWidth < minWidth) return;
+        if (groupWidth < MIN_WIDTH) return;
 
         float[] heights = new float[maxPerRow];
 
@@ -47,7 +46,7 @@ public class SettingGroupContainerWidget extends ComponentBase {
             float x = (row) * (groupWidth + this.gap) + this.getX() + this.gap;
             float y = heights[row] + this.getY() + this.gap;
 
-            SettingGroupWidget settingGroupWidget = new SettingGroupWidget(x, y, groupWidth, this.gap, module, settingGroups.get(i));
+            SettingGroupWidget settingGroupWidget = new SettingGroupWidget(x, y, groupWidth, 8, module, settingGroups.get(i));
             settingGroupWidget.setParent(this.container);
             this.container.addChild(settingGroupWidget);
 
@@ -60,8 +59,8 @@ public class SettingGroupContainerWidget extends ComponentBase {
 
     }
 
-    private int fittingGroupsRow(float width, float minWidth, float maxWidth, float gap) {
-        return MathHelper.clamp((int) ((width + gap) / (minWidth + gap)), 1, (int) ((width + gap) / (maxWidth + gap)));
+    private int fittingGroupsRow(float width, float gap) {
+        return MathHelper.clamp((int) ((width + gap) / (MIN_WIDTH + gap)), 1, (int) ((width + gap) / (MAX_WIDTH + gap)));
     }
 
     private float calculateGroupWidth(float width, float gap, int amount) {

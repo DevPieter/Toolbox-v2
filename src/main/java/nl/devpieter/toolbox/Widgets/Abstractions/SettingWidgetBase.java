@@ -9,16 +9,20 @@ public abstract class SettingWidgetBase<T, S extends IWidgetSetting<T>> extends 
 
     protected final SettingManager settingManager = SettingManager.getInstance();
 
+    private final float gap;
+
     protected final ISettingModule module;
     protected final S setting;
 
-    public SettingWidgetBase(float x, float y, float width, float height, ISettingModule module, S setting) {
+    public SettingWidgetBase(float x, float y, float width, float height, float gap, ISettingModule module, S setting) {
         super(x, y, width, height);
+
+        this.gap = gap;
         this.module = module;
         this.setting = setting;
     }
 
     public void save() {
-        settingManager.saveSetting(module, setting);
+        this.settingManager.saveSetting(module, setting);
     }
 }

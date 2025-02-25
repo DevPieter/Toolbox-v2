@@ -39,9 +39,6 @@ public class ColorManager implements SynchronousResourceReloader {
         for (Map.Entry<Identifier, List<Resource>> entry : map.entrySet()) {
             for (Resource resource : entry.getValue()) {
 
-                String packName = resource.getPack().getInfo().title().getString();
-                Toolbox.LOGGER.info("Loading colors from pack: {}", packName);
-
                 try {
                     ImmutableMap<String, String> rawColors = ResourceUtils.readJson(resource.getInputStream());
                     for (String key : rawColors.keySet()) {
