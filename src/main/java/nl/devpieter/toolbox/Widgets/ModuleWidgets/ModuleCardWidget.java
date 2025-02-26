@@ -85,14 +85,17 @@ public class ModuleCardWidget extends ComponentBase {
     }
 
     @Override
-    public void mouseReleased(float mouseX, float mouseY, int button) {
+    public boolean mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return;
+        if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return false;
 
-        if (isClickable) if (moduleManager.click(moduleClass, button)) return;
+        if (isClickable) if (moduleManager.click(moduleClass, button)) return true;
 
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && isToggleable) {
             moduleManager.toggle(moduleClass);
+            return true;
         }
+
+        return false;
     }
 }

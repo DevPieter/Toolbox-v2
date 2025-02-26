@@ -65,11 +65,12 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
     }
 
     @Override
-    public void mouseReleased(float mouseX, float mouseY, int button) {
+    public boolean mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return;
+        if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return false;
 
         this.setState(!this.setting.getValue(), true, true);
+        return true;
     }
 
     private void setState(boolean state, boolean animate, boolean save) {

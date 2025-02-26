@@ -67,11 +67,12 @@ public class CategoryCardWidget extends ComponentBase {
     }
 
     @Override
-    public void mouseReleased(float mouseX, float mouseY, int button) {
+    public boolean mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!wasPressedInBounds() || !isHovered() || !isParentHovered() || !isInteractable()) return;
+        if (!wasPressedInBounds() || !isHovered() || !isParentHovered() || !isInteractable()) return false;
 
         this.categorySelectedCallback.accept(this.categoryClass);
+        return true;
     }
 
     public @Nullable Class<? extends ICategory> getCategoryClass() {

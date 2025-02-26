@@ -77,49 +77,61 @@ public class PaginationWidget extends ComponentBase {
     }
 
     @Override
-    public void mouseReleased(float mouseX, float mouseY, int button) {
+    public boolean mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return;
+        if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return false;
 
         if (this.left.isHovered() && this.left.wasPressedInBounds()) {
             this.paginatableWidget.navigateToPrevious();
+            return true;
         } else if (this.right.isHovered() && this.right.wasPressedInBounds()) {
             this.paginatableWidget.navigateToNext();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void mouseScrolled(float mouseX, float mouseY, double horizontalAmount, double verticalAmount) {
+    public boolean mouseScrolled(float mouseX, float mouseY, double horizontalAmount, double verticalAmount) {
         super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-        if (this.getFocusedChild() != null) return;
-        if (!this.isHovered()) return; // TODO - Check if parent is hovered
+        if (this.getFocusedChild() != null || !this.isParentHovered()) return false;
 
         if (verticalAmount > 0 && this.paginatableWidget.hasPreviousPage()) {
             this.paginatableWidget.navigateToPrevious();
+            return true;
         } else if (verticalAmount < 0 && this.paginatableWidget.hasNextPage()) {
             this.paginatableWidget.navigateToNext();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         super.keyReleased(keyCode, scanCode, modifiers);
-        if (this.getFocusedChild() != null) return;
+        if (this.getFocusedChild() != null) return false;
 
-        switch (keyCode) {
-            case GLFW.GLFW_KEY_LEFT:
+        return switch (keyCode) {
+            case GLFW.GLFW_KEY_LEFT -> {
                 this.paginatableWidget.navigateToPrevious();
-                break;
-            case GLFW.GLFW_KEY_RIGHT:
+                yield true;
+            }
+            case GLFW.GLFW_KEY_RIGHT -> {
                 this.paginatableWidget.navigateToNext();
-                break;
-            case GLFW.GLFW_KEY_HOME:
+                yield true;
+            }
+            case GLFW.GLFW_KEY_HOME -> {
                 this.paginatableWidget.navigateToFirst();
-                break;
-            case GLFW.GLFW_KEY_END:
+                yield true;
+            }
+            case GLFW.GLFW_KEY_END -> {
                 this.paginatableWidget.navigateToLast();
-                break;
-        }
+                yield true;
+            }
+            default -> false;
+        };
     }
 
     private void onPageChange(int previousPage, int newPage) {
