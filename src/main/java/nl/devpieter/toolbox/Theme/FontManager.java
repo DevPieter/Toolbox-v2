@@ -57,6 +57,8 @@ public class FontManager implements SynchronousResourceReloader {
 
             if (!fontHolders.containsKey(fontName)) fontHolders.put(fontName, new HashMap<>());
             fontHolders.get(fontName).put(fontType, fontHolder);
+
+            if(fontName.equals("default")) Squid.IS_DEFAULT_FONT_LOADED = true;
         }
 
         for (Map.Entry<String, HashMap<String, FontHolder>> entry : fontHolders.entrySet()) {

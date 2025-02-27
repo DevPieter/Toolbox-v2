@@ -11,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
+import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.debug.DebugOptions;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
@@ -51,6 +52,7 @@ public class Toolbox implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        DebugOptions.getInstance().setLoadDefaultFont(false);
 
         CategoryManager categoryManager = CategoryManager.getInstance();
         ModuleManager moduleManager = ModuleManager.getInstance();
