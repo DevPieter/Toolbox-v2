@@ -7,8 +7,9 @@ import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.setting.SettingGroup;
 import nl.devpieter.toolbox.setting.SettingManager;
-import nl.devpieter.toolbox.setting.abstractions.ISetting;
-import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
+import nl.devpieter.toolbox.setting.interfaces.ISetting;
+import nl.devpieter.toolbox.setting.settings.BooleanSetting;
+import nl.devpieter.toolbox.setting.settings.ClampedIntSetting;
 import nl.devpieter.toolbox.setting.widgetSettings.BooleanWidgetSetting;
 import nl.devpieter.toolbox.setting.widgetSettings.NumberWidgetSetting;
 import org.jetbrains.annotations.NotNull;
@@ -17,52 +18,62 @@ import java.util.List;
 
 public class TestSettingModule implements ISettingModule, IClickableModule {
 
+    // String name, String description, WidgetType type, IClampedSetting<T> setting
+
     private final NumberWidgetSetting<Integer> leftClicks = new NumberWidgetSetting<>(
-            "left-clicks",
-            0,
             "Left Clicks",
             "The amount of left clicks.",
-            Integer.class,
-            0,
-            100
+            NumberWidgetSetting.WidgetType.SLIDER,
+            new ClampedIntSetting(
+                    "left-clicks",
+                    0,
+                    0,
+                    100
+            )
     );
 
     private final NumberWidgetSetting<Integer> rightClicks = new NumberWidgetSetting<>(
-            "right-clicks",
-            0,
             "Right Clicks",
             "The amount of right clicks.",
-            Integer.class,
-            0,
-            100
+            NumberWidgetSetting.WidgetType.SLIDER,
+            new ClampedIntSetting(
+                    "right-clicks",
+                    0,
+                    0,
+                    100
+            )
     );
 
     private final BooleanWidgetSetting isEnable = new BooleanWidgetSetting(
-            "is-enable",
-            false,
             "Is Enable",
-            "Is this module enabled?"
+            "Is this module enabled?",
+            new BooleanSetting(
+                    "is-enable",
+                    false
+            )
     );
 
     private final BooleanWidgetSetting myBoolean = new BooleanWidgetSetting(
-            "my-boolean",
-            false,
-            "My Boolean Setting",
-            "This is a test boolean setting."
+            "My Boolean",
+            "This is a test boolean setting.",
+            new BooleanSetting(
+                    "my-boolean",
+                    false
+            )
     );
 
     @Override
     public List<ISetting<?>> getSettings() {
         return List.of(
-                leftClicks,
-                rightClicks,
-                isEnable,
-                myBoolean
+                leftClicks.getSetting(),
+                rightClicks.getSetting(),
+                isEnable.getSetting(),
+                myBoolean.getSetting()
         );
     }
 
     @Override
-    public List<ISettingGroup> getSettingGroups() {
+    public List<SettingGroup> getSettingGroups() {
         return List.of(
                 new SettingGroup("Clicks", List.of(leftClicks, rightClicks)),
                 new SettingGroup("Settings", List.of(leftClicks, rightClicks, isEnable)),
@@ -83,8 +94,8 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
 
     @Override
     public @NotNull Action onMiddleClick() {
-        leftClicks.setValue(0);
-        rightClicks.setValue(0);
+//        leftClicks.setValue(0);
+//        rightClicks.setValue(0);
 
         SettingManager.getInstance().saveSettings(this);
         return IClickableModule.super.onMiddleClick();
@@ -100,7 +111,7 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
 
     @Override
     public @NotNull Text getName() {
-        return Text.of("Test Setting Module: " + this.leftClicks.getValue() + ", " + this.rightClicks.getValue());
+        return Text.of("Test Setting Module");
     }
 
     @Override

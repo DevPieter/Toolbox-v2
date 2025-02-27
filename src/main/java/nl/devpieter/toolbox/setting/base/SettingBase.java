@@ -1,4 +1,6 @@
-package nl.devpieter.toolbox.setting.abstractions;
+package nl.devpieter.toolbox.setting.base;
+
+import nl.devpieter.toolbox.setting.interfaces.ISetting;
 
 public abstract class SettingBase<T> implements ISetting<T> {
 

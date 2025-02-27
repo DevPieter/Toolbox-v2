@@ -1,6 +1,5 @@
 package nl.devpieter.toolbox.Widgets.SettingWidgets;
 
-import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
@@ -11,17 +10,30 @@ import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Widgets.Abstractions.SettingWidgetBase;
-import nl.devpieter.toolbox.setting.widgetSettings.BooleanWidgetSetting;
+import nl.devpieter.toolbox.setting.interfaces.IBooleanSetting;
+import nl.devpieter.toolbox.setting.interfaces.IWidgetSetting;
 
+import java.awt.*;
 import java.time.Duration;
 
-public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidgetSetting> {
+public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSetting<Boolean, IBooleanSetting>> {
 
     public static final int HEIGHT = 26;
 
-    private final float radius = 8;
-    private final float knobPadding = 3;
+    private final ColorManager colorManager = ColorManager.getInstance();
+
+    // TODO - Change to correct colors
+    private final Color titleColor = colorManager.get("module.card.description");
+    private final Color requiredColor = Color.RED;
+    private final Color baseColor = Color.GRAY;
+    private final Color baseEnabledColor = colorManager.get("module.card.title.enabled");
+    private final Color knobColor = Color.WHITE;
+
+    // TODO - Get from Theme
+    private final float cornerRadius = 8;
+    private final float knobPadding = 4;
 
     private final float gap;
 
@@ -31,36 +43,41 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
     private final SCCard base;
     private final SCKnob knob;
 
-    public BooleanSettingWidget(float x, float y, float width, float gap, ISettingModule module, BooleanWidgetSetting setting) {
-        super(x, y, width, HEIGHT, gap, module, setting);
+    public BooleanSettingWidget(float x, float y, float width, float gap, ISettingModule module, IWidgetSetting<Boolean, IBooleanSetting> widgetSetting) {
+        super(x, y, width, HEIGHT, gap, module, widgetSetting);
 
         this.gap = gap;
 
-        this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.QUINT_OUT);
-        this.slideColorAnimation = new ColorAnimation(Squid.THEME.container, Squid.THEME.primary, Duration.ofMillis(400), Easing.QUINT_OUT);
+        this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.EXPO_OUT);
+        this.slideColorAnimation = new ColorAnimation(this.baseColor, this.baseEnabledColor, Duration.ofMillis(400), Easing.EXPO_OUT);
 
-        STextStyle labelStyle = STextStyle.of().setFontSize(Squid.THEME.labelSize);
-        SText labelText = SText.of(labelStyle).append(setting.getDisplayName());
-        SCLabel label = new SCLabel(this, x, y, gap, this.height, labelText);
-        label.alignment().set(Alignment.MIDDLE_LEFT).hoverable().setTrue();
-        this.addChild(label);
+        STextStyle titleStyle = STextStyle.of(titleColor).setFontSize(18);
+        SText titleText = SText.of(titleStyle).append(widgetSetting.getName());
 
-        this.base = new SCCard(this, x + gap, y, 60, this.height);
-        this.base.cornerRadius().set(this.radius);
+        SCLabel title = new SCLabel(this, x, y, gap, height, titleText);
+        title.alignment().set(Alignment.MIDDLE_LEFT);
+        this.addChild(title);
+
+        this.base = new SCCard(this, x + gap, y, 60, height);
+        this.base.cornerRadius().set(this.cornerRadius);
         this.addChild(this.base);
 
-        this.knob = new SCKnob(this, 0, y + knobPadding, this.height - (knobPadding * 2));
-        this.knob.radiusAnimation().set(this.radius / 2, this.radius);
+        this.knob = new SCKnob(this.base, 0, y + this.knobPadding, height - (this.knobPadding * 2));
+        this.knob.color().set(knobColor).radiusAnimation().set(this.cornerRadius / 2, this.cornerRadius);
         this.addChild(this.knob);
 
-        this.setState(setting.getValue(), false, false);
+        if (widgetSetting.isRequired()) {
+            STextStyle requiredStyle = STextStyle.of(requiredColor).setFontSize(16).setBold(true);
+            titleText.append("*", requiredStyle);
+        }
+
+        this.setDisabled(!widgetSetting.isEditable());
+        this.setState(this.widgetSetting.getSetting().getValue(), false, false);
     }
 
     @Override
     protected void render(long context, float delta) {
-        float knobX = this.x + this.gap + (this.base.getWidth() - this.height) * this.slideAnimation.get() + knobPadding;
-
-        this.knob.setX(knobX);
+        this.knob.setX(this.x + this.gap + this.knobPadding + (this.base.getWidth() - this.knob.getWidth() - 2 * this.knobPadding) * this.slideAnimation.get());
         this.base.color().set(this.slideColorAnimation.get());
     }
 
@@ -69,7 +86,7 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         super.mouseReleased(mouseX, mouseY, button);
         if (!this.wasPressedInBounds() || !this.isHovered() || !this.isInteractable()) return false;
 
-        this.setState(!this.setting.getValue(), true, true);
+        this.setState(!this.widgetSetting.getSetting().getValue(), true, true);
         return true;
     }
 
@@ -84,9 +101,9 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, BooleanWidg
         }
 
         this.slideAnimation.setTo(state ? 1f : 0);
-        this.slideColorAnimation.setTo(state ? Squid.THEME.primary : Squid.THEME.container);
+        this.slideColorAnimation.setTo(state ? this.baseEnabledColor : this.baseColor);
 
-        this.setting.setValue(state);
+        this.widgetSetting.getSetting().setValue(state);
         if (save) this.save();
     }
 }

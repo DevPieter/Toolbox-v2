@@ -10,8 +10,8 @@ import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Theme.ColorManager;
-import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
-import nl.devpieter.toolbox.setting.abstractions.IWidgetSetting;
+import nl.devpieter.toolbox.setting.SettingGroup;
+import nl.devpieter.toolbox.setting.interfaces.IWidgetSetting;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ public class SettingGroupWidget extends ComponentBase {
     private final float gap;
 
     private final ISettingModule module;
-    private final ISettingGroup settingGroup;
+    private final SettingGroup settingGroup;
 
-    public SettingGroupWidget(float x, float y, float width, float gap, ISettingModule module, ISettingGroup settingGroup) {
+    public SettingGroupWidget(float x, float y, float width, float gap, ISettingModule module, SettingGroup settingGroup) {
         super(x, y, width, 0); // TODO - Calculate height based on the amount of settings in the group
 
         this.gap = gap;
@@ -65,9 +65,10 @@ public class SettingGroupWidget extends ComponentBase {
         float y = this.getY() + 40 + this.gap;
 
         for (int i = 0; i < this.settingGroup.settings().size(); i++) {
-            IWidgetSetting<?> setting = this.settingGroup.settings().get(i);
+            IWidgetSetting<?, ?> setting = this.settingGroup.settings().get(i);
 
-            IComponent widget = setting.createWidget(this, this.getX() + 12, y, this.getWidth() - 24, 250, this.module);
+            IComponent widget = setting.createWidget(this.getX() + 12, y, this.getWidth() - 24, 250, this.module);
+            widget.setParent(this);
             components.add(widget);
 
             y += widget.getHeight() + this.gap;

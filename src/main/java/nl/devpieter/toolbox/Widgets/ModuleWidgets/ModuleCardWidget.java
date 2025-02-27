@@ -8,10 +8,7 @@ import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
-import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
-import nl.devpieter.toolbox.Module.Interfaces.IInteractableModule;
-import nl.devpieter.toolbox.Module.Interfaces.IModule;
-import nl.devpieter.toolbox.Module.Interfaces.IToggleableModule;
+import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import org.lwjgl.glfw.GLFW;
@@ -32,7 +29,7 @@ public class ModuleCardWidget extends ComponentBase {
     private final int shadowEnabledColor = colorManager.getRGB("module.card.shadow.enabled");
 
     private final Class<? extends IModule> moduleClass;
-    private final boolean isInteractable, isClickable, isToggleable;
+    private final boolean isInteractable, isClickable, isToggleable, hasSettings;
 
     private final SCLabel title;
 
@@ -44,6 +41,7 @@ public class ModuleCardWidget extends ComponentBase {
         isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);
         isClickable = IClickableModule.class.isAssignableFrom(moduleClass);
         isToggleable = IToggleableModule.class.isAssignableFrom(moduleClass);
+        hasSettings = ISettingModule.class.isAssignableFrom(moduleClass);
 
         String nameText = moduleManager.getName(moduleClass).getString();
         String descriptionText = moduleManager.getDescription(moduleClass).getString();

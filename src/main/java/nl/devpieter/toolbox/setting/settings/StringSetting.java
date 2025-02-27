@@ -1,10 +1,9 @@
 package nl.devpieter.toolbox.setting.settings;
 
-import nl.devpieter.toolbox.setting.abstractions.SettingBase;
+import nl.devpieter.toolbox.setting.base.SettingBase;
+import nl.devpieter.toolbox.setting.interfaces.IStringSetting;
 
-import java.lang.reflect.Type;
-
-public class StringSetting extends SettingBase<String> {
+public class StringSetting extends SettingBase<String> implements IStringSetting {
 
     public StringSetting(String identifier, String defaultValue) {
         super(identifier, defaultValue);
@@ -12,10 +11,5 @@ public class StringSetting extends SettingBase<String> {
 
     public StringSetting(String identifier, String defaultValue, boolean allowNull) {
         super(identifier, defaultValue, allowNull);
-    }
-
-    @Override
-    public Type getType() {
-        return String.class;
     }
 }

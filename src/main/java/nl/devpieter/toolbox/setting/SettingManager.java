@@ -8,7 +8,7 @@ import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
-import nl.devpieter.toolbox.setting.abstractions.ISetting;
+import nl.devpieter.toolbox.setting.interfaces.ISetting;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;

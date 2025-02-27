@@ -13,7 +13,7 @@ import nl.devpieter.toolbox.Utils.NumberUtils;
 import nl.devpieter.toolbox.Widgets.Abstractions.SettingWidgetBase;
 import nl.devpieter.toolbox.setting.widgetSettings.NumberWidgetSetting;
 
-public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting<T>> extends SettingWidgetBase<T, S> {
+public class SliderSettingWidget<T extends Number, S extends NumberWidgetSetting<T>> extends SettingWidgetBase<T, S> {
 
     public static final int HEIGHT = 26;
 
@@ -31,12 +31,13 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
     private final T min;
     private final T max;
 
-    public NumberSettingWidget(float x, float y, float width, float gap, ISettingModule module, S setting) {
-        super(x, y, width, HEIGHT, gap, module, setting);
 
-        this.labelText = SText.of().append(setting.getDisplayName());
-        this.min = setting.getMin();
-        this.max = setting.getMax();
+    public SliderSettingWidget(float x, float y, float width, float gap, ISettingModule module, S widgetSetting) {
+        super(x, y, width, HEIGHT, gap, module, widgetSetting);
+
+        this.labelText = SText.of().append(widgetSetting.getName());
+        this.min = this.widgetSetting.getSetting().getMin();
+        this.max = this.widgetSetting.getSetting().getMax();
 
         float halfHeight = this.height / 2;
 
@@ -70,11 +71,11 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         this.display.formatter().setFractionDigits(displayDigits, displayDigits);
         this.addChild(this.display);
 
-        this.setValue(this.setting.getValue(), false, false);
+        this.setValue(this.widgetSetting.getSetting().getValue(), false, false);
         this.progressBar.subscribeValueChangeListener(progress -> {
             float value = progress * (this.max.floatValue() - this.min.floatValue()) + this.min.floatValue();
 
-            this.setting.setValue(NumberUtils.cast(this.setting.getType(), value));
+            this.widgetSetting.getSetting().setValue(NumberUtils.cast(this.widgetSetting.getSetting().getType(), value));
             this.save();
         });
     }
@@ -89,11 +90,11 @@ public class NumberSettingWidget<T extends Number, S extends NumberWidgetSetting
         this.display.setValue(value);
     }
 
-    public NumberSettingWidget<T, S> setValue(T value, boolean animate, boolean save) {
+    public SliderSettingWidget<T, S> setValue(T value, boolean animate, boolean save) {
         float progress = (value.floatValue() - this.min.floatValue()) / (this.max.floatValue() - this.min.floatValue());
         this.progressBar.setValue(progress, animate);
 
-        this.setting.setValue(value);
+        this.widgetSetting.getSetting().setValue(value);
         if (save) this.save();
 
         return this;

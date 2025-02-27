@@ -1,10 +1,11 @@
 package nl.devpieter.toolbox.setting.settings;
 
-import nl.devpieter.toolbox.setting.abstractions.SettingBase;
+import nl.devpieter.toolbox.setting.base.SettingBase;
+import nl.devpieter.toolbox.setting.interfaces.INumberSetting;
 
 import java.lang.reflect.Type;
 
-public class IntSetting extends SettingBase<Integer> {
+public class IntSetting extends SettingBase<Integer> implements INumberSetting<Integer> {
 
     public IntSetting(String identifier, Integer defaultValue) {
         super(identifier, defaultValue);
@@ -15,27 +16,27 @@ public class IntSetting extends SettingBase<Integer> {
     }
 
     @Override
-    public Type getType() {
-        return Integer.class;
-    }
-
-    public void setVal(Number value) {
-        setValue(value.intValue());
-    }
-
     public void increment() {
-        increment(1);
+        setValue(getValue() + 1);
     }
 
-    public void increment(int amount) {
+    @Override
+    public void increment(Integer amount) {
         setValue(getValue() + amount);
     }
 
+    @Override
     public void decrement() {
-        decrement(1);
+        setValue(getValue() - 1);
     }
 
-    public void decrement(int amount) {
+    @Override
+    public void decrement(Integer amount) {
         setValue(getValue() - amount);
+    }
+
+    @Override
+    public Type getType() {
+        return Integer.class;
     }
 }

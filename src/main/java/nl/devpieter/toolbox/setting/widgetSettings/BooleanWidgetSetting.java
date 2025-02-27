@@ -1,45 +1,23 @@
 package nl.devpieter.toolbox.setting.widgetSettings;
 
-import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.IComponent;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Widgets.SettingWidgets.BooleanSettingWidget;
-import nl.devpieter.toolbox.setting.abstractions.WidgetSettingBase;
+import nl.devpieter.toolbox.setting.base.WidgetSettingBase;
+import nl.devpieter.toolbox.setting.interfaces.IBooleanSetting;
 
-import java.lang.reflect.Type;
+public class BooleanWidgetSetting extends WidgetSettingBase<Boolean, IBooleanSetting> {
 
-public class BooleanWidgetSetting extends WidgetSettingBase<Boolean> {
-
-    public BooleanWidgetSetting(String identifier, Boolean defaultValue, String displayName, String description) {
-        super(identifier, defaultValue, displayName, description);
+    public BooleanWidgetSetting(String name, String description, IBooleanSetting setting) {
+        super(name, description, setting);
     }
 
-    public BooleanWidgetSetting(String identifier, Boolean defaultValue, String displayName, String description, boolean editable, boolean hidden, boolean required) {
-        super(identifier, defaultValue, displayName, description, editable, hidden, required);
-    }
-
-    @Override
-    public Type getType() {
-        return Boolean.class;
+    public BooleanWidgetSetting(String name, String description, IBooleanSetting setting, boolean editable, boolean hidden, boolean required) {
+        super(name, description, setting, editable, hidden, required);
     }
 
     @Override
-    public IComponent createWidget(IRenderable parent, float x, float y, float width, float gap, ISettingModule module) {
-        BooleanSettingWidget widget = new BooleanSettingWidget(x, y, width, gap, module, this);
-        widget.setParent(parent);
-
-        return widget;
-    }
-
-    public void toggle() {
-        setValue(!getValue());
-    }
-
-    public void setTrue() {
-        setValue(true);
-    }
-
-    public void setFalse() {
-        setValue(false);
+    public IComponent createWidget(float x, float y, float width, float gap, ISettingModule module) {
+        return new BooleanSettingWidget(x, y, width, gap, module, this);
     }
 }

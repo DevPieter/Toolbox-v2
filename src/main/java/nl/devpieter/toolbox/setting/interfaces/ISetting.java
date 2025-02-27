@@ -1,4 +1,4 @@
-package nl.devpieter.toolbox.setting.abstractions;
+package nl.devpieter.toolbox.setting.interfaces;
 
 import nl.devpieter.toolbox.setting.KeyedSetting;
 

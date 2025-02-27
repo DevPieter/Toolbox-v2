@@ -1,10 +1,9 @@
 package nl.devpieter.toolbox.setting.settings;
 
-import nl.devpieter.toolbox.setting.abstractions.SettingBase;
+import nl.devpieter.toolbox.setting.base.SettingBase;
+import nl.devpieter.toolbox.setting.interfaces.IBooleanSetting;
 
-import java.lang.reflect.Type;
-
-public class BooleanSetting extends SettingBase<Boolean> {
+public class BooleanSetting extends SettingBase<Boolean> implements IBooleanSetting {
 
     public BooleanSetting(String identifier, Boolean defaultValue) {
         super(identifier, defaultValue);
@@ -15,18 +14,16 @@ public class BooleanSetting extends SettingBase<Boolean> {
     }
 
     @Override
-    public Type getType() {
-        return Boolean.class;
-    }
-
     public void toggle() {
         setValue(!getValue());
     }
 
+    @Override
     public void setTrue() {
         setValue(true);
     }
 
+    @Override
     public void setFalse() {
         setValue(false);
     }

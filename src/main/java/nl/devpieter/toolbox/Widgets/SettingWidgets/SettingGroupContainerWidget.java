@@ -4,7 +4,7 @@ import net.minecraft.util.math.MathHelper;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
-import nl.devpieter.toolbox.setting.abstractions.ISettingGroup;
+import nl.devpieter.toolbox.setting.SettingGroup;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class SettingGroupContainerWidget extends ComponentBase {
     public void init(ISettingModule module) {
         this.container.clearChildren();
 
-        List<ISettingGroup> settingGroups = module.getSettingGroups();
+        List<SettingGroup> settingGroups = module.getSettingGroups();
         if (settingGroups.isEmpty()) return;
 
         int maxPerRow = this.fittingGroupsRow(this.getWidth(), this.gap);
