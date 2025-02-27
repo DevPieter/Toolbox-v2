@@ -5,7 +5,7 @@ public abstract class SettingBase<T> implements ISetting<T> {
     private final String identifier;
     private final T defaultValue;
 
-    private boolean allowNull;
+    private final boolean allowNull;
 
     private T value;
 

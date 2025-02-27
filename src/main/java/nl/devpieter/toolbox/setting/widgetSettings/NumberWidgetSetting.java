@@ -16,15 +16,14 @@ public class NumberWidgetSetting<T extends Number> extends WidgetSettingBase<T> 
     private T max;
 
     public NumberWidgetSetting(String identifier, T defaultValue, String displayName, String description, Type type, T min, T max) {
-        this(identifier, defaultValue, displayName, description, false, type, min, max);
+        super(identifier, defaultValue, displayName, description);
+        this.type = type;
+        this.min = min;
+        this.max = max;
     }
 
-    public NumberWidgetSetting(String identifier, T defaultValue, String displayName, String description, boolean allowNull, Type type, T min, T max) {
-        this(identifier, defaultValue, displayName, description, allowNull, true, false, false, type, min, max);
-    }
-
-    public NumberWidgetSetting(String identifier, T defaultValue, String displayName, String description, boolean allowNull, boolean editable, boolean hidden, boolean required, Type type, T min, T max) {
-        super(identifier, defaultValue, displayName, description, allowNull, editable, hidden, required);
+    public NumberWidgetSetting(String identifier, T defaultValue, String displayName, String description, boolean editable, boolean hidden, boolean required, Type type, T min, T max) {
+        super(identifier, defaultValue, displayName, description, editable, hidden, required);
         this.type = type;
         this.min = min;
         this.max = max;

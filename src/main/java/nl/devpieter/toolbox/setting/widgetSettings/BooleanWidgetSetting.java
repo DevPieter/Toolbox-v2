@@ -14,12 +14,8 @@ public class BooleanWidgetSetting extends WidgetSettingBase<Boolean> {
         super(identifier, defaultValue, displayName, description);
     }
 
-    public BooleanWidgetSetting(String identifier, Boolean defaultValue, String displayName, String description, boolean allowNull) {
-        super(identifier, defaultValue, displayName, description, allowNull);
-    }
-
-    public BooleanWidgetSetting(String identifier, Boolean defaultValue, String displayName, String description, boolean allowNull, boolean editable, boolean hidden, boolean required) {
-        super(identifier, defaultValue, displayName, description, allowNull, editable, hidden, required);
+    public BooleanWidgetSetting(String identifier, Boolean defaultValue, String displayName, String description, boolean editable, boolean hidden, boolean required) {
+        super(identifier, defaultValue, displayName, description, editable, hidden, required);
     }
 
     @Override
