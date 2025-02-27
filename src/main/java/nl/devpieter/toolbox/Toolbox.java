@@ -11,7 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
-import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.debug.DebugOptions;
 import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
@@ -31,7 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public class Toolbox implements ModInitializer {
 
-    private static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer("toolbox").orElseThrow();
+    private static final ModContainer TOOLBOX_MOD_CONTAINER = FabricLoader.getInstance().getModContainer("toolbox").orElseThrow();
+    private static final ModContainer SQUID_MOD_CONTAINER = FabricLoader.getInstance().getModContainer("squid").orElseThrow();
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Toolbox");
     public static boolean DEBUG = false;
@@ -120,15 +120,19 @@ public class Toolbox implements ModInitializer {
         }
     }
 
+    public static String getMinecraftVersion() {
+        return SharedConstants.getGameVersion().getName();
+    }
+
     public static String getToolboxVersion() {
-        return MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
+        return TOOLBOX_MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
+    }
+
+    public static String getSquidVersion() {
+        return SQUID_MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
     }
 
     public static String getBuildStatus() {
-        return MOD_CONTAINER.getMetadata().getCustomValue("build_status").getAsString();
-    }
-
-    public static String getMinecraftVersion() {
-        return SharedConstants.getGameVersion().getName();
+        return TOOLBOX_MOD_CONTAINER.getMetadata().getCustomValue("build_status").getAsString();
     }
 }
