@@ -46,7 +46,7 @@ public class ModuleManager {
 
             this.modules.add(module);
             if (module instanceof IStatefulModule<?>) this.loadState(moduleClass);
-            if (module instanceof ISettingModule settingModule) this.loadSettings(moduleClass);
+            if (module instanceof ISettingModule) this.loadSettings(moduleClass);
 
             module.onRegistered();
         } catch (Exception e) {
@@ -62,7 +62,7 @@ public class ModuleManager {
         }
 
         if (module instanceof IStatefulModule<?>) this.saveState(moduleClass);
-        if (module instanceof ISettingModule settingModule) this.saveSettings(moduleClass);
+        if (module instanceof ISettingModule) this.saveSettings(moduleClass);
         this.modules.remove(module);
 
         module.onUnregistered();
@@ -182,6 +182,12 @@ public class ModuleManager {
     public boolean saveSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
         return this.settingManager.saveSettings(settingModule);
+    }
+
+    public boolean openSettings(@NotNull Class<? extends IModule> moduleClass) {
+        if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
+        this.settingManager.openSettingsScreen(settingModule);
+        return true;
     }
 
     public boolean isEnabled(@NotNull Class<? extends IModule> moduleClass) {

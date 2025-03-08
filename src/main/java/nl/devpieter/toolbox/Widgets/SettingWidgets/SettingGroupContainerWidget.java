@@ -26,7 +26,7 @@ public class SettingGroupContainerWidget extends ComponentBase {
         this.addChild(this.container);
     }
 
-    public void init(ISettingModule module) {
+    public void init(ISettingModule module /* TODO - Replace with class */) {
         this.container.clearChildren();
 
         List<SettingGroup> settingGroups = module.getSettingGroups();

@@ -6,7 +6,6 @@ import nl.devpieter.toolbox.Module.Interfaces.IClickableModule;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.setting.SettingGroup;
-import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.interfaces.ISetting;
 import nl.devpieter.toolbox.setting.settings.BooleanSetting;
 import nl.devpieter.toolbox.setting.settings.ClampedIntSetting;
@@ -85,27 +84,16 @@ public class TestSettingModule implements ISettingModule, IClickableModule {
 
     @Override
     public @NotNull Action onLeftClick() {
-//        SettingManager.getInstance().saveSetting(this, leftClicks);
-
-        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(this));
-
         return IClickableModule.super.onLeftClick();
     }
 
     @Override
     public @NotNull Action onMiddleClick() {
-//        leftClicks.setValue(0);
-//        rightClicks.setValue(0);
-
-        SettingManager.getInstance().saveSettings(this);
         return IClickableModule.super.onMiddleClick();
     }
 
     @Override
     public @NotNull Action onRightClick() {
-//        rightClicks.increment();
-
-//        SettingManager.getInstance().saveSetting(this, rightClicks);
         return IClickableModule.super.onRightClick();
     }
 

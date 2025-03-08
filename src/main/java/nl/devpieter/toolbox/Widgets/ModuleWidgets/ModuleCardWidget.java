@@ -2,15 +2,18 @@ package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
+import nl.devpieter.squid.components.SCSvg;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
+import nl.devpieter.squid.rendering.svg.SvgHolder;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.*;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Theme.SvgManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -22,6 +25,7 @@ public class ModuleCardWidget extends ComponentBase {
 
     private final ModuleManager moduleManager = ModuleManager.getInstance();
     private final ColorManager colorManager = ColorManager.getInstance();
+    private final SvgManager svgManager = SvgManager.getInstance();
 
     private final Color titleColor = colorManager.get("module.card.title");
     private final Color titleEnabledColor = colorManager.get("module.card.title.enabled");
@@ -32,6 +36,8 @@ public class ModuleCardWidget extends ComponentBase {
     private final boolean isInteractable, isClickable, isToggleable, hasSettings;
 
     private final SCLabel title;
+    private final SCSvg favorite;
+    private final SCSvg settings;
 
     public ModuleCardWidget(IRenderable parent, float x, float y, Class<? extends IModule> moduleClass) {
         super(x, y, WIDTH, HEIGHT);
@@ -46,14 +52,20 @@ public class ModuleCardWidget extends ComponentBase {
         String nameText = moduleManager.getName(moduleClass).getString();
         String descriptionText = moduleManager.getDescription(moduleClass).getString();
 
-//        Color topColor = new Color(9, 9, 9);
-//        Color bottomColor = new Color(17, 17, 17);
-//        Color text = new Color(214, 217, 219);
-//        Color titleColor = new Color(118, 118, 118);
-
         Color topColor = colorManager.get("module.card.top");
         Color bottomColor = colorManager.get("module.card.bottom");
         Color descriptionColor = colorManager.get("module.card.description");
+
+        Color favoriteIconColor = colorManager.get("module.card.favorite.icon");
+        Color favoriteIconHoverColor = colorManager.get("module.card.favorite.icon.hover");
+        Color favoriteIconFavoriteColor = colorManager.get("module.card.favorite.icon.favorite");
+
+        Color settingsIconColor = colorManager.get("module.card.settings.icon");
+        Color settingsIconHoverColor = colorManager.get("module.card.settings.icon.hover");
+
+        SvgHolder favoriteSvg = svgManager.get("icons.favorite");
+        SvgHolder settingSvg = svgManager.get("icons.settings");
+        float svgSize = 24;
 
         SCCard cardTop = new SCCard(this, x, y, this.width, 50);
         cardTop.color().set(topColor).cornerRadius().set(8, 8, 0, 0);
@@ -67,6 +79,14 @@ public class ModuleCardWidget extends ComponentBase {
         title = new SCLabel(this, x + 12, y, width - 24, 40, SText.of(titleStyle).append(nameText));
         title.alignment().set(Alignment.MIDDLE_LEFT);
         addChild(title);
+
+        this.favorite = new SCSvg(this, x + width - svgSize - 12, y + 8, svgSize, svgSize, favoriteSvg);
+        this.favorite.color().set(favoriteIconColor, favoriteIconHoverColor).inheritParentHover().setFalse();
+        addChild(this.favorite);
+
+        this.settings = new SCSvg(this, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize, settingSvg);
+        this.settings.color().set(settingsIconColor, settingsIconHoverColor).inheritParentHover().setFalse();
+        if (this.hasSettings) addChild(this.settings);
 
         STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(18);
         SCLabel description = new SCLabel(this, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionStyle).append(descriptionText));
@@ -86,6 +106,12 @@ public class ModuleCardWidget extends ComponentBase {
     public boolean mouseReleased(float mouseX, float mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
         if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return false;
+
+        if (this.favorite.isHovered() && this.favorite.wasPressedInBounds()) {
+            return true;
+        } else if (this.settings.isHovered() && this.settings.wasPressedInBounds()) {
+            return this.moduleManager.openSettings(moduleClass);
+        }
 
         if (isClickable) if (moduleManager.click(moduleClass, button)) return true;
 

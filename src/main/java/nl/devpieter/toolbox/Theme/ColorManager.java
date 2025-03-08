@@ -41,9 +41,7 @@ public class ColorManager implements SynchronousResourceReloader {
 
                 try {
                     ImmutableMap<String, String> rawColors = ResourceUtils.readJson(resource.getInputStream());
-                    for (String key : rawColors.keySet()) {
-                        loadedColors.put(key, this.translateColor(rawColors.get(key)));
-                    }
+                    for (String key : rawColors.keySet()) loadedColors.put(key, this.translateColor(rawColors.get(key)));
                 } catch (Exception e) {
                     Toolbox.LOGGER.error("Failed to load color overrides!", e);
                 }

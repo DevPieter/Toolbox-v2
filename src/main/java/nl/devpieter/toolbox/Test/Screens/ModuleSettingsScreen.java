@@ -14,7 +14,7 @@ public class ModuleSettingsScreen extends SquidScreen {
 
     private final ISettingModule module;
 
-    public ModuleSettingsScreen(ISettingModule module) {
+    public ModuleSettingsScreen(ISettingModule module /* TODO - Replace with class */) {
         super(Text.of("Module Settings"));
         this.module = module;
     }

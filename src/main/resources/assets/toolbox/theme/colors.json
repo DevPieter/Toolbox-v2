@@ -19,6 +19,12 @@
   "module.card.shadow": "#090909",
   "module.card.shadow.enabled": "#8a83eb",
 
+  "module.card.favorite.icon": "#767676",
+  "module.card.favorite.icon.hover": "#d6d9db",
+  "module.card.favorite.icon.favorite": "#8a83eb",
+  "module.card.settings.icon": "#767676",
+  "module.card.settings.icon.hover": "#d6d9db",
+
   "category.selector": "#8a83eb",
   "category.card.background": "#101010",
   "category.card.background.hover": "#181818",

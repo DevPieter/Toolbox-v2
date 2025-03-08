@@ -24,6 +24,7 @@ import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.ModulesScreen;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Theme.FontManager;
+import nl.devpieter.toolbox.Theme.SvgManager;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,10 @@ public class Toolbox implements ModInitializer {
             FontManager fontManager = FontManager.getInstance();
 //            resourceManager.registerReloader(fontManager);
             fontManager.reload(resourceManager);
+
+            SvgManager svgManager = SvgManager.getInstance();
+//            resourceManager.registerReloader(svgManager);
+            svgManager.reload(resourceManager);
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

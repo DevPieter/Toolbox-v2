@@ -8,7 +8,6 @@ import nl.devpieter.squid.Squid;
 import nl.devpieter.squid.rendering.RenderingManager;
 import nl.devpieter.squid.rendering.font.Font;
 import nl.devpieter.squid.rendering.font.FontHolder;
-import nl.devpieter.squid.rendering.font.FontUtils;
 import nl.devpieter.toolbox.Toolbox;
 
 import java.io.InputStream;
@@ -35,8 +34,9 @@ public class FontManager implements SynchronousResourceReloader {
     public void reload(ResourceManager manager) {
         this.loadedFonts.clear();
         this.renderingManager.init();
+        long rContext = this.renderingManager.getContext();
 
-        Map<Identifier, Resource> map = manager.findResources("fonts", (path) -> {
+        Map<Identifier, Resource> map = manager.findResources("font", (path) -> {
             if (!path.getNamespace().equals("toolbox")) return false;
             return path.getPath().endsWith(".ttf");
         });
@@ -47,18 +47,19 @@ public class FontManager implements SynchronousResourceReloader {
             String fontName = entry.getKey().getPath().split("/")[1];
             String fontType = entry.getKey().getPath().split("/")[2].replace(".ttf", "");
 
-            FontHolder fontHolder = new FontHolder(fontName + "-" + fontType);
 
             try (InputStream inputStream = entry.getValue().getInputStream()) {
-                FontUtils.loadFontHolder(renderingManager.getContext(), fontHolder, inputStream);
+                FontHolder fontHolder = new FontHolder(fontName + "-" + fontType);
+                fontHolder.load(rContext, inputStream);
+
+                if (!fontHolders.containsKey(fontName)) fontHolders.put(fontName, new HashMap<>());
+                fontHolders.get(fontName).put(fontType, fontHolder);
+
+                if (fontName.equals("default")) Squid.IS_DEFAULT_FONT_LOADED = true;
+
             } catch (Exception e) {
-                Toolbox.LOGGER.error("Failed to load font holder: {}", fontHolder.getIdentifier(), e);
+                Toolbox.LOGGER.error("Failed to load font holder: {}, {}", fontName, fontType, e);
             }
-
-            if (!fontHolders.containsKey(fontName)) fontHolders.put(fontName, new HashMap<>());
-            fontHolders.get(fontName).put(fontType, fontHolder);
-
-            if(fontName.equals("default")) Squid.IS_DEFAULT_FONT_LOADED = true;
         }
 
         for (Map.Entry<String, HashMap<String, FontHolder>> entry : fontHolders.entrySet()) {
