@@ -1,7 +1,6 @@
 package nl.devpieter.toolbox.Utils;
 
-import nl.devpieter.toolbox.Module.Interfaces.IStatefulModule;
-import nl.devpieter.toolbox.Toolbox;
+import nl.devpieter.toolbox.Module.Interfaces.IModule;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -11,67 +10,61 @@ public class ConfigUtils {
     public static @Nullable File getConfigFolder(boolean createIfNotExists) {
         File configFolder = new File("config/toolbox");
 
-        try {
-            boolean exists = configFolder.exists();
-            if (!exists && !createIfNotExists) return null;
-            if (!exists && !configFolder.mkdirs()) throw new Exception("Failed to create config folder!");
+        boolean exists = configFolder.exists();
+        if (!exists && !createIfNotExists) return null;
 
-            return configFolder;
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to create config folder {}", configFolder.getAbsolutePath(), e);
-            return null;
-        }
+        return FileUtils.tryCreateDirectories(configFolder) ? configFolder : null;
     }
 
     public static @Nullable File getModulesFolder(boolean createIfNotExists) {
         File modulesFolder = new File("config/toolbox/modules");
 
-        try {
-            boolean exists = modulesFolder.exists();
-            if (!exists && !createIfNotExists) return null;
-            if (!exists && !modulesFolder.mkdirs()) throw new Exception("Failed to create modules folder!");
+        boolean exists = modulesFolder.exists();
+        if (!exists && !createIfNotExists) return null;
 
-            return modulesFolder;
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to create modules folder {}", modulesFolder.getAbsolutePath(), e);
-            return null;
-        }
+        return FileUtils.tryCreateDirectories(modulesFolder) ? modulesFolder : null;
     }
 
-    public static @Nullable File getConfigFile(String fileName, boolean createIfNotExists) {
-        File configFolder = getConfigFolder(createIfNotExists);
-        if (configFolder == null) return null;
-
-        File configFile = new File(configFolder, fileName);
-
-        try {
-            boolean exists = configFile.exists();
-            if (!exists && !createIfNotExists) return null;
-            if (!exists && !configFile.createNewFile()) throw new Exception("Failed to create config file!");
-
-            return configFile;
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to create config file {}", configFile.getAbsolutePath(), e);
-            return null;
-        }
-    }
-
-    public static @Nullable File getModuleFile(IStatefulModule<?> module, boolean createIfNotExists) {
+    public static @Nullable File getModuleFolder(Class<? extends IModule> moduleClass, boolean createIfNotExists) {
         File modulesFolder = getModulesFolder(createIfNotExists);
         if (modulesFolder == null) return null;
 
-        File moduleFile = new File(modulesFolder, module.getFileName());
+        String packageName = moduleClass.getPackageName().replace(".", "/");
+        String className = moduleClass.getSimpleName();
 
-        try {
-            boolean exists = moduleFile.exists();
-            if (!exists && !createIfNotExists) return null;
-            if (!exists && !moduleFile.createNewFile()) throw new Exception("Failed to create module file!");
+        File moduleFolder = new File(modulesFolder, packageName + "/" + className);
 
-            return moduleFile;
-        } catch (Exception e) {
-            Toolbox.LOGGER.error("Failed to create module file {}", moduleFile.getAbsolutePath(), e);
-            return null;
-        }
+        boolean exists = moduleFolder.exists();
+        if (!exists && !createIfNotExists) return null;
+
+        return FileUtils.tryCreateDirectories(moduleFolder) ? moduleFolder : null;
     }
 
+    // ex: nl/devpieter/toolbox/modules/MyModule/State.json
+    public static @Nullable File getModuleStateFile(IModule module, boolean createIfNotExists) {
+        File moduleFolder = getModuleFolder(module.getClass(), createIfNotExists);
+        if (moduleFolder == null) return null;
+
+        String fileName = "State.json";
+        File stateFile = new File(moduleFolder, fileName);
+
+        boolean exists = stateFile.exists();
+        if (!exists && !createIfNotExists) return null;
+
+        return FileUtils.tryCreateFile(stateFile) ? stateFile : null;
+    }
+
+    // ex: nl/devpieter/toolbox/modules/MyModule/Settings.json
+    public static @Nullable File getModuleSettingsFile(IModule module, boolean createIfNotExists) {
+        File moduleFolder = getModuleFolder(module.getClass(), createIfNotExists);
+        if (moduleFolder == null) return null;
+
+        String fileName = "Settings.json";
+        File settingsFile = new File(moduleFolder, fileName);
+
+        boolean exists = settingsFile.exists();
+        if (!exists && !createIfNotExists) return null;
+
+        return FileUtils.tryCreateFile(settingsFile) ? settingsFile : null;
+    }
 }

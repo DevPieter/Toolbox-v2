@@ -58,7 +58,7 @@ public class SidebarWidget extends ComponentBase {
         addChild(subtitle);
 
         STextStyle versionStyle = STextStyle.of(versionColor).setFontSize(16);
-        SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s - %s", Toolbox.getToolboxVersion(), Toolbox.getMinecraftVersion(), Toolbox.getBuildStatus())));
+        SCLabel version = new SCLabel(this, x, height - 18, width, 16, SText.of(versionStyle).append(String.format("v%s / %s (v%s) - %s", Toolbox.getToolboxVersion(), Toolbox.getMinecraftVersion(), Toolbox.getSquidVersion(), Toolbox.getBuildStatus())));
         version.alignment().set(Alignment.MIDDLE_CENTER);
         addChild(version);
     }

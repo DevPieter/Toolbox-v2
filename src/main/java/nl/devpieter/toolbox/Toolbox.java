@@ -30,7 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public class Toolbox implements ModInitializer {
 
-    private static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer("toolbox").orElseThrow();
+    private static final ModContainer TOOLBOX_MOD_CONTAINER = FabricLoader.getInstance().getModContainer("toolbox").orElseThrow();
+    private static final ModContainer SQUID_MOD_CONTAINER = FabricLoader.getInstance().getModContainer("squid").orElseThrow();
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Toolbox");
     public static boolean DEBUG = false;
@@ -51,6 +52,7 @@ public class Toolbox implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        DebugOptions.getInstance().setLoadDefaultFont(false);
 
         CategoryManager categoryManager = CategoryManager.getInstance();
         ModuleManager moduleManager = ModuleManager.getInstance();
@@ -63,7 +65,7 @@ public class Toolbox implements ModInitializer {
             colorManager.reload(resourceManager);
 
             FontManager fontManager = FontManager.getInstance();
-            resourceManager.registerReloader(fontManager);
+//            resourceManager.registerReloader(fontManager);
             fontManager.reload(resourceManager);
         });
 
@@ -91,6 +93,7 @@ public class Toolbox implements ModInitializer {
             categoryManager.register(ExampleCategory.class);
             categoryManager.register(FillerCategory.class);
 
+            moduleManager.register(TestSettingModule.class);
             moduleManager.register(ClickableModule.class);
             moduleManager.register(StatefulModule.class);
             moduleManager.register(TestModule.class);
@@ -117,15 +120,19 @@ public class Toolbox implements ModInitializer {
         }
     }
 
+    public static String getMinecraftVersion() {
+        return SharedConstants.getGameVersion().getName();
+    }
+
     public static String getToolboxVersion() {
-        return MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
+        return TOOLBOX_MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
+    }
+
+    public static String getSquidVersion() {
+        return SQUID_MOD_CONTAINER.getMetadata().getVersion().getFriendlyString();
     }
 
     public static String getBuildStatus() {
-        return MOD_CONTAINER.getMetadata().getCustomValue("build_status").getAsString();
-    }
-
-    public static String getMinecraftVersion() {
-        return SharedConstants.getGameVersion().getName();
+        return TOOLBOX_MOD_CONTAINER.getMetadata().getCustomValue("build_status").getAsString();
     }
 }
