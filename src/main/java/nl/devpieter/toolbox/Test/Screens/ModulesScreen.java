@@ -6,7 +6,7 @@ import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Module.ModuleManager;
 import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
 import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselComponent;
+import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselWidget;
 import nl.devpieter.toolbox.Widgets.PaginationWidget;
 import nl.devpieter.toolbox.Widgets.SidebarWidget;
 
@@ -23,7 +23,7 @@ public class ModulesScreen extends SquidScreen {
 
         ContentWidget content = new ContentWidget(424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32);
 
-        ModuleCarouselComponent moduleCarouselWidget = new ModuleCarouselComponent(424 + 16, 324 + 8 + 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 324 - 8 - 16 - 16, 32);
+        ModuleCarouselWidget moduleCarouselWidget = new ModuleCarouselWidget(424 + 16, 324 + 8 + 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 324 - 8 - 16 - 16, 32);
         moduleCarouselWidget.init(ModuleManager.getInstance().getModules());
         moduleCarouselWidget.setParent(content);
         content.addChild(moduleCarouselWidget);
@@ -37,7 +37,7 @@ public class ModulesScreen extends SquidScreen {
         this.addRenderable(content);
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
-        CategoryContainerWidget categoryContainer = new CategoryContainerWidget(0, 324 + 8 + 16, 424, sidebar.getHeight() - 324 - 25 - 32, gap, aClass -> {
+        CategoryContainerWidget categoryContainer = new CategoryContainerWidget(0, 324 + 8 + 16, 424, sidebar.getHeight() - 324 - 15 - 32, gap, aClass -> {
             moduleCarouselWidget.init(ModuleManager.getInstance().getModules(aClass));
         });
 

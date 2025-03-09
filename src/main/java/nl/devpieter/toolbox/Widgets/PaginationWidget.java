@@ -7,7 +7,7 @@ import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Theme.ColorManager;
-import nl.devpieter.toolbox.Widgets.Abstractions.PaginatableComponentBase;
+import nl.devpieter.toolbox.Widgets.Abstractions.PaginatableWidgetBase;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -20,18 +20,18 @@ public class PaginationWidget extends ComponentBase {
 
     private final ColorManager colorManager = ColorManager.getInstance();
 
-    private final PaginatableComponentBase paginatableWidget;
+    private final PaginatableWidgetBase paginatableWidget;
 
     private final SCCard left;
     private final SCLabel page;
     private final SCCard right;
 
-    public PaginationWidget(float x, float y, PaginatableComponentBase paginatableWidget) {
+    public PaginationWidget(float x, float y, PaginatableWidgetBase paginatableWidget) {
         super(x, y, WIDTH, HEIGHT);
 
-        Color backgroundColor = colorManager.get("pagination.background");
-        Color backgroundHoverColor = colorManager.get("pagination.background.hover");
-        Color textColor = colorManager.get("pagination.text");
+        Color backgroundColor = colorManager.get("pagination.body");
+        Color backgroundHoverColor = colorManager.get("pagination.body.hover");
+        Color textColor = colorManager.get("pagination.body.text");
 
         STextStyle textStyle = STextStyle.of(textColor).setFontSize(18);
 

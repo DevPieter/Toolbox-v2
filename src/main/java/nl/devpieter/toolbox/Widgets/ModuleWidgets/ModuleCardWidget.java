@@ -5,30 +5,22 @@ import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.components.SCSvg;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.rendering.NVGHelper;
-import nl.devpieter.squid.rendering.svg.SvgHolder;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.*;
-import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Theme.ColorManager;
-import nl.devpieter.toolbox.Theme.SvgManager;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
-public class ModuleCardWidget extends ComponentBase {
+public class ModuleCardWidget extends WidgetBase {
 
     public static final int WIDTH = 400;
     public static final int HEIGHT = 145;
 
-    private final ModuleManager moduleManager = ModuleManager.getInstance();
-    private final ColorManager colorManager = ColorManager.getInstance();
-    private final SvgManager svgManager = SvgManager.getInstance();
-
-    private final Color titleColor = colorManager.get("module.card.title");
-    private final Color titleEnabledColor = colorManager.get("module.card.title.enabled");
+    private final Color titleColor = colorManager.get("module.card.header.text");
+    private final Color titleEnabledColor = colorManager.get("module.card.header.text.enabled");
     private final int shadowColor = colorManager.getRGB("module.card.shadow");
     private final int shadowEnabledColor = colorManager.getRGB("module.card.shadow.enabled");
 
@@ -44,62 +36,61 @@ public class ModuleCardWidget extends ComponentBase {
         this.setParent(parent);
 
         this.moduleClass = moduleClass;
-        isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);
-        isClickable = IClickableModule.class.isAssignableFrom(moduleClass);
-        isToggleable = IToggleableModule.class.isAssignableFrom(moduleClass);
-        hasSettings = ISettingModule.class.isAssignableFrom(moduleClass);
+        this.isInteractable = IInteractableModule.class.isAssignableFrom(moduleClass);
+        this.isClickable = IClickableModule.class.isAssignableFrom(moduleClass);
+        this.isToggleable = IToggleableModule.class.isAssignableFrom(moduleClass);
+        this.hasSettings = ISettingModule.class.isAssignableFrom(moduleClass);
 
-        String nameText = moduleManager.getName(moduleClass).getString();
+        String titleText = moduleManager.getName(moduleClass).getString();
         String descriptionText = moduleManager.getDescription(moduleClass).getString();
 
-        Color topColor = colorManager.get("module.card.top");
-        Color bottomColor = colorManager.get("module.card.bottom");
-        Color descriptionColor = colorManager.get("module.card.description");
-
-        Color favoriteIconColor = colorManager.get("module.card.favorite.icon");
-        Color favoriteIconHoverColor = colorManager.get("module.card.favorite.icon.hover");
-        Color favoriteIconFavoriteColor = colorManager.get("module.card.favorite.icon.favorite");
-
-        Color settingsIconColor = colorManager.get("module.card.settings.icon");
-        Color settingsIconHoverColor = colorManager.get("module.card.settings.icon.hover");
-
-        SvgHolder favoriteSvg = svgManager.get("icons.favorite");
-        SvgHolder settingSvg = svgManager.get("icons.settings");
         float svgSize = 24;
 
-        SCCard cardTop = new SCCard(this, x, y, this.width, 50);
-        cardTop.color().set(topColor).cornerRadius().set(8, 8, 0, 0);
-        addChild(cardTop);
+        /* Header */
+        SCCard cardHeader = new SCCard(this, x, y, width, 50);
+        cardHeader.color().set(colorManager.get("module.card.header")).cornerRadius().set(8, 8, 0, 0);
+        this.addChild(cardHeader);
 
-        SCCard cardBottom = new SCCard(this, x, y + 40, width, height - 40);
-        cardBottom.color().set(bottomColor).cornerRadius().set(12, 12, 8, 8);
-        addChild(cardBottom);
+        STextStyle titleStyle = STextStyle.of(this.titleColor, 24).setBold();
+        this.title = new SCLabel(cardHeader, x + 12, y, width - svgSize - 24 - (this.hasSettings ? svgSize + 6 : 0) - 6, 40, SText.of(titleText, titleStyle));
+        this.title.alignment().set(Alignment.MIDDLE_LEFT);
+        cardHeader.addChild(this.title);
 
-        STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(24);
-        title = new SCLabel(this, x + 12, y, width - 24, 40, SText.of(titleStyle).append(nameText));
-        title.alignment().set(Alignment.MIDDLE_LEFT);
-        addChild(title);
+        this.favorite = new SCSvg(cardHeader, x + width - svgSize - 12, y + 8, svgSize, svgSize, svgManager.get("icons.favorite"));
+        this.favorite.color().set(colorManager.get("module.card.header.icon.favorite"), colorManager.get("module.card.header.icon.favorite.hover")).inheritParentHover().setFalse();
+        cardHeader.addChild(this.favorite);
 
-        this.favorite = new SCSvg(this, x + width - svgSize - 12, y + 8, svgSize, svgSize, favoriteSvg);
-        this.favorite.color().set(favoriteIconColor, favoriteIconHoverColor).inheritParentHover().setFalse();
-        addChild(this.favorite);
+        this.settings = new SCSvg(cardHeader, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize, svgManager.get("icons.settings"));
+        this.settings.color().set(colorManager.get("module.card.header.icon.settings"), colorManager.get("module.card.header.icon.settings.hover")).inheritParentHover().setFalse();
+        if (this.hasSettings) cardHeader.addChild(this.settings);
 
-        this.settings = new SCSvg(this, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize, settingSvg);
-        this.settings.color().set(settingsIconColor, settingsIconHoverColor).inheritParentHover().setFalse();
-        if (this.hasSettings) addChild(this.settings);
+        /* Body */
+        SCCard cardBody = new SCCard(this, x, y + 40, width, height - 40);
+        cardBody.color().set(colorManager.get("module.card.body")).cornerRadius().set(12, 12, 8, 8);
+        this.addChild(cardBody);
 
-        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(18);
-        SCLabel description = new SCLabel(this, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionStyle).append(descriptionText));
+        STextStyle descriptionStyle = STextStyle.of(colorManager.get("module.card.body.text"), 18);
+        SCLabel description = new SCLabel(cardBody, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionText, descriptionStyle));
         description.multiLine().setTrue();
-        addChild(description);
+        cardBody.addChild(description);
     }
 
     @Override
     protected void render(long context, float delta) {
-        title.text().getStyle().setColor(moduleManager.isEnabled(moduleClass) ? titleEnabledColor : titleColor);
+        this.title.text().getStyle().setColor(this.moduleManager.isEnabled(this.moduleClass) ? this.titleEnabledColor : this.titleColor);
+        int color = this.moduleManager.isEnabled(this.moduleClass) ? this.shadowEnabledColor : this.shadowColor;
 
-        int color = moduleManager.isEnabled(moduleClass) ? shadowEnabledColor : shadowColor;
-        NVGHelper.drawDropShadow(context, getX() + 12, getY() + 12, getWidth() - 16, getHeight() - 16, 12, 6, 4, color);
+        NVGHelper.drawDropShadow(
+                context,
+                this.getX() + 12,
+                this.getY() + 12,
+                this.getWidth() - 16,
+                this.getHeight() - 16,
+                12,
+                6,
+                4,
+                color
+        );
     }
 
     @Override

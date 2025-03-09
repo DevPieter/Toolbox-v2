@@ -1,16 +1,16 @@
 package nl.devpieter.toolbox.Widgets.Abstractions;
 
-import nl.devpieter.squid.renderable.component.ComponentBase;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public abstract class PaginatableComponentBase extends ComponentBase {
+public abstract class PaginatableWidgetBase extends WidgetBase {
 
     protected final List<BiConsumer<Integer, Integer>> pageChangeListeners = new ArrayList<>();
 
-    public PaginatableComponentBase(float x, float y, float width, float height) {
+    public PaginatableWidgetBase(float x, float y, float width, float height) {
         super(x, y, width, height);
     }
 

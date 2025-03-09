@@ -56,4 +56,12 @@ public abstract class WidgetSettingBase<T, S extends ISetting<T>> implements IWi
     public boolean isRequired() {
         return required;
     }
+
+    public T getValue() {
+        return setting.getValue();
+    }
+
+    public void setValue(T value) {
+        setting.setValue(value);
+    }
 }

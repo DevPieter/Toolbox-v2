@@ -5,37 +5,32 @@ import nl.devpieter.squid.components.SCBorder;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.enums.Easing;
 import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.toolbox.Category.ICategory;
-import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.util.IConsumer;
 
-import java.awt.*;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class CategoryContainerWidget extends ComponentBase {
-
-    private final ColorManager colorManager = ColorManager.getInstance();
+public class CategoryContainerWidget extends WidgetBase {
 
     private final float gap;
-    private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
+    private final Consumer<Class<? extends ICategory>> categorySelectedCallback;
 
     private final SCContainer container;
 
     private final Animation selectedSlideAnimation;
     private SCBorder selectedBorder;
 
-    public CategoryContainerWidget(float x, float y, float width, float height, float gap, IConsumer<Class<? extends ICategory>> categorySelectedCallback) {
+    public CategoryContainerWidget(float x, float y, float width, float height, float gap, Consumer<Class<? extends ICategory>> categorySelectedCallback) {
         super(x, y, width, height);
 
         this.gap = gap;
         this.categorySelectedCallback = categorySelectedCallback;
 
         this.container = new SCContainer(this, x, y, width, height);
-        this.container.setParent(this);
         this.addChild(this.container);
 
         this.selectedSlideAnimation = new Animation(y, y, Duration.ofMillis(400), Easing.EXPO_OUT);
@@ -52,8 +47,7 @@ public class CategoryContainerWidget extends ComponentBase {
         float y = this.getY();
         float width = this.getWidth() - paddingX * 2;
 
-        CategoryCardWidget allCategoryCardWidget = new CategoryCardWidget(x, y, width, null, this::onCategorySelected);
-        allCategoryCardWidget.setParent(this.container);
+        CategoryCardWidget allCategoryCardWidget = new CategoryCardWidget(this.container, x, y, width, null, this::onCategorySelected);
         allCategoryCardWidget.setSelected(true);
 
         this.container.addChild(allCategoryCardWidget);
@@ -62,24 +56,21 @@ public class CategoryContainerWidget extends ComponentBase {
         y += CategoryCardWidget.HEIGHT + gap;
 
         for (Class<? extends ICategory> categoryClass : categoryClasses) {
-            CategoryCardWidget categoryCardWidget = new CategoryCardWidget(x, y, width, categoryClass, this::onCategorySelected);
-            categoryCardWidget.setParent(this.container);
+            CategoryCardWidget categoryCardWidget = new CategoryCardWidget(this.container, x, y, width, categoryClass, this::onCategorySelected);
             this.container.addChild(categoryCardWidget);
 
             y += CategoryCardWidget.HEIGHT + gap;
         }
 
-        Color selectedColor = this.colorManager.get("category.selector");
-
-        this.selectedBorder = new SCBorder(this.container, x, y, 1, CategoryCardWidget.HEIGHT, 2);
-        this.selectedBorder.color().set(selectedColor).cornerRadius().set(8, 0, 0, 8);
+        this.selectedBorder = new SCBorder(this.container, x, y, 1, CategoryCardWidget.HEIGHT - 2, 2);
+        this.selectedBorder.color().set(colorManager.get("category.selector")).cornerRadius().set(8, 0, 0, 8);
         this.container.addChild(selectedBorder);
     }
 
     @Override
     protected void render(long context, float delta) {
         if (this.selectedBorder == null) return;
-        this.selectedBorder.setY(this.selectedSlideAnimation.get());
+        this.selectedBorder.setY(this.selectedSlideAnimation.get() + 1);
     }
 
     private void onCategorySelected(@Nullable Class<? extends ICategory> categoryClass) {

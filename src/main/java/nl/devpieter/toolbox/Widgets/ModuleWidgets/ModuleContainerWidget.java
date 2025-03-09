@@ -1,41 +1,44 @@
 package nl.devpieter.toolbox.Widgets.ModuleWidgets;
 
 import net.minecraft.util.math.MathHelper;
-import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.renderable.component.ComponentBase;
+import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.toolbox.Module.Interfaces.IModule;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ModuleContainerWidget extends ComponentBase {
+public class ModuleContainerWidget extends WidgetBase {
 
     private final float gap;
 
-    public ModuleContainerWidget(IRenderable parent, float x, float y, float width, float height, float gap) {
-        super(x, y, width, height);
-        this.setParent(parent);
+    private final SCContainer container;
 
+    public ModuleContainerWidget(float x, float y, float width, float height, float gap) {
+        super(x, y, width, height);
         this.gap = gap;
+
+        this.container = new SCContainer(this, x, y, width, height);
+        this.addChild(this.container);
     }
 
     public void init(@NotNull List<Class<? extends IModule>> moduleClasses) {
-        clearChildren();
+        this.container.clearChildren();
         if (moduleClasses.isEmpty()) return;
 
-        int maxPerRow = fittingCardsRow(getWidth(), gap);
+        int maxPerRow = fittingCardsRow(this.getWidth(), this.gap);
         if (maxPerRow <= 0) return;
 
-        float startX = (getWidth() - maxPerRow * (ModuleCardWidget.WIDTH + gap)) / 2 + gap / 2;
+        float startX = (this.getWidth() - maxPerRow * (ModuleCardWidget.WIDTH + this.gap)) / 2 + this.gap / 2;
 
         float moduleCardWidthWithGap = ModuleCardWidget.WIDTH + this.gap;
         float moduleCardHeightWithGap = ModuleCardWidget.HEIGHT + this.gap;
 
         for (int i = 0; i < moduleClasses.size(); i++) {
-            float x = startX + (i % maxPerRow) * moduleCardWidthWithGap + getX();
-            float y = (i / maxPerRow) * moduleCardHeightWithGap + getY();
+            float x = startX + (i % maxPerRow) * moduleCardWidthWithGap + this.getX();
+            float y = (i / maxPerRow) * moduleCardHeightWithGap + this.getY();
 
-            addChild(new ModuleCardWidget(this, x, y, moduleClasses.get(i)));
+            this.container.addChild(new ModuleCardWidget(this, x, y, moduleClasses.get(i)));
         }
     }
 

@@ -4,25 +4,19 @@ import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Easing;
-import nl.devpieter.squid.renderable.component.ComponentBase;
+import nl.devpieter.squid.renderable.IRenderable;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
-import nl.devpieter.toolbox.Category.CategoryManager;
 import nl.devpieter.toolbox.Category.ICategory;
-import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.util.IConsumer;
 
-import java.awt.*;
 import java.time.Duration;
 
-public class CategoryCardWidget extends ComponentBase {
+public class CategoryCardWidget extends WidgetBase {
 
-    //    public static final int HEIGHT = 67;
     public static final int HEIGHT = 36 + 24;
-
-    private final CategoryManager categoryManager = CategoryManager.getInstance();
-    private final ColorManager colorManager = ColorManager.getInstance();
 
     private final @Nullable Class<? extends ICategory> categoryClass;
     private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
@@ -30,35 +24,30 @@ public class CategoryCardWidget extends ComponentBase {
     private final ColorAnimation titleColorAnimation;
     private final SCLabel title;
 
-    public CategoryCardWidget(float x, float y, float width, @Nullable Class<? extends ICategory> categoryClass, IConsumer<Class<? extends ICategory>> categorySelectedCallback) {
+    public CategoryCardWidget(IRenderable parent, float x, float y, float width, @Nullable Class<? extends ICategory> categoryClass, IConsumer<Class<? extends ICategory>> categorySelectedCallback) {
         super(x, y, width, HEIGHT);
+        this.setParent(parent);
 
         this.categoryClass = categoryClass;
         this.categorySelectedCallback = categorySelectedCallback;
 
-        String nameText = categoryClass == null ? "All" : this.categoryManager.getName(categoryClass).getString();
-        String descriptionText = categoryClass == null ? "All categories" : this.categoryManager.getDescription(categoryClass).getString();
+        String nameText = categoryClass == null ? "All" : categoryManager.getName(categoryClass).getString();
+        String descriptionText = categoryClass == null ? "All categories" : categoryManager.getDescription(categoryClass).getString();
 
-        Color backgroundColor = this.colorManager.get("category.card.background");
-        Color backgroundHoverColor = this.colorManager.get("category.card.background.hover");
-        Color titleColor = this.colorManager.get("category.card.title");
-        Color titleSelectedColor = this.colorManager.get("category.card.title.selected");
-        Color descriptionColor = this.colorManager.get("category.card.description");
-
-        SCCard card = new SCCard(this, x, y, width, height);
-        card.color().set(backgroundColor, backgroundHoverColor).cornerRadius().set(0, 8, 8, 0);
-        this.addChild(card);
-
-        this.titleColorAnimation = new ColorAnimation(titleColor, titleSelectedColor, Duration.ofMillis(400), Easing.EXPO_OUT);
+        this.titleColorAnimation = new ColorAnimation(colorManager.get("category.card.body.title"), colorManager.get("category.card.body.title.selected"), Duration.ofMillis(400), Easing.EXPO_OUT);
         this.titleColorAnimation.setForward(false);
 
-        STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(18);
-        this.title = new SCLabel(this, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
-        this.addChild(this.title);
+        SCCard card = new SCCard(this, x, y, width, height);
+        card.color().set(colorManager.get("category.card.body"), colorManager.get("category.card.body.hover")).cornerRadius().set(0, 8, 8, 0);
+        this.addChild(card);
 
-        STextStyle descriptionStyle = STextStyle.of(descriptionColor).setFontSize(14);
-        SCLabel description = new SCLabel(this, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
-        this.addChild(description);
+        STextStyle titleStyle = STextStyle.of().setBold().setFontSize(18);
+        this.title = new SCLabel(card, x + 12, y + 10, width - 32, 20, SText.of(titleStyle).append(nameText));
+        card.addChild(this.title);
+
+        STextStyle descriptionStyle = STextStyle.of(colorManager.get("category.card.body.description"), 14);
+        SCLabel description = new SCLabel(card, x + 12, y + 36, width - 32, 16, SText.of(descriptionStyle).append(descriptionText));
+        card.addChild(description);
     }
 
     @Override

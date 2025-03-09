@@ -38,8 +38,7 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
 
         this.bar = new SCProgressBar(this, x + gap, y + (height / 2 - (this.barThickness / 2)), width - gap - this.knobSize - this.displayWidth, this.barThickness);
         this.bar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
-        this.bar.barColor().set(this.baseColor);
-        this.bar.progressColor().set(this.progressColor);
+        this.bar.containerColor().set(this.baseColor).progressBarColor().set(this.progressColor);
         this.addChild(this.bar);
 
         int displayDigits = min instanceof Integer ? 0 : 2;
