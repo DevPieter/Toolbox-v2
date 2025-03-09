@@ -38,7 +38,7 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
 
         this.bar = new SCProgressBar(this, x + gap, y + (height / 2 - (this.barThickness / 2)), width - gap - this.knobSize - this.displayWidth, this.barThickness);
         this.bar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
-        this.bar.containerColor().set(bodyColor).progressBarColor().set(colorManager.get("setting.generic.body.enabled")).cornerRadius().set(this.cornerRadius);
+        this.bar.containerColor().set(bodyColor).progressBarColor().set(colorManager.get("setting.generic.body.enabled")).cornerRadius().set(this.cornerRadius / 2);
         this.addChild(this.bar);
 
         this.knob = new SCKnob(this.bar, 0, y + (height / 2 - (this.knobSize / 2)), this.knobSize);
