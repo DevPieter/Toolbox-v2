@@ -11,6 +11,17 @@
   "pagination.body.hover": "#181818",
   "pagination.body.text": "#d6d9db",
 
+  "setting.group.container.message": "#767676",
+  "setting.group.header": "#090909",
+  "setting.group.header.text": "#767676",
+  "setting.group.body": "#111111",
+  "setting.generic.title" : "#d6d9db",
+  "setting.generic.title.required" : "#eb8383",
+  "setting.generic.body": "#090909",
+  "setting.generic.body.enabled": "#8a83eb",
+  "setting.generic.knob": "#d6d9db",
+  "setting.generic.knob.hover": "#d6d9db",
+
   "module.carousel.message": "#767676",
   "module.card.header": "#090909",
   "module.card.header.text": "#767676",

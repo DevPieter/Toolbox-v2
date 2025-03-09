@@ -4,22 +4,18 @@ import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.renderable.component.ComponentBase;
 import nl.devpieter.squid.renderable.component.IComponent;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
-import nl.devpieter.toolbox.Theme.ColorManager;
+import nl.devpieter.toolbox.Widgets.WidgetBase;
 import nl.devpieter.toolbox.setting.SettingGroup;
 import nl.devpieter.toolbox.setting.interfaces.IWidgetSetting;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingGroupWidget extends ComponentBase {
-
-    private final ColorManager colorManager = ColorManager.getInstance();
+public class SettingGroupWidget extends WidgetBase {
 
     private final float gap;
 
@@ -27,7 +23,7 @@ public class SettingGroupWidget extends ComponentBase {
     private final SettingGroup settingGroup;
 
     public SettingGroupWidget(float x, float y, float width, float gap, ISettingModule module, SettingGroup settingGroup) {
-        super(x, y, width, 0); // TODO - Calculate height based on the amount of settings in the group
+        super(x, y, width, 0);
 
         this.gap = gap;
 
@@ -37,26 +33,24 @@ public class SettingGroupWidget extends ComponentBase {
         List<IComponent> settingComponents = this.createSettingComponents();
         this.setHeight(this.getChildrenHeight(settingComponents, gap));
 
-        Color titleColor = colorManager.get("module.card.title"); // TODO - setting.group.title
-        Color topColor = colorManager.get("module.card.top");
-        Color bottomColor = colorManager.get("module.card.bottom");
+        /* Header */
+        SCCard cardHeader = new SCCard(this, x, y, width, 50);
+        cardHeader.color().set(colorManager.get("setting.group.header")).cornerRadius().set(8, 8, 0, 0);
+        this.addChild(cardHeader);
 
-        SCCard cardTop = new SCCard(this, x, y, width, 50);
-        cardTop.color().set(topColor).cornerRadius().set(8, 8, 0, 0);
-        addChild(cardTop);
-
-        SCCard cardBottom = new SCCard(this, x, y + 40, width, height - 40);
-        cardBottom.color().set(bottomColor).cornerRadius().set(12, 12, 8, 8);
-        addChild(cardBottom);
-
-        STextStyle titleStyle = STextStyle.of(titleColor).setBold(true).setFontSize(24);
-        SCLabel title = new SCLabel(this, x + 12, y, width - 24, 40, SText.of(titleStyle).append(settingGroup.title()));
+        STextStyle titleStyle = STextStyle.of(colorManager.get("setting.group.header.text"), 24).setBold();
+        SCLabel title = new SCLabel(cardHeader, x + 12, y, width - 24, 40, SText.of(this.settingGroup.title(), titleStyle));
         title.alignment().set(Alignment.MIDDLE_LEFT);
-        addChild(title);
+        cardHeader.addChild(title);
+
+        /* Body */
+        SCCard cardBody = new SCCard(this, x, y + 40, width, height - 40);
+        cardBody.color().set(colorManager.get("setting.group.body")).cornerRadius().set(12, 12, 8, 8);
+        this.addChild(cardBody);
 
         for (IComponent settingComponent : settingComponents) {
-            settingComponent.setParent(this);
-            this.addChild(settingComponent);
+            settingComponent.setParent(cardBody);
+            cardBody.addChild(settingComponent);
         }
     }
 
@@ -68,7 +62,6 @@ public class SettingGroupWidget extends ComponentBase {
             IWidgetSetting<?, ?> setting = this.settingGroup.settings().get(i);
 
             IComponent widget = setting.createWidget(this.getX() + 12, y, this.getWidth() - 24, 250, this.module);
-            widget.setParent(this);
             components.add(widget);
 
             y += widget.getHeight() + this.gap;

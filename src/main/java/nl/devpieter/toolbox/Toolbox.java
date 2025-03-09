@@ -99,6 +99,7 @@ public class Toolbox implements ModInitializer {
             categoryManager.register(FillerCategory.class);
 
             moduleManager.register(TestSettingModule.class);
+            moduleManager.register(TestSetting2Module.class);
             moduleManager.register(ClickableModule.class);
             moduleManager.register(StatefulModule.class);
             moduleManager.register(TestModule.class);
