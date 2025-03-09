@@ -22,20 +22,14 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
 
     public static final int HEIGHT = 26;
 
-    private final ColorManager colorManager = ColorManager.getInstance();
-
     // TODO - Change to correct colors
-    private final Color titleColor = colorManager.get("module.card.description");
-    private final Color requiredColor = Color.RED;
-    private final Color baseColor = Color.GRAY;
+    private final Color baseColor = Color.DARK_GRAY;
     private final Color baseEnabledColor = colorManager.get("module.card.title.enabled");
     private final Color knobColor = Color.WHITE;
 
     // TODO - Get from Theme
     private final float cornerRadius = 8;
     private final float knobPadding = 4;
-
-    private final float gap;
 
     private final Animation slideAnimation;
     private final ColorAnimation slideColorAnimation;
@@ -46,17 +40,8 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
     public BooleanSettingWidget(float x, float y, float width, float gap, ISettingModule module, IWidgetSetting<Boolean, IBooleanSetting> widgetSetting) {
         super(x, y, width, HEIGHT, gap, module, widgetSetting);
 
-        this.gap = gap;
-
         this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.EXPO_OUT);
         this.slideColorAnimation = new ColorAnimation(this.baseColor, this.baseEnabledColor, Duration.ofMillis(400), Easing.EXPO_OUT);
-
-        STextStyle titleStyle = STextStyle.of(titleColor).setFontSize(18);
-        SText titleText = SText.of(titleStyle).append(widgetSetting.getName());
-
-        SCLabel title = new SCLabel(this, x, y, gap, height, titleText);
-        title.alignment().set(Alignment.MIDDLE_LEFT);
-        this.addChild(title);
 
         this.base = new SCCard(this, x + gap, y, 60, height);
         this.base.cornerRadius().set(this.cornerRadius);
@@ -66,12 +51,6 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
         this.knob.color().set(knobColor).radiusAnimation().set(this.cornerRadius / 2, this.cornerRadius);
         this.addChild(this.knob);
 
-        if (widgetSetting.isRequired()) {
-            STextStyle requiredStyle = STextStyle.of(requiredColor).setFontSize(16).setBold(true);
-            titleText.append("*", requiredStyle);
-        }
-
-        this.setDisabled(!widgetSetting.isEditable());
         this.setState(this.widgetSetting.getSetting().getValue(), false, false);
     }
 
