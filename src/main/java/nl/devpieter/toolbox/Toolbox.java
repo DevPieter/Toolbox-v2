@@ -25,6 +25,7 @@ import nl.devpieter.toolbox.Test.Screens.ModulesScreen;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Theme.FontManager;
 import nl.devpieter.toolbox.Theme.SvgManager;
+import nl.devpieter.toolbox.setting.SettingManager;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,7 @@ public class Toolbox implements ModInitializer {
 
         CategoryManager categoryManager = CategoryManager.getInstance();
         ModuleManager moduleManager = ModuleManager.getInstance();
+        SettingManager settingManager = SettingManager.getInstance();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             if (!(MinecraftClient.getInstance().getResourceManager() instanceof ReloadableResourceManagerImpl resourceManager)) return;
@@ -74,7 +76,13 @@ public class Toolbox implements ModInitializer {
             svgManager.reload(resourceManager);
         });
 
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            settingManager.forceSaveQueue();
+        });
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            settingManager.tick();
+
             if (openModulesScreen.wasPressed()) {
                 client.setScreen(new ModulesScreen());
             }

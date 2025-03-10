@@ -12,14 +12,23 @@ import nl.devpieter.toolbox.setting.interfaces.ISetting;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class SettingManager {
 
     private static SettingManager INSTANCE;
 
     private final Gson gson = new Gson();
+
+    private final Duration saveInterval = Duration.ofSeconds(15);
+    private final HashMap<String, List<KeyedSetting<?>>> saveQueue = new HashMap<>();
+
+    private long lastSaveTime = 0;
+    private CompletableFuture<Boolean> saveFuture = null;
 
     private SettingManager() {
     }
@@ -29,91 +38,151 @@ public class SettingManager {
         return INSTANCE;
     }
 
+    public void tick() {
+        if (this.saveQueue.isEmpty()) return;
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - this.lastSaveTime < this.saveInterval.toMillis()) return;
+
+        if (this.saveFuture != null && !this.saveFuture.isDone()) return;
+
+        this.saveFuture = CompletableFuture.supplyAsync(() -> {
+            int files = this.saveQueue.size();
+            int size = this.saveQueue.values().stream().mapToInt(List::size).sum();
+            Toolbox.LOGGER.info("Starting periodic 'setting batch save' for {} files and {} settings", files, size);
+
+            for (String path : this.saveQueue.keySet()) {
+                File file = new File(path);
+
+                if (this.saveBatchToFile(file, this.saveQueue.get(path))) continue;
+                Toolbox.LOGGER.error("Failed to save settings batch to file: {}", file.getAbsolutePath());
+            }
+
+            this.lastSaveTime = currentTime;
+            this.saveQueue.clear();
+            return true;
+        });
+    }
+
     public void openSettingsScreen(ISettingModule module) {
         MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(module));
     }
 
-    public boolean saveSettings(ISettingModule module) {
+    public boolean queueSave(ISettingModule module, ISetting<?> setting) {
         File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
         if (moduleFile == null) return false;
 
-        for (ISetting<?> setting : module.getSettings()) {
-            saveSetting(moduleFile, setting);
-        }
+        String path = moduleFile.getAbsolutePath();
+        KeyedSetting<?> keyedSetting = setting.asKeyedSetting();
 
+        List<KeyedSetting<?>> settingsList = this.saveQueue.getOrDefault(path, new ArrayList<>());
+        settingsList.removeIf(s -> s.key().equals(keyedSetting.key()));
+        settingsList.add(keyedSetting);
+
+        this.saveQueue.put(path, settingsList);
         return true;
     }
 
-    public boolean saveSetting(ISettingModule module, ISetting<?> setting) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
-        if (moduleFile == null) return false;
-
-        return saveSetting(moduleFile, setting);
-    }
-
-    public boolean loadSettings(ISettingModule module) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) return false;
-
+    public boolean queueSaveAll(ISettingModule module) {
+        boolean success = true;
         for (ISetting<?> setting : module.getSettings()) {
-            loadSetting(moduleFile, setting);
+            if (!queueSave(module, setting)) success = false;
         }
 
-        return true;
+        return success;
+    }
+
+    public void forceSaveQueue() {
+        if (this.saveQueue.isEmpty()) return;
+
+        int files = this.saveQueue.size();
+        int size = this.saveQueue.values().stream().mapToInt(List::size).sum();
+        Toolbox.LOGGER.info("Forced starting 'setting batch save' for {} files and {} settings", files, size);
+
+        for (String path : this.saveQueue.keySet()) {
+            File file = new File(path);
+
+            if (this.saveBatchToFile(file, this.saveQueue.get(path))) continue;
+            Toolbox.LOGGER.error("Failed to force save settings batch to file: {}", file.getAbsolutePath());
+        }
+
+        this.saveQueue.clear();
     }
 
     public <T> boolean loadSetting(ISettingModule module, ISetting<T> setting) {
         File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) return false;
-
-        return loadSetting(moduleFile, setting);
-    }
-
-    private boolean saveSetting(File file, ISetting<?> setting) {
-        List<KeyedSetting<?>> settingsList = loadSettings(file);
-        if (settingsList == null) settingsList = new ArrayList<>();
-
-        settingsList.removeIf(s -> s.key().equals(setting.getIdentifier()));
-        settingsList.add(setting.asKeyedSetting());
-
-        try (FileWriter writer = new FileWriter(file)) {
-            gson.toJson(settingsList, writer);
-            return true;
-        } catch (IOException e) {
-            Toolbox.LOGGER.error("Failed to save settings to file: {}", file.getAbsolutePath(), e);
+        if (moduleFile == null) {
+            Toolbox.LOGGER.warn("Failed to load setting: {} from module: {}", setting.getIdentifier(), module.getName().getString());
             return false;
         }
+
+        List<KeyedSetting<?>> batch = this.readBatchFromFile(moduleFile);
+        return loadSettingFromBatch(setting, batch);
     }
 
-    private <T> boolean loadSetting(File file, ISetting<T> setting) {
-        List<KeyedSetting<?>> settingsList = loadSettings(file);
+    public boolean loadSettings(ISettingModule module) {
+        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
+        if (moduleFile == null) {
+            Toolbox.LOGGER.warn("Failed to load settings from module: {}", module.getName().getString());
+            return false;
+        }
 
-        if (settingsList == null) {
-            Toolbox.LOGGER.warn("Failed to load settings from file, using default value");
+        List<KeyedSetting<?>> batch = this.readBatchFromFile(moduleFile);
+        for (ISetting<?> setting : module.getSettings()) loadSettingFromBatch(setting, batch);
 
+        return true;
+    }
+
+    private <T> boolean loadSettingFromBatch(ISetting<T> setting, List<KeyedSetting<?>> batch) {
+        if (batch == null || batch.isEmpty()) {
             setting.setValue(setting.getDefault());
-            return false;
+            return true;
         }
 
-        for (KeyedSetting<?> keyedSetting : settingsList) {
+        for (KeyedSetting<?> keyedSetting : batch) {
             if (!keyedSetting.key().equals(setting.getIdentifier())) continue;
 
             JsonElement jsonElement = gson.toJsonTree(keyedSetting.value());
-            T value = gson.fromJson(jsonElement, setting.getType());
+            T value = this.gson.fromJson(jsonElement, setting.getType());
 
             setting.setValue(setting.shouldAllowNull() ? value : value != null ? value : setting.getDefault());
             return true;
         }
 
+        Toolbox.LOGGER.warn("Failed to load setting: {} from batch", setting.getIdentifier());
         return false;
     }
 
-    private @Nullable List<KeyedSetting<?>> loadSettings(File file) {
+    private boolean saveBatchToFile(File file, List<KeyedSetting<?>> settings) {
+        List<KeyedSetting<?>> currentSettings = this.readBatchFromFile(file);
+        if (currentSettings == null) currentSettings = new ArrayList<>();
+
+        HashMap<String, KeyedSetting<?>> settingsMap = new HashMap<>();
+        for (KeyedSetting<?> setting : currentSettings) {
+            settingsMap.put(setting.key(), setting);
+        }
+
+        for (KeyedSetting<?> setting : settings) {
+            settingsMap.put(setting.key(), setting);
+        }
+
+        currentSettings = new ArrayList<>(settingsMap.values());
+
+        try (FileWriter writer = new FileWriter(file)) {
+            this.gson.toJson(currentSettings, writer);
+            return true;
+        } catch (IOException e) {
+            Toolbox.LOGGER.error("Failed to save settings batch to file: {}", file.getAbsolutePath(), e);
+            return false;
+        }
+    }
+
+    private @Nullable List<KeyedSetting<?>> readBatchFromFile(File file) {
         try (Reader reader = new FileReader(file)) {
-            return gson.fromJson(reader, new TypeToken<List<KeyedSetting<?>>>() {
+            return this.gson.fromJson(reader, new TypeToken<List<KeyedSetting<?>>>() {
             }.getType());
         } catch (IOException e) {
-            Toolbox.LOGGER.error("Failed to load settings from file: {}", file.getAbsolutePath(), e);
+            Toolbox.LOGGER.error("Failed to read settings batch from file: {}", file.getAbsolutePath(), e);
             return null;
         }
     }

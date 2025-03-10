@@ -181,7 +181,7 @@ public class ModuleManager {
 
     public boolean saveSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
-        return this.settingManager.saveSettings(settingModule);
+        return this.settingManager.queueSaveAll(settingModule);
     }
 
     public boolean openSettings(@NotNull Class<? extends IModule> moduleClass) {

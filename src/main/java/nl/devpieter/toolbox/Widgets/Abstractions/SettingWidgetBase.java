@@ -41,6 +41,6 @@ public abstract class SettingWidgetBase<T, S extends IWidgetSetting<T, ?>> exten
     }
 
     public void save() {
-        this.settingManager.saveSetting(this.module, this.widgetSetting.getSetting());
+        this.settingManager.queueSave(this.module, this.widgetSetting.getSetting());
     }
 }
