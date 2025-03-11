@@ -5,9 +5,12 @@ import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.Utils.ConfigUtils;
 import nl.devpieter.toolbox.Widgets.WidgetBase;
 import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.interfaces.IWidgetSetting;
+
+import java.io.File;
 
 public abstract class SettingWidgetBase<T, S extends IWidgetSetting<T, ?>> extends WidgetBase {
 
@@ -41,6 +44,9 @@ public abstract class SettingWidgetBase<T, S extends IWidgetSetting<T, ?>> exten
     }
 
     public void save() {
-        this.settingManager.queueSave(this.module, this.widgetSetting.getSetting());
+        File moduleFile = ConfigUtils.getModuleSettingsFile(this.module, true);
+        if (moduleFile == null) return;
+
+        this.settingManager.queueSave(moduleFile, this.widgetSetting.getSetting());
     }
 }

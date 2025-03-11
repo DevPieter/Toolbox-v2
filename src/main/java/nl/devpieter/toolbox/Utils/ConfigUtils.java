@@ -16,6 +16,19 @@ public class ConfigUtils {
         return FileUtils.tryCreateDirectories(configFolder) ? configFolder : null;
     }
 
+    public static @Nullable File getSettingsFile(boolean createIfNotExists) {
+        File configFolder = getConfigFolder(createIfNotExists);
+        if (configFolder == null) return null;
+
+        String fileName = "Settings.json";
+        File settingsFile = new File(configFolder, fileName);
+
+        boolean exists = settingsFile.exists();
+        if (!exists && !createIfNotExists) return null;
+
+        return FileUtils.tryCreateFile(settingsFile) ? settingsFile : null;
+    }
+
     public static @Nullable File getModulesFolder(boolean createIfNotExists) {
         File modulesFolder = new File("config/toolbox/modules");
 

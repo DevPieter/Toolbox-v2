@@ -25,10 +25,15 @@ import nl.devpieter.toolbox.Test.Screens.ModulesScreen;
 import nl.devpieter.toolbox.Theme.ColorManager;
 import nl.devpieter.toolbox.Theme.FontManager;
 import nl.devpieter.toolbox.Theme.SvgManager;
+import nl.devpieter.toolbox.Utils.ConfigUtils;
 import nl.devpieter.toolbox.setting.SettingManager;
+import nl.devpieter.toolbox.setting.settings.ListSetting;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class Toolbox implements ModInitializer {
 
@@ -59,9 +64,15 @@ public class Toolbox implements ModInitializer {
         CategoryManager categoryManager = CategoryManager.getInstance();
         ModuleManager moduleManager = ModuleManager.getInstance();
         SettingManager settingManager = SettingManager.getInstance();
+        GlobalSettings globalSettings = GlobalSettings.getInstance();
+
+        globalSettings.addSetting(new ListSetting<String>("favorite_modules", new ArrayList<>()));
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             if (!(MinecraftClient.getInstance().getResourceManager() instanceof ReloadableResourceManagerImpl resourceManager)) return;
+
+            File settingsFile = ConfigUtils.getSettingsFile(false);
+            if (settingsFile != null) settingManager.loadSettings(settingsFile, globalSettings.getSettings());
 
             ColorManager colorManager = ColorManager.getInstance();
             resourceManager.registerReloader(colorManager);
@@ -77,6 +88,7 @@ public class Toolbox implements ModInitializer {
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            settingManager.queueSave(ConfigUtils.getSettingsFile(true), globalSettings.getSettings());
             settingManager.forceSaveQueue();
         });
 

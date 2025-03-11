@@ -3,11 +3,7 @@ package nl.devpieter.toolbox.setting;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.client.MinecraftClient;
-import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
-import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.Toolbox;
-import nl.devpieter.toolbox.Utils.ConfigUtils;
 import nl.devpieter.toolbox.setting.interfaces.ISetting;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,15 +60,8 @@ public class SettingManager {
         });
     }
 
-    public void openSettingsScreen(ISettingModule module) {
-        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(module));
-    }
-
-    public boolean queueSave(ISettingModule module, ISetting<?> setting) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, true);
-        if (moduleFile == null) return false;
-
-        String path = moduleFile.getAbsolutePath();
+    public boolean queueSave(File file, ISetting<?> setting) {
+        String path = file.getAbsolutePath();
         KeyedSetting<?> keyedSetting = setting.asKeyedSetting();
 
         List<KeyedSetting<?>> settingsList = this.saveQueue.getOrDefault(path, new ArrayList<>());
@@ -83,10 +72,11 @@ public class SettingManager {
         return true;
     }
 
-    public boolean queueSaveAll(ISettingModule module) {
+    public boolean queueSave(File file, List<ISetting<?>> settings) {
         boolean success = true;
-        for (ISetting<?> setting : module.getSettings()) {
-            if (!queueSave(module, setting)) success = false;
+
+        for (ISetting<?> setting : settings) {
+            if (!queueSave(file, setting)) success = false;
         }
 
         return success;
@@ -109,26 +99,14 @@ public class SettingManager {
         this.saveQueue.clear();
     }
 
-    public <T> boolean loadSetting(ISettingModule module, ISetting<T> setting) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) {
-            Toolbox.LOGGER.warn("Failed to load setting: {} from module: {}", setting.getIdentifier(), module.getName().getString());
-            return false;
-        }
-
-        List<KeyedSetting<?>> batch = this.readBatchFromFile(moduleFile);
+    public <T> boolean loadSetting(File file, ISetting<T> setting) {
+        List<KeyedSetting<?>> batch = this.readBatchFromFile(file);
         return loadSettingFromBatch(setting, batch);
     }
 
-    public boolean loadSettings(ISettingModule module) {
-        File moduleFile = ConfigUtils.getModuleSettingsFile(module, false);
-        if (moduleFile == null) {
-            Toolbox.LOGGER.warn("Failed to load settings from module: {}", module.getName().getString());
-            return false;
-        }
-
-        List<KeyedSetting<?>> batch = this.readBatchFromFile(moduleFile);
-        for (ISetting<?> setting : module.getSettings()) loadSettingFromBatch(setting, batch);
+    public boolean loadSettings(File file, List<ISetting<?>> settings) {
+        List<KeyedSetting<?>> batch = this.readBatchFromFile(file);
+        for (ISetting<?> setting : settings) loadSettingFromBatch(setting, batch);
 
         return true;
     }

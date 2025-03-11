@@ -21,6 +21,12 @@ public class ModuleCardWidget extends WidgetBase {
 
     private final Color titleColor = colorManager.get("module.card.header.text");
     private final Color titleEnabledColor = colorManager.get("module.card.header.text.enabled");
+
+    private final Color favoriteColor = colorManager.get("module.card.header.icon.favorite");
+    private final Color favoriteHoverColor = colorManager.get("module.card.header.icon.favorite.hover");
+    private final Color favoriteFavoriteColor = colorManager.get("module.card.header.icon.favorite.favorite");
+    private final Color favoriteFavoriteHoverColor = colorManager.get("module.card.header.icon.favorite.favorite.hover");
+
     private final int shadowColor = colorManager.getRGB("module.card.shadow");
     private final int shadowEnabledColor = colorManager.getRGB("module.card.shadow.enabled");
 
@@ -57,7 +63,7 @@ public class ModuleCardWidget extends WidgetBase {
         cardHeader.addChild(this.title);
 
         this.favorite = new SCSvg(cardHeader, x + width - svgSize - 12, y + 8, svgSize, svgSize, svgManager.get("icons.favorite"));
-        this.favorite.color().set(colorManager.get("module.card.header.icon.favorite"), colorManager.get("module.card.header.icon.favorite.hover")).inheritParentHover().setFalse();
+        this.favorite.inheritParentHover().setFalse().color().setSmoothBackAndForth(true);
         cardHeader.addChild(this.favorite);
 
         this.settings = new SCSvg(cardHeader, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize, svgManager.get("icons.settings"));
@@ -73,6 +79,8 @@ public class ModuleCardWidget extends WidgetBase {
         SCLabel description = new SCLabel(cardBody, x + 12, y + 46, width - 24, height - 46, SText.of(descriptionText, descriptionStyle));
         description.multiLine().setTrue();
         cardBody.addChild(description);
+
+        this.updateFavorite(true);
     }
 
     @Override
@@ -99,6 +107,9 @@ public class ModuleCardWidget extends WidgetBase {
         if (!wasPressedInBounds() || !isHovered() || !isInteractable()) return false;
 
         if (this.favorite.isHovered() && this.favorite.wasPressedInBounds()) {
+            if (!this.moduleManager.toggleFavorite(moduleClass)) return false;
+
+            this.updateFavorite(false);
             return true;
         } else if (this.settings.isHovered() && this.settings.wasPressedInBounds()) {
             return this.moduleManager.openSettings(moduleClass);
@@ -112,5 +123,15 @@ public class ModuleCardWidget extends WidgetBase {
         }
 
         return false;
+    }
+
+    private void updateFavorite(boolean instant) {
+        boolean isFavorite = this.moduleManager.isFavorite(moduleClass);
+
+        Color color = isFavorite ? this.favoriteFavoriteColor : this.favoriteColor;
+        Color hoverColor = isFavorite ? this.favoriteFavoriteHoverColor : this.favoriteHoverColor;
+
+        if (instant) this.favorite.color().set(color, hoverColor);
+        else this.favorite.color().transition(color, hoverColor);
     }
 }

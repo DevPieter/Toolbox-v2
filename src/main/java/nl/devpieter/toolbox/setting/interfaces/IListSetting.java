@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface IListSetting<T> extends ISetting<List<T>> {
 
+    boolean contains(T value);
+
     void add(T value);
 
     void remove(T value);

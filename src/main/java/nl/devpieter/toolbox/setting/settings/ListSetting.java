@@ -18,6 +18,11 @@ public class ListSetting<T> extends SettingBase<List<T>> implements IListSetting
     }
 
     @Override
+    public boolean contains(T value) {
+        return getValue().contains(value);
+    }
+
+    @Override
     public void add(T value) {
         getValue().add(value);
     }

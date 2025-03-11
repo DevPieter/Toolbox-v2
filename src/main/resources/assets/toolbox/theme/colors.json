@@ -30,6 +30,7 @@
   "module.card.header.icon.favorite": "#767676",
   "module.card.header.icon.favorite.hover": "#d6d9db",
   "module.card.header.icon.favorite.favorite": "#8a83eb",
+  "module.card.header.icon.favorite.favorite.hover": "#a49fe0",
   "module.card.header.icon.settings": "#767676",
   "module.card.header.icon.settings.hover": "#d6d9db",
   "module.card.body": "#111111",

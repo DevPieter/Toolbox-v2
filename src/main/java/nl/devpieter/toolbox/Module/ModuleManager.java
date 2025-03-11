@@ -1,12 +1,16 @@
 package nl.devpieter.toolbox.Module;
 
 import com.google.gson.Gson;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import nl.devpieter.toolbox.Category.ICategory;
+import nl.devpieter.toolbox.GlobalSettings;
 import nl.devpieter.toolbox.Module.Interfaces.*;
+import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.Utils.ConfigUtils;
 import nl.devpieter.toolbox.setting.SettingManager;
+import nl.devpieter.toolbox.setting.settings.ListSetting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +30,7 @@ public class ModuleManager {
     private final List<IModule> modules = new ArrayList<>();
 
     private final SettingManager settingManager = SettingManager.getInstance();
+    private final GlobalSettings globalSettings = GlobalSettings.getInstance();
 
     private ModuleManager() {
     }
@@ -68,8 +73,21 @@ public class ModuleManager {
         module.onUnregistered();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Class<? extends IModule>> getModules() {
-        return List.copyOf(this.modules.stream().map(IModule::getClass).toList());
+        ListSetting<String> setting = this.globalSettings.getSetting("favorite_modules", ListSetting.class);
+        if (setting == null) return List.copyOf(this.modules.stream().map(IModule::getClass).toList());
+
+        List<Class<? extends IModule>> favoriteModules = new ArrayList<>();
+        List<Class<? extends IModule>> otherModules = new ArrayList<>();
+
+        for (IModule module : this.modules) {
+            if (setting.contains(this.getIdentifier(module.getClass()))) favoriteModules.add(module.getClass());
+            else otherModules.add(module.getClass());
+        }
+
+        favoriteModules.addAll(otherModules);
+        return List.copyOf(favoriteModules);
     }
 
     public List<Class<? extends IModule>> getModules(@Nullable Class<? extends ICategory> categoryClass) {
@@ -99,6 +117,10 @@ public class ModuleManager {
         return this.modules.stream().anyMatch(module -> module.getClass().equals(moduleClass));
     }
 
+    public String getIdentifier(@NotNull Class<? extends IModule> moduleClass) {
+        return moduleClass.getPackageName() + "." + moduleClass.getSimpleName();
+    }
+
     public Text getName(@NotNull Class<? extends IModule> moduleClass) {
         IModule module = this.getInstance(moduleClass);
         return module == null ? Text.of("Unknown") : module.getName();
@@ -107,6 +129,30 @@ public class ModuleManager {
     public Text getDescription(@NotNull Class<? extends IModule> moduleClass) {
         IModule module = this.getInstance(moduleClass);
         return module == null ? Text.of("Unknown") : module.getDescription();
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean isFavorite(@NotNull Class<? extends IModule> moduleClass) {
+        ListSetting<String> setting = this.globalSettings.getSetting("favorite_modules", ListSetting.class);
+        return setting != null && setting.contains(this.getIdentifier(moduleClass));
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean setFavorite(@NotNull Class<? extends IModule> moduleClass, boolean favorite) {
+        ListSetting<String> setting = this.globalSettings.getSetting("favorite_modules", ListSetting.class);
+        if (setting == null) return false;
+
+        if (favorite) setting.add(this.getIdentifier(moduleClass));
+        else setting.remove(this.getIdentifier(moduleClass));
+
+        File settingsFile = ConfigUtils.getSettingsFile(true);
+        if (settingsFile == null) return false;
+
+        return this.settingManager.queueSave(settingsFile, setting);
+    }
+
+    public boolean toggleFavorite(@NotNull Class<? extends IModule> moduleClass) {
+        return this.setFavorite(moduleClass, !this.isFavorite(moduleClass));
     }
 
     public boolean click(@NotNull Class<? extends IModule> moduleClass, int button) {
@@ -128,10 +174,10 @@ public class ModuleManager {
         if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return;
 
         try {
-            File moduleFile = ConfigUtils.getModuleStateFile(statefulModule, false);
-            if (moduleFile == null || statefulModule.getState() == null) return;
+            File stateFile = ConfigUtils.getModuleStateFile(statefulModule, false);
+            if (stateFile == null || statefulModule.getState() == null) return;
 
-            statefulModule.setState(this.gson.fromJson(new FileReader(moduleFile), (Type) statefulModule.getState().getClass()));
+            statefulModule.setState(this.gson.fromJson(new FileReader(stateFile), (Type) statefulModule.getState().getClass()));
         } catch (Exception e) {
             Toolbox.LOGGER.warn("Failed to load state for module {}!", moduleClass.getSimpleName(), e);
             statefulModule.resetState();
@@ -142,10 +188,10 @@ public class ModuleManager {
         if (!(this.getInstance(moduleClass) instanceof IStatefulModule<?> statefulModule)) return;
 
         try {
-            File moduleFile = ConfigUtils.getModuleStateFile(statefulModule, true);
-            if (moduleFile == null) return;
+            File stateFile = ConfigUtils.getModuleStateFile(statefulModule, true);
+            if (stateFile == null) return;
 
-            try (FileWriter writer = new FileWriter(moduleFile)) {
+            try (FileWriter writer = new FileWriter(stateFile)) {
                 this.gson.toJson(statefulModule.getState(), writer);
             }
         } catch (Exception e) {
@@ -176,17 +222,25 @@ public class ModuleManager {
 
     public boolean loadSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
-        return this.settingManager.loadSettings(settingModule);
+
+        File settingsFile = ConfigUtils.getModuleSettingsFile(settingModule, false);
+        if (settingsFile == null) return false;
+
+        return this.settingManager.loadSettings(settingsFile, settingModule.getSettings());
     }
 
     public boolean saveSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
-        return this.settingManager.queueSaveAll(settingModule);
+
+        File settingsFile = ConfigUtils.getModuleSettingsFile(settingModule, true);
+        if (settingsFile == null) return false;
+
+        return this.settingManager.queueSave(settingsFile, settingModule.getSettings());
     }
 
     public boolean openSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
-        this.settingManager.openSettingsScreen(settingModule);
+        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(settingModule));
         return true;
     }
 
