@@ -35,20 +35,21 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
         this.max = this.widgetSetting.getSetting().getMax();
 
         Color bodyColor = colorManager.get("setting.generic.body");
+        Color bodyHoverColor = colorManager.get("setting.generic.body.hover");
 
         this.bar = new SCProgressBar(this, x + gap, y + (height / 2 - (this.barThickness / 2)), width - gap - this.knobSize - this.displayWidth, this.barThickness);
         this.bar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
-        this.bar.containerColor().set(bodyColor).progressBarColor().set(colorManager.get("setting.generic.body.enabled")).cornerRadius().set(this.cornerRadius / 2);
+        this.bar.containerColor().set(bodyColor, bodyHoverColor).progressBarColor().set(colorManager.get("setting.generic.body.enabled"), colorManager.get("setting.generic.body.enabled.hover")).cornerRadius().set(this.cornerRadius / 2);
         this.addChild(this.bar);
 
-        this.knob = new SCKnob(this.bar, 0, y + (height / 2 - (this.knobSize / 2)), this.knobSize);
+        this.knob = new SCKnob(this, 0, y + (height / 2 - (this.knobSize / 2)), this.knobSize);
         this.knob.color().set(colorManager.get("setting.generic.knob"), colorManager.get("setting.generic.knob.hover")).radiusAnimation().set(this.cornerRadius / 2, this.cornerRadius);
         this.bar.addChild(this.knob);
 
         int displayDigits = min instanceof Integer ? 0 : 2;
         this.display = new SCNumberInputDisplay(this, x + width - this.displayWidth, y, this.displayWidth, height);
         this.display.labelStyle().get().setColor(colorManager.get("setting.generic.title"));
-        this.display.containerColor().set(bodyColor).formatter().setFractionDigits(displayDigits, displayDigits);
+        this.display.containerColor().set(bodyColor, bodyHoverColor).formatter().setFractionDigits(displayDigits, displayDigits);
         this.addChild(this.display);
 
         this.setValue(this.widgetSetting.getSetting().getValue(), false, false);

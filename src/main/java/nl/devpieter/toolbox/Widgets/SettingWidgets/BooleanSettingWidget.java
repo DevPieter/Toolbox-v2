@@ -1,10 +1,10 @@
 package nl.devpieter.toolbox.Widgets.SettingWidgets;
 
 import nl.devpieter.squid.animation.Animation;
-import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCKnob;
 import nl.devpieter.squid.enums.Easing;
+import nl.devpieter.squid.modifiers.hoverable.HoverableColorModifier;
 import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
 import nl.devpieter.toolbox.Widgets.Abstractions.SettingWidgetBase;
 import nl.devpieter.toolbox.setting.interfaces.IBooleanSetting;
@@ -18,14 +18,16 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
     public static final int HEIGHT = 26;
 
     private final Color bodyColor = colorManager.get("setting.generic.body");
+    private final Color bodyHoverColor = colorManager.get("setting.generic.body.hover");
     private final Color bodyEnabledColor = colorManager.get("setting.generic.body.enabled");
+    private final Color bodyEnabledHoverColor = colorManager.get("setting.generic.body.enabled.hover");
 
     // TODO - Get from Theme
     private final float cornerRadius = 8;
     private final float knobPadding = 4;
 
     private final Animation slideAnimation;
-    private final ColorAnimation slideColorAnimation;
+    private final HoverableColorModifier<BooleanSettingWidget> bodyColorModifier = new HoverableColorModifier<>(this);
 
     private final SCCard body;
     private final SCKnob knob;
@@ -34,7 +36,9 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
         super(x, y, width, HEIGHT, gap, module, widgetSetting);
 
         this.slideAnimation = new Animation(0, 1, Duration.ofMillis(400), Easing.EXPO_OUT);
-        this.slideColorAnimation = new ColorAnimation(bodyColor, bodyEnabledColor, Duration.ofMillis(400), Easing.EXPO_OUT);
+        this.bodyColorModifier.setDuration(Duration.ofMillis(400));
+        this.bodyColorModifier.setEasing(Easing.EXPO_OUT);
+        this.bodyColorModifier.setSmoothBackAndForth(true);
 
         this.body = new SCCard(this, x + gap, y, 60, height);
         this.body.cornerRadius().set(this.cornerRadius);
@@ -49,8 +53,10 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
 
     @Override
     protected void render(long context, float delta) {
+        this.bodyColorModifier.tickHoverCheck(this.body.isHovered());
+
         this.knob.setX(this.x + this.gap + this.knobPadding + (this.body.getWidth() - this.knob.getWidth() - 2 * this.knobPadding) * this.slideAnimation.get());
-        this.body.color().set(this.slideColorAnimation.get());
+        this.body.color().set(this.bodyColorModifier.get());
     }
 
     @Override
@@ -68,14 +74,26 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
             this.slideAnimation.setFrom(this.slideAnimation.get());
             this.slideAnimation.reset();
 
-            this.slideColorAnimation.setFrom(this.slideColorAnimation.get());
-            this.slideColorAnimation.reset();
+//            this.bodyColorModifier.setFrom(this.bodyColorModifier.get());
+//            this.bodyColorModifier.reset();
         }
 
         this.slideAnimation.setTo(state ? 1f : 0);
-        this.slideColorAnimation.setTo(state ? this.bodyEnabledColor : this.bodyColor);
+//        this.bodyColorModifier.setTo(state ? this.bodyEnabledColor : this.bodyColor);
 
         this.widgetSetting.getSetting().setValue(state);
         if (save) this.save();
+
+        this.updateBodyColor(!animate);
+    }
+
+    private void updateBodyColor(boolean instant) {
+        boolean isEnabled = this.widgetSetting.getSetting().getValue();
+
+        Color color = isEnabled ? this.bodyEnabledColor : this.bodyColor;
+        Color hoverColor = isEnabled ? this.bodyEnabledHoverColor : this.bodyHoverColor;
+
+        if (instant) this.bodyColorModifier.set(color, hoverColor);
+        else this.bodyColorModifier.transition(color, hoverColor);
     }
 }

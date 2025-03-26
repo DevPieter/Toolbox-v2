@@ -30,6 +30,9 @@ public class ModuleCardWidget extends WidgetBase {
     private final int shadowColor = colorManager.getRGB("module.card.shadow");
     private final int shadowEnabledColor = colorManager.getRGB("module.card.shadow.enabled");
 
+//    private final HoverableColorModifier<ModuleCardWidget> titleColorModifier = new HoverableColorModifier<>(this);
+//    private final HoverableColorModifier<ModuleCardWidget> shadowColorModifier = new HoverableColorModifier<>(this);
+
     private final Class<? extends IModule> moduleClass;
     private final boolean isInteractable, isClickable, isToggleable, hasSettings;
 
@@ -80,6 +83,11 @@ public class ModuleCardWidget extends WidgetBase {
         description.multiLine().setTrue();
         cardBody.addChild(description);
 
+//        this.titleColorModifier.set(colorManager.get("module.card.header.text"), colorManager.get("module.card.header.text.enabled"));
+//        this.titleColorModifier.setDuration(Duration.ofMillis(100));
+//        this.shadowColorModifier.set(colorManager.get("module.card.shadow"), colorManager.get("module.card.shadow.enabled"));
+//        this.shadowColorModifier.setDuration(Duration.ofMillis(100));
+
         this.updateFavorite(true);
     }
 
@@ -87,6 +95,11 @@ public class ModuleCardWidget extends WidgetBase {
     protected void render(long context, float delta) {
         this.title.text().getStyle().setColor(this.moduleManager.isEnabled(this.moduleClass) ? this.titleEnabledColor : this.titleColor);
         int color = this.moduleManager.isEnabled(this.moduleClass) ? this.shadowEnabledColor : this.shadowColor;
+
+//        this.titleColorModifier.tickHoverCheck(this.moduleManager.isEnabled(this.moduleClass));
+//        this.shadowColorModifier.tickHoverCheck(this.moduleManager.isEnabled(this.moduleClass));
+
+//        this.title.text().getStyle().setColor(this.titleColorModifier.get());
 
         NVGHelper.drawDropShadow(
                 context,
@@ -97,6 +110,7 @@ public class ModuleCardWidget extends WidgetBase {
                 12,
                 6,
                 4,
+//                this.shadowColorModifier.get().getRGB()
                 color
         );
     }

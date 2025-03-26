@@ -51,7 +51,7 @@ public class TestSetting2Module implements ISettingModule, IClickableModule {
 
     @Override
     public @NotNull Text getName() {
-        return Text.of("Test Setting Module");
+        return Text.of("Test Setting Module 2");
     }
 
     @Override
