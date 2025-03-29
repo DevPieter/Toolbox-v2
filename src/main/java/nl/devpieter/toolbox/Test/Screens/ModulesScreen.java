@@ -2,13 +2,13 @@ package nl.devpieter.toolbox.Test.Screens;
 
 import net.minecraft.text.Text;
 import nl.devpieter.squid.minecraft.screen.SquidScreen;
-import nl.devpieter.toolbox.Category.CategoryManager;
-import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Widgets.CategoryWidgets.CategoryContainerWidget;
-import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.ModuleWidgets.ModuleCarouselWidget;
-import nl.devpieter.toolbox.Widgets.PaginationWidget;
-import nl.devpieter.toolbox.Widgets.SidebarWidget;
+import nl.devpieter.toolbox.category.CategoryManager;
+import nl.devpieter.toolbox.module.ModuleManager;
+import nl.devpieter.toolbox.widgets.categoryWidgets.CategoryContainerWidget;
+import nl.devpieter.toolbox.widgets.ContentWidget;
+import nl.devpieter.toolbox.widgets.moduleWidgets.ModuleCarouselWidget;
+import nl.devpieter.toolbox.widgets.PaginationWidget;
+import nl.devpieter.toolbox.widgets.SidebarWidget;
 
 public class ModulesScreen extends SquidScreen {
 

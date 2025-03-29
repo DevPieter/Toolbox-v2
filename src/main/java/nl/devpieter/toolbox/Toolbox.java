@@ -12,22 +12,15 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import nl.devpieter.squid.debug.DebugOptions;
-import nl.devpieter.toolbox.Category.CategoryManager;
-import nl.devpieter.toolbox.Defaults.Categories.MiscCategory;
-import nl.devpieter.toolbox.Defaults.Categories.ToolsCategory;
-import nl.devpieter.toolbox.Module.ModuleManager;
-import nl.devpieter.toolbox.Test.Categories.DevPieterCategory;
-import nl.devpieter.toolbox.Test.Categories.ExampleCategory;
-import nl.devpieter.toolbox.Test.Categories.FillerCategory;
-import nl.devpieter.toolbox.Test.Filler.*;
-import nl.devpieter.toolbox.Test.Modules.*;
 import nl.devpieter.toolbox.Test.Screens.ModulesScreen;
-import nl.devpieter.toolbox.Theme.ColorManager;
-import nl.devpieter.toolbox.Theme.FontManager;
-import nl.devpieter.toolbox.Theme.SvgManager;
-import nl.devpieter.toolbox.Utils.ConfigUtils;
+import nl.devpieter.toolbox.category.CategoryManager;
+import nl.devpieter.toolbox.module.ModuleManager;
 import nl.devpieter.toolbox.setting.SettingManager;
 import nl.devpieter.toolbox.setting.settings.ListSetting;
+import nl.devpieter.toolbox.theme.ColorManager;
+import nl.devpieter.toolbox.theme.FontManager;
+import nl.devpieter.toolbox.theme.SvgManager;
+import nl.devpieter.toolbox.utils.ConfigUtils;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,40 +103,37 @@ public class Toolbox implements ModInitializer {
         boolean runningAsDev = FabricLoader.getInstance().isDevelopmentEnvironment();
         Toolbox.LOGGER.info("Running as dev: " + runningAsDev);
 
-        if (runningAsDev) {
-            categoryManager.register(MiscCategory.class);
-            categoryManager.register(ToolsCategory.class);
-
-            categoryManager.register(DevPieterCategory.class);
-            categoryManager.register(ExampleCategory.class);
-            categoryManager.register(FillerCategory.class);
-
-            moduleManager.register(TestSettingModule.class);
-            moduleManager.register(TestSetting2Module.class);
-            moduleManager.register(ClickableModule.class);
-            moduleManager.register(StatefulModule.class);
-            moduleManager.register(TestModule.class);
-            moduleManager.register(ToggleableModule.class);
-            moduleManager.register(AutoElytraModule.class);
-            moduleManager.register(BetterToggleSprintModule.class);
-
-            // Filler modules
-            moduleManager.register(FillerModule1.class);
-            moduleManager.register(FillerModule2.class);
-            moduleManager.register(FillerModule3.class);
-            moduleManager.register(FillerModule4.class);
-            moduleManager.register(FillerModule5.class);
-            moduleManager.register(FillerModule6.class);
-            moduleManager.register(FillerModule7.class);
-            moduleManager.register(FillerModule8.class);
-            moduleManager.register(FillerModule9.class);
-            moduleManager.register(FillerModule10.class);
-            moduleManager.register(FillerModule11.class);
-            moduleManager.register(FillerModule12.class);
-            moduleManager.register(FillerModule13.class);
-            moduleManager.register(FillerModule14.class);
-            moduleManager.register(FillerModule15.class);
-        }
+//        if (runningAsDev) {
+//            categoryManager.register(DevPieterCategory.class);
+//            categoryManager.register(ExampleCategory.class);
+//            categoryManager.register(FillerCategory.class);
+//
+//            moduleManager.register(TestSettingModule.class);
+//            moduleManager.register(TestSetting2Module.class);
+//            moduleManager.register(ClickableModule.class);
+//            moduleManager.register(StatefulModule.class);
+//            moduleManager.register(TestModule.class);
+//            moduleManager.register(ToggleableModule.class);
+//            moduleManager.register(AutoElytraModule.class);
+//            moduleManager.register(BetterToggleSprintModule.class);
+//
+//            // Filler modules
+//            moduleManager.register(FillerModule1.class);
+//            moduleManager.register(FillerModule2.class);
+//            moduleManager.register(FillerModule3.class);
+//            moduleManager.register(FillerModule4.class);
+//            moduleManager.register(FillerModule5.class);
+//            moduleManager.register(FillerModule6.class);
+//            moduleManager.register(FillerModule7.class);
+//            moduleManager.register(FillerModule8.class);
+//            moduleManager.register(FillerModule9.class);
+//            moduleManager.register(FillerModule10.class);
+//            moduleManager.register(FillerModule11.class);
+//            moduleManager.register(FillerModule12.class);
+//            moduleManager.register(FillerModule13.class);
+//            moduleManager.register(FillerModule14.class);
+//            moduleManager.register(FillerModule15.class);
+//        }
     }
 
     public static String getMinecraftVersion() {

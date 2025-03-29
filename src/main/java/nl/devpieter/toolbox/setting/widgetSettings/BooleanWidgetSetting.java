@@ -1,8 +1,8 @@
 package nl.devpieter.toolbox.setting.widgetSettings;
 
 import nl.devpieter.squid.renderable.component.IComponent;
-import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
-import nl.devpieter.toolbox.Widgets.SettingWidgets.BooleanSettingWidget;
+import nl.devpieter.toolbox.module.interfaces.ISettingModule;
+import nl.devpieter.toolbox.widgets.settingWidgets.BooleanSettingWidget;
 import nl.devpieter.toolbox.setting.base.WidgetSettingBase;
 import nl.devpieter.toolbox.setting.interfaces.IBooleanSetting;
 

@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.setting.interfaces;
 
 import nl.devpieter.squid.renderable.component.IComponent;
-import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
+import nl.devpieter.toolbox.module.interfaces.ISettingModule;
 
 public interface IWidgetSetting<T, S extends ISetting<T>> {
 

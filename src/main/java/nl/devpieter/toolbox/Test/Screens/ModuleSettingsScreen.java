@@ -5,10 +5,10 @@ import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.squid.rendering.text.SText;
-import nl.devpieter.toolbox.Module.Interfaces.ISettingModule;
-import nl.devpieter.toolbox.Widgets.ContentWidget;
-import nl.devpieter.toolbox.Widgets.SettingWidgets.SettingGroupContainerWidget;
-import nl.devpieter.toolbox.Widgets.SidebarWidget;
+import nl.devpieter.toolbox.module.interfaces.ISettingModule;
+import nl.devpieter.toolbox.widgets.ContentWidget;
+import nl.devpieter.toolbox.widgets.settingWidgets.SettingGroupContainerWidget;
+import nl.devpieter.toolbox.widgets.SidebarWidget;
 
 public class ModuleSettingsScreen extends SquidScreen {
 
@@ -35,7 +35,7 @@ public class ModuleSettingsScreen extends SquidScreen {
 
         SidebarWidget sidebar = new SidebarWidget(0, 16, 424, this.windowHeight - 32);
 
-        SText text = SText.of().append(this.module.getName().getString());
+        SText text = SText.of().append(this.module.getName());
         SCLabel label = new SCLabel(sidebar, 0, 324 + 8 + 16, 424, 20, text);
         label.alignment().set(Alignment.MIDDLE_CENTER);
         sidebar.addChild(label);
