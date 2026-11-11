@@ -1,5 +1,5 @@
 {
-  "toolbox.key.categories.toolbox": "Toolbox",
+  "key.category.toolbox.toolbox": "Toolbox",
   "toolbox.key.open": "Open Modules Screen",
   "toolbox.key.debug": "Toggle Debug Mode"
 }

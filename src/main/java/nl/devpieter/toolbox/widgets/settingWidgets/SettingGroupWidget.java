@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.settingWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
@@ -71,7 +72,7 @@ public class SettingGroupWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
 
     }
 

@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.settingWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCKnob;
@@ -52,7 +53,7 @@ public class BooleanSettingWidget extends SettingWidgetBase<Boolean, IWidgetSett
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
         this.bodyColorModifier.tickHoverCheck(this.body.isHovered());
 
         this.knob.setX(this.x + this.gap + this.knobPadding + (this.body.getWidth() - this.knob.getWidth() - 2 * this.knobPadding) * this.slideAnimation.get());

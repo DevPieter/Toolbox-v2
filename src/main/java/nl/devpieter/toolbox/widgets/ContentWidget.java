@@ -1,9 +1,10 @@
 package nl.devpieter.toolbox.widgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.enums.Easing;
-import nl.devpieter.squid.rendering.NVGHelper;
+import nl.devpieter.squid.rendering.SkiaHelper;
 
 import java.time.Duration;
 
@@ -22,7 +23,7 @@ public class ContentWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
-        NVGHelper.translate(context, 0, this.slideAnimation.get());
+    protected void render(SkiaContext context, float delta) {
+        SkiaHelper.translate(context, 0, this.slideAnimation.get());
     }
 }

@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.categoryWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.animation.ColorAnimation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
@@ -10,7 +11,7 @@ import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.category.ICategory;
 import nl.devpieter.toolbox.widgets.WidgetBase;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.util.IConsumer;
+import java.util.function.Consumer;
 
 import java.time.Duration;
 
@@ -19,12 +20,12 @@ public class CategoryCardWidget extends WidgetBase {
     public static final int HEIGHT = 36 + 24;
 
     private final @Nullable Class<? extends ICategory> categoryClass;
-    private final IConsumer<Class<? extends ICategory>> categorySelectedCallback;
+    private final Consumer<Class<? extends ICategory>> categorySelectedCallback;
 
     private final ColorAnimation titleColorAnimation;
     private final SCLabel title;
 
-    public CategoryCardWidget(IRenderable parent, float x, float y, float width, @Nullable Class<? extends ICategory> categoryClass, IConsumer<Class<? extends ICategory>> categorySelectedCallback) {
+    public CategoryCardWidget(IRenderable parent, float x, float y, float width, @Nullable Class<? extends ICategory> categoryClass, Consumer<Class<? extends ICategory>> categorySelectedCallback) {
         super(x, y, width, HEIGHT);
         this.setParent(parent);
 
@@ -51,7 +52,7 @@ public class CategoryCardWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
         this.title.text().getStyle().setColor(this.titleColorAnimation.get());
     }
 

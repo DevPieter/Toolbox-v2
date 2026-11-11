@@ -1,59 +1,53 @@
 package nl.devpieter.toolbox.theme;
 
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
-import net.minecraft.util.Identifier;
-import nl.devpieter.squid.rendering.RenderingManager;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import nl.devpieter.squid.rendering.svg.SvgHolder;
 import nl.devpieter.toolbox.Toolbox;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SvgManager implements SynchronousResourceReloader {
+public final class SvgManager implements ResourceManagerReloadListener, AutoCloseable {
 
-    private static SvgManager INSTANCE;
-
-    private final RenderingManager renderingManager = RenderingManager.getInstance();
-
-    private final HashMap<String, SvgHolder> loadedSvgs = new HashMap<>();
+    private static final SvgManager INSTANCE = new SvgManager();
+    private final Map<String, SvgHolder> loadedSvgs = new HashMap<>();
+    private final Map<String, SvgHolder> managedSvgs = new HashMap<>();
 
     private SvgManager() {
     }
 
     public static SvgManager getInstance() {
-        if (INSTANCE == null) INSTANCE = new SvgManager();
         return INSTANCE;
     }
 
     @Override
+    public void onResourceManagerReload(ResourceManager manager) {
+        this.reload(manager);
+    }
+
     public void reload(ResourceManager manager) {
+        Map<Identifier, Resource> resources = manager.listResources("svg", path ->
+                path.getNamespace().equals("toolbox") && path.getPath().endsWith(".svg"));
+        this.managedSvgs.values().forEach(SvgHolder::close);
         this.loadedSvgs.clear();
-        this.renderingManager.init();
-        long rContext = this.renderingManager.getContext();
 
-        Map<Identifier, Resource> map = manager.findResources("svg", (path) -> {
-            if (!path.getNamespace().equals("toolbox")) return false;
-            return path.getPath().endsWith(".svg");
-        });
-
-        for (Map.Entry<Identifier, Resource> entry : map.entrySet()) {
-            String svgPath = entry.getKey().getPath();
-
-            // remove "svg/" and ".svg"
-            String svgName = svgPath.substring(4, svgPath.length() - 4);
-            svgName = svgName.replace("/", ".");
-
-            try {
-                SvgHolder svgHolder = new SvgHolder(svgName);
-                svgHolder.load(rContext, entry.getValue().getInputStream());
-
-                this.loadedSvgs.put(svgName, svgHolder);
+        for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
+            String path = entry.getKey().getPath();
+            String name = path.substring(4, path.length() - 4).replace('/', '.');
+            SvgHolder holder = this.managedSvgs.computeIfAbsent(name, SvgHolder::new);
+            try (InputStream input = entry.getValue().open()) {
+                if (holder.load(input)) this.loadedSvgs.put(name, holder);
+                else holder.close();
             } catch (Exception e) {
-                Toolbox.LOGGER.error("Failed to load svg: {}", svgName, e);
+                holder.close();
+                Toolbox.LOGGER.error("Failed to load SVG {}", name, e);
             }
         }
+        Toolbox.LOGGER.info("Loaded {} theme SVGs", this.loadedSvgs.size());
     }
 
     public SvgHolder get(String key) {
@@ -62,5 +56,12 @@ public class SvgManager implements SynchronousResourceReloader {
 
     public SvgHolder getOrDefault(String key, SvgHolder fallback) {
         return this.loadedSvgs.getOrDefault(key, fallback);
+    }
+
+    @Override
+    public void close() {
+        this.managedSvgs.values().forEach(SvgHolder::close);
+        this.managedSvgs.clear();
+        this.loadedSvgs.clear();
     }
 }

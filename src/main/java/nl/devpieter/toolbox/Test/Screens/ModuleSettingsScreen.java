@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.Test.Screens;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.minecraft.screen.SquidScreen;
@@ -15,7 +15,7 @@ public class ModuleSettingsScreen extends SquidScreen {
     private final ISettingModule module;
 
     public ModuleSettingsScreen(ISettingModule module /* TODO - Replace with class */) {
-        super(Text.of("Module Settings"));
+        super(Component.literal("Module Settings"));
         this.module = module;
     }
 

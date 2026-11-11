@@ -1,11 +1,13 @@
 package nl.devpieter.toolbox.widgets.moduleWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.components.SCSvg;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.renderable.IRenderable;
-import nl.devpieter.squid.rendering.NVGHelper;
+import nl.devpieter.squid.rendering.SkiaHelper;
+import nl.devpieter.squid.rendering.svg.SvgHolder;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.module.interfaces.*;
@@ -65,11 +67,13 @@ public class ModuleCardWidget extends WidgetBase {
         this.title.alignment().set(Alignment.MIDDLE_LEFT);
         cardHeader.addChild(this.title);
 
-        this.favorite = new SCSvg(cardHeader, x + width - svgSize - 12, y + 8, svgSize, svgSize, svgManager.get("icons.favorite"));
+        this.favorite = new SCSvg(cardHeader, x + width - svgSize - 12, y + 8, svgSize, svgSize,
+                svgManager.getOrDefault("icons.favorite", new SvgHolder("missing-icons.favorite")));
         this.favorite.inheritParentHover().setFalse().color().setSmoothBackAndForth(true);
         cardHeader.addChild(this.favorite);
 
-        this.settings = new SCSvg(cardHeader, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize, svgManager.get("icons.settings"));
+        this.settings = new SCSvg(cardHeader, x + width - svgSize - 12 - svgSize - 6, y + 8, svgSize, svgSize,
+                svgManager.getOrDefault("icons.settings", new SvgHolder("missing-icons.settings")));
         this.settings.color().set(colorManager.get("module.card.header.icon.settings"), colorManager.get("module.card.header.icon.settings.hover")).inheritParentHover().setFalse();
         if (this.hasSettings) cardHeader.addChild(this.settings);
 
@@ -92,7 +96,7 @@ public class ModuleCardWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
         this.title.text().getStyle().setColor(this.moduleManager.isEnabled(this.moduleClass) ? this.titleEnabledColor : this.titleColor);
         int color = this.moduleManager.isEnabled(this.moduleClass) ? this.shadowEnabledColor : this.shadowColor;
 
@@ -101,7 +105,7 @@ public class ModuleCardWidget extends WidgetBase {
 
 //        this.title.text().getStyle().setColor(this.titleColorModifier.get());
 
-        NVGHelper.drawDropShadow(
+        SkiaHelper.drawDropShadow(
                 context,
                 this.getX() + 12,
                 this.getY() + 12,

@@ -1,6 +1,6 @@
 package nl.devpieter.toolbox.Test.Screens;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import nl.devpieter.squid.minecraft.screen.SquidScreen;
 import nl.devpieter.toolbox.category.CategoryManager;
 import nl.devpieter.toolbox.module.ModuleManager;
@@ -13,7 +13,7 @@ import nl.devpieter.toolbox.widgets.SidebarWidget;
 public class ModulesScreen extends SquidScreen {
 
     public ModulesScreen() {
-        super(Text.of("test"));
+        super(Component.literal("test"));
     }
 
     @Override
@@ -48,15 +48,4 @@ public class ModulesScreen extends SquidScreen {
         this.addRenderable(sidebar);
     }
 
-    @Override
-    protected void render(long context, float mouseX, float mouseY, float delta) {
-//        if (!Toolbox.KAUSHAN_SCRIPT.getRegular().loaded()) { // TODO - Change this to a more reliable method
-//            FontUtils.loadFont(context, Toolbox.KAUSHAN_SCRIPT);
-//        }
-
-//        Color top = new Color(9, 9, 9, 103);
-//        NVGHelper.drawRoundedRec(context, 424 + 16, 16, this.windowWidth - 424 - 16 - 16, this.windowHeight - 32, 16, top.getRGB());
-
-        super.render(context, mouseX, mouseY, delta);
-    }
 }

@@ -3,7 +3,7 @@ package nl.devpieter.toolbox.utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class ResourceUtils {
             JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
 
             jsonObject.entrySet().forEach(entry -> {
-                String string = JsonHelper.asString(entry.getValue(), entry.getKey());
+                String string = GsonHelper.convertToString(entry.getValue(), entry.getKey());
                 builder.put(entry.getKey(), string);
             });
         }

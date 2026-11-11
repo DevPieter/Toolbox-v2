@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.module.interfaces;
 
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import nl.devpieter.toolbox.utils.SoundUtils;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -20,7 +20,7 @@ public interface IInteractableModule extends IModule {
      * (-1 if no button was pressed)
      */
     default @Nullable SoundEvent getInteractSound(int button) {
-        return SoundEvents.ENTITY_ITEM_PICKUP;
+        return SoundEvents.ITEM_PICKUP;
     }
 
     /**

@@ -1,7 +1,7 @@
 package nl.devpieter.toolbox.module;
 
 import com.google.gson.Gson;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import nl.devpieter.toolbox.GlobalSettings;
 import nl.devpieter.toolbox.Test.Screens.ModuleSettingsScreen;
 import nl.devpieter.toolbox.Toolbox;
@@ -176,7 +176,9 @@ public class ModuleManager {
             File stateFile = ConfigUtils.getModuleStateFile(statefulModule, false);
             if (stateFile == null || statefulModule.getState() == null) return;
 
-            statefulModule.setState(this.gson.fromJson(new FileReader(stateFile), (Type) statefulModule.getState().getClass()));
+            try (FileReader reader = new FileReader(stateFile)) {
+                statefulModule.setState(this.gson.fromJson(reader, (Type) statefulModule.getState().getClass()));
+            }
         } catch (Exception e) {
             Toolbox.LOGGER.warn("Failed to load state for module {}!", moduleClass.getSimpleName(), e);
             statefulModule.resetState();
@@ -239,7 +241,7 @@ public class ModuleManager {
 
     public boolean openSettings(@NotNull Class<? extends IModule> moduleClass) {
         if (!(this.getInstance(moduleClass) instanceof ISettingModule settingModule)) return false;
-        MinecraftClient.getInstance().setScreen(new ModuleSettingsScreen(settingModule));
+        Minecraft.getInstance().gui.setScreen(new ModuleSettingsScreen(settingModule));
         return true;
     }
 

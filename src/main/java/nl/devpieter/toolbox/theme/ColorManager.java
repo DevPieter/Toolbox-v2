@@ -1,19 +1,20 @@
 package nl.devpieter.toolbox.theme;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.resources.Identifier;
 import nl.devpieter.toolbox.Toolbox;
 import nl.devpieter.toolbox.utils.ResourceUtils;
 
 import java.awt.*;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ColorManager implements SynchronousResourceReloader {
+public class ColorManager implements ResourceManagerReloadListener, AutoCloseable {
 
     private static ColorManager INSTANCE;
 
@@ -28,10 +29,14 @@ public class ColorManager implements SynchronousResourceReloader {
     }
 
     @Override
+    public void onResourceManagerReload(ResourceManager manager) {
+        this.reload(manager);
+    }
+
     public void reload(ResourceManager manager) {
         this.loadedColors.clear();
 
-        Map<Identifier, List<Resource>> map = manager.findAllResources("theme", (path) -> {
+        Map<Identifier, List<Resource>> map = manager.listResourceStacks("theme", (path) -> {
             if (!path.getNamespace().equals("toolbox")) return false;
             return path.getPath().endsWith("colors.json");
         });
@@ -39,8 +44,8 @@ public class ColorManager implements SynchronousResourceReloader {
         for (Map.Entry<Identifier, List<Resource>> entry : map.entrySet()) {
             for (Resource resource : entry.getValue()) {
 
-                try {
-                    ImmutableMap<String, String> rawColors = ResourceUtils.readJson(resource.getInputStream());
+                try (InputStream input = resource.open()) {
+                    ImmutableMap<String, String> rawColors = ResourceUtils.readJson(input);
                     for (String key : rawColors.keySet()) loadedColors.put(key, this.translateColor(rawColors.get(key)));
                 } catch (Exception e) {
                     Toolbox.LOGGER.error("Failed to load color overrides!", e);
@@ -58,7 +63,7 @@ public class ColorManager implements SynchronousResourceReloader {
     }
 
     public int getRGB(String key) {
-        return this.getRGB(key, 0xFFFFFF);
+        return this.getRGB(key, 0xFFFFFFFF);
     }
 
     public int getRGB(String key, int fallback) {
@@ -85,5 +90,10 @@ public class ColorManager implements SynchronousResourceReloader {
             Toolbox.LOGGER.warn("Failed to decode color {}, use #RRGGBB or #AARRGGBB", colorString, e);
             return Color.WHITE;
         }
+    }
+
+    @Override
+    public void close() {
+        this.loadedColors.clear();
     }
 }

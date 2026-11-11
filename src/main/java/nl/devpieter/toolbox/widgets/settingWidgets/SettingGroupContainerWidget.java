@@ -1,6 +1,7 @@
 package nl.devpieter.toolbox.widgets.settingWidgets;
 
-import net.minecraft.util.math.MathHelper;
+import nl.devpieter.squid.rendering.SkiaContext;
+import net.minecraft.util.Mth;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
@@ -78,12 +79,12 @@ public class SettingGroupContainerWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
 
     }
 
     private int fittingGroupsRow(float width, float gap) {
-        return MathHelper.clamp((int) ((width + gap) / (MIN_WIDTH + gap)), 1, (int) ((width + gap) / (MAX_WIDTH + gap)));
+        return Mth.clamp((int) ((width + gap) / (MIN_WIDTH + gap)), 1, (int) ((width + gap) / (MAX_WIDTH + gap)));
     }
 
     private float calculateGroupWidth(float width, float gap, int amount) {

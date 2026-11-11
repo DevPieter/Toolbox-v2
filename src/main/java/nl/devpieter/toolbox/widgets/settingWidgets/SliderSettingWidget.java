@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.settingWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.components.SCKnob;
 import nl.devpieter.squid.components.SCNumberInputDisplay;
 import nl.devpieter.squid.components.SCProgressBar;
@@ -27,6 +28,7 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
     private final SCProgressBar bar;
     private final SCKnob knob;
     private final SCNumberInputDisplay display;
+    private boolean initialized;
 
     public SliderSettingWidget(float x, float y, float width, float gap, ISettingModule module, S widgetSetting) {
         super(x, y, width, HEIGHT, gap, module, widgetSetting);
@@ -37,7 +39,14 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
         Color bodyColor = colorManager.get("setting.generic.body");
         Color bodyHoverColor = colorManager.get("setting.generic.body.hover");
 
-        this.bar = new SCProgressBar(this, x + gap, y + (height / 2 - (this.barThickness / 2)), width - gap - this.knobSize - this.displayWidth, this.barThickness);
+        this.bar = new SCProgressBar(this, x + gap, y + (height / 2 - (this.barThickness / 2)), width - gap - this.knobSize - this.displayWidth, this.barThickness) {
+            @Override
+            public boolean mouseScrolled(float mouseX, float mouseY, double horizontalAmount, double verticalAmount) {
+                return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount / 10);
+            }
+        };
+        // Toolbox maps normalized progress to each setting's numeric bounds.
+        this.bar.setClamps(0, 1);
         this.bar.userChangeAllowed().setTrue().scrollChangeAllowed().setTrue().parentScrollChangeAllowed().setTrue();
         this.bar.containerColor().set(bodyColor, bodyHoverColor).progressBarColor().set(colorManager.get("setting.generic.body.enabled"), colorManager.get("setting.generic.body.enabled.hover")).cornerRadius().set(this.cornerRadius / 2);
         this.addChild(this.bar);
@@ -55,15 +64,17 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
         this.setValue(this.widgetSetting.getSetting().getValue(), false, false);
 
         bar.subscribeValueChangeListener(progress -> {
+            if (!this.initialized) return;
             float value = progress * (this.max.floatValue() - this.min.floatValue()) + this.min.floatValue();
 
             this.widgetSetting.getSetting().setValue(NumberUtils.cast(this.widgetSetting.getSetting().getType(), value));
             this.save();
         });
+        this.initialized = true;
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
         this.knob.setX(this.bar.getProgressX() - (this.knobSize / 2));
 
         float progress = this.bar.getAnimatedValue();
@@ -73,7 +84,8 @@ public class SliderSettingWidget<T extends Number, S extends WidgetSettingBase<T
     }
 
     private void setValue(T value, boolean animate, boolean save) {
-        float progress = (value.floatValue() - this.min.floatValue()) / (this.max.floatValue() - this.min.floatValue());
+        float range = this.max.floatValue() - this.min.floatValue();
+        float progress = range == 0 ? 0 : (value.floatValue() - this.min.floatValue()) / range;
         this.bar.setValue(progress, animate);
 
         this.widgetSetting.getSetting().setValue(value);

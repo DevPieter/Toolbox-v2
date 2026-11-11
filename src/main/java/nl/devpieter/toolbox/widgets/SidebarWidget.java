@@ -1,11 +1,12 @@
 package nl.devpieter.toolbox.widgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
 import nl.devpieter.squid.enums.Easing;
-import nl.devpieter.squid.rendering.NVGHelper;
+import nl.devpieter.squid.rendering.SkiaHelper;
 import nl.devpieter.squid.rendering.text.SText;
 import nl.devpieter.squid.rendering.text.STextStyle;
 import nl.devpieter.toolbox.Toolbox;
@@ -45,10 +46,10 @@ public class SidebarWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
-        NVGHelper.translate(context, this.slideAnimation.get(), 0);
+    protected void render(SkiaContext context, float delta) {
+        SkiaHelper.translate(context, this.slideAnimation.get(), 0);
 
-        NVGHelper.drawDropShadow(
+        SkiaHelper.drawDropShadow(
                 context,
                 this.getX(),
                 this.getY(),

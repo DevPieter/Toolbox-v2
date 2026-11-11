@@ -1,10 +1,10 @@
 package nl.devpieter.toolbox.utils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class SoundUtils {
@@ -18,11 +18,11 @@ public class SoundUtils {
     }
 
     public static void playOnMaster(@NotNull SoundEvent soundEvent, float pitch, float volume) {
-        play(PositionedSoundInstance.master(soundEvent, pitch, volume));
+        play(SimpleSoundInstance.forUI(soundEvent, pitch, volume));
     }
 
     public static void play(@NotNull SoundInstance soundInstance) {
-        SoundManager soundManager = MinecraftClient.getInstance().getSoundManager();
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
         if (soundManager != null) soundManager.play(soundInstance);
     }
 }

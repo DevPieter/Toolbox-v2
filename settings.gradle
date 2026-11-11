@@ -7,3 +7,18 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+rootProject.name = 'Toolbox'
+
+// Build the matching Squid checkout automatically, or use -Psquid_jar=/path/to/Squid.jar.
+if (!providers.gradleProperty('squid_jar').isPresent()) {
+    def squidDirectory = file(providers.gradleProperty('squid_project').getOrElse('../../Squid/Squid'))
+    if (!new File(squidDirectory, 'build.gradle').isFile()) {
+        throw new GradleException('Squid checkout not found. Set -Psquid_project=/path/to/Squid or -Psquid_jar=/path/to/Squid.jar (Minecraft 26.2 / Skia version).')
+    }
+    includeBuild(squidDirectory) {
+        dependencySubstitution {
+            substitute module('nl.devpieter:Squid') using project(':')
+        }
+    }
+}

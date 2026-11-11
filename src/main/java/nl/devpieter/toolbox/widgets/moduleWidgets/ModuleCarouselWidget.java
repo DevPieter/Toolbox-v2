@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.moduleWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
@@ -74,7 +75,7 @@ public class ModuleCarouselWidget extends PaginatableWidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
 
     }
 

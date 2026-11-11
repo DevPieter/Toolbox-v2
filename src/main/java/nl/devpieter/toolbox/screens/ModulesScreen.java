@@ -1,14 +1,14 @@
 package nl.devpieter.toolbox.screens;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class ModulesScreen extends Screen {
 
     public ModulesScreen() {
         // TODO - Translate
-        super(Text.of("Module Page"));
+        super(Component.literal("Module Page"));
     }
 
     @Override
@@ -17,7 +17,7 @@ public class ModulesScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 }

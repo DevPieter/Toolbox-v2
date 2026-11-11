@@ -11,10 +11,9 @@
     "repo": "https://github.com/DevPieter/Toolbox-v2"
   },
   "license": "MIT",
-  "icon": "assets/toolbox/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "nl.devpieter.toolbox.Toolbox"
     ]
   },
@@ -23,9 +22,10 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": ">=${minecraft_version}",
-    "squid": ">=1.0.0-alpha.4"
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25",
+    "squid": ">=${squid_version}"
   },
   "custom": {
     "build_status": "${build_status}"

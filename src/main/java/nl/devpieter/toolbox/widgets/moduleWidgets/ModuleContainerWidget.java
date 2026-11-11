@@ -1,6 +1,7 @@
 package nl.devpieter.toolbox.widgets.moduleWidgets;
 
-import net.minecraft.util.math.MathHelper;
+import nl.devpieter.squid.rendering.SkiaContext;
+import net.minecraft.util.Mth;
 import nl.devpieter.squid.components.SCContainer;
 import nl.devpieter.toolbox.module.interfaces.IModule;
 import nl.devpieter.toolbox.widgets.WidgetBase;
@@ -43,7 +44,7 @@ public class ModuleContainerWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
 
     }
 
@@ -52,10 +53,10 @@ public class ModuleContainerWidget extends WidgetBase {
     }
 
     public static int fittingCardsRow(float width, float gap) {
-        return MathHelper.floor((width - gap) / (ModuleCardWidget.WIDTH + gap));
+        return Mth.floor((width - gap) / (ModuleCardWidget.WIDTH + gap));
     }
 
     public static int fittingCardsColumn(float height, float gap) {
-        return MathHelper.floor((height - gap) / (ModuleCardWidget.HEIGHT + gap));
+        return Mth.floor((height - gap) / (ModuleCardWidget.HEIGHT + gap));
     }
 }

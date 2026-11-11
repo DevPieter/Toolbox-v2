@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.components.SCCard;
 import nl.devpieter.squid.components.SCLabel;
 import nl.devpieter.squid.enums.Alignment;
@@ -72,7 +73,7 @@ public class PaginationWidget extends ComponentBase {
     }
 
     @Override
-    protected void render(long l, float v) {
+    protected void render(SkiaContext context, float delta) {
 
     }
 

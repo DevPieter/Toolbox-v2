@@ -1,94 +1,104 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
 }
 
 version = project.mod_version
 group = project.maven_group
 
+base {
+    archivesName = project.archives_base_name
+}
+
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
+    mavenCentral()
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // These types appear in Squid's public rendering/resource API.
+    implementation "io.github.humbleui:skija-shared:${project.skija_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Squid supplies Skia and its native libraries. Keep Squid as a separate mod.
+    if (providers.gradleProperty('squid_jar').isPresent()) {
+        implementation files(providers.gradleProperty('squid_jar').get())
+        // File dependencies have no transitive metadata for Skia's public types.
+        ['windows-x64', 'windows-arm64', 'linux-x64', 'linux-arm64', 'macos-x64', 'macos-arm64'].each { platform ->
+            runtimeOnly "io.github.humbleui:skija-${platform}:${project.skija_version}"
+        }
+    } else {
+        implementation "nl.devpieter:Squid:${project.squid_version}"
+    }
 
-    modImplementation files("D:\\DEVELOPMENT\\Minecraft-Coding\\Mods\\Fabric\\Squid\\Squid\\build\\libs\\Squid-1.0.0-alpha.4-shadow.jar")
-
-//    modImplementation files("C:\\Users\\devpi\\Documents\\Development\\Minecraft-Coding\\Mods\\Fabric\\Squid\\build\\libs\\Squid-1.3.1-shadow.jar")
-
-    implementation "org.lwjgl:lwjgl-nanovg:3.3.4"
-    runtimeOnly "org.lwjgl:lwjgl-nanovg:3.3.4:natives-windows"
+    testImplementation platform('org.junit:junit-bom:5.14.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    inputs.property "build_status", project.build_status
-    filteringCharset "UTF-8"
+    inputs.property 'version', project.version
+    inputs.property 'minecraft_version', project.minecraft_version
+    inputs.property 'loader_version', project.loader_version
+    inputs.property 'build_status', project.build_status
+    inputs.property 'squid_version', project.squid_version
+    filteringCharset 'UTF-8'
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version,
-                "build_status": project.build_status
+    filesMatching('fabric.mod.json') {
+        expand version: project.version,
+                minecraft_version: project.minecraft_version,
+                loader_version: project.loader_version,
+                build_status: project.build_status,
+                squid_version: project.squid_version
     }
 }
 
-def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release = targetJavaVersion
-    }
+    options.encoding = 'UTF-8'
+    options.release = 25
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    archivesBaseName = project.archives_base_name
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
     withSourcesJar()
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+test {
+    useJUnitPlatform()
+    jvmArgs '--enable-native-access=ALL-UNNAMED'
+}
+
+loom {
+    runs {
+        client {
+            vmArg '--enable-native-access=ALL-UNNAMED'
+        }
+        uiTest {
+            client()
+            configName = 'Toolbox UI test'
+            runDir 'run/ui-test'
+            vmArg '--enable-native-access=ALL-UNNAMED'
+            vmArg '-Dtoolbox.testScreen=true'
+            programArg '--width'
+            programArg '1600'
+            programArg '--height'
+            programArg '900'
+        }
     }
 }
 
-// configure the maven publication
+jar {
+    from('LICENSE') {
+        rename { "LICENSE_${project.archives_base_name}" }
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = project.archives_base_name
             from components.java
         }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }

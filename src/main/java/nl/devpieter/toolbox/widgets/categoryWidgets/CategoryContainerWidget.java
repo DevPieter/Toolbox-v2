@@ -1,5 +1,6 @@
 package nl.devpieter.toolbox.widgets.categoryWidgets;
 
+import nl.devpieter.squid.rendering.SkiaContext;
 import nl.devpieter.squid.animation.Animation;
 import nl.devpieter.squid.components.SCBorder;
 import nl.devpieter.squid.components.SCContainer;
@@ -68,7 +69,7 @@ public class CategoryContainerWidget extends WidgetBase {
     }
 
     @Override
-    protected void render(long context, float delta) {
+    protected void render(SkiaContext context, float delta) {
         if (this.selectedBorder == null) return;
         this.selectedBorder.setY(this.selectedSlideAnimation.get() + 1);
     }
